@@ -11,12 +11,6 @@ public struct HexCoord
 
 public struct SquareCoord
 {
-    //public SquareCoord(int _x, int y)
-    //    : this()
-    //{
-    //
-    //}
-
     public int x { get; set; }
     public int y { get; set; }
 }
@@ -61,7 +55,17 @@ public struct TileCoord
     public void setX(int x) { _Square.x = x; updateHex(); }
     public void setY(int y) { _Square.y = y; updateHex(); }
 
-    public void setQ(int x) { _Hex.q = x; updateSquare(); }
-    public void setR(int y) { _Hex.r = y; updateSquare(); }
-    public void setS(int z) { _Hex.s = z; updateSquare(); }
+    public void setQ(int q) { _Hex.q = q; updateSquare(); }
+    public void setR(int r) { _Hex.r = r; updateSquare(); }
+    public void setS(int s) { _Hex.s = s; updateSquare(); }
+
+    public bool isValid()
+    {
+        var x = Square.x;
+        var y = Square.y;
+        var w = GlobalManagers.mapManager.Width;
+        var h = GlobalManagers.mapManager.Height;
+
+        return x >= 0 && x < w && y >= 0 && y < h;
+    }
 }

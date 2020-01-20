@@ -13,15 +13,15 @@ public class MapManager : MonoBehaviour
 
     public Vector3 MapCenterPosition = Vector3.zero;
 
-    private TileType TileType = TileType.Cube;
+    public TileType TileType { get; private set; } = TileType.Cube;
     private List<Tile> Tiles = new List<Tile>();
 
     // Start is called before the first frame update
     void Start()
     {
-        for (int i = 0; i < Width; ++i)
+        for (int j = 0; j < Height; ++j)
         {
-            for (int j = 0; j < Height; ++j)
+            for (int i = 0; i < Width; ++i)
             {
                 var coord = new TileCoord(i, j);
                 var pos = getTilePosition(coord);
@@ -124,9 +124,22 @@ public class MapManager : MonoBehaviour
 
     void OnDrawGizmos()
     {
-        Gizmos.color = Color.red;
-        //Gizmos.DrawSphere(this.transform.position, 1);
-        Gizmos.DrawSphere(MapCenterPosition, 0.5f);
+        #if UNITY_EDITOR
+        if(EditorApplication.isPlaying == false)
+        {
+            Gizmos.color = Color.red;
+            Gizmos.DrawSphere(MapCenterPosition, 0.5f);
+
+            for (int i = 0; i < Width; ++i)
+            {
+                for (int j = 0; j < Height; ++j)
+                {
+                    var coord = new TileCoord(i, j);
+                    Gizmos.DrawWireCube(getTilePosition(coord), Vector3.one);
+                }
+            }
+        }
+        #endif
     }
 
     public void Switch()
@@ -173,6 +186,69 @@ public class MapManager : MonoBehaviour
         }
 
         return Vector3.zero;
+    }
+
+    public void TileClicked(GameObject tileGO)
+    {
+        var tile = Tiles.Find(t => t.GameObject == tileGO);
+
+        if (tile == null)
+        {
+            Debug.Log("Tile clicked is not found");
+            return;
+        }
+
+        if (tile.Coord.Square.x == 0 && tile.Coord.Square.y == 0)
+        {
+            clearTilesSelection();
+            return;
+        }
+
+        AreaMapSelectionController controller = new AreaMapSelectionController(tile.Coord);
+        controller.update();
+
+        //setTileSelected(tile);
+    }
+
+    private void setTileSelected(Tile tile)
+    {
+        // tmp code
+        tile.GameObject.GetComponent<MeshRenderer>().material.color = Color.blue;
+    }
+
+    public void setTilesSelected(List<TileCoord> coords)
+    {
+        foreach (var coord in coords)
+        {
+            setTileSelected(coord);
+        }
+    }
+
+    public void setTileSelected(TileCoord coord)
+    {
+        var tile = getTile(coord);
+        if (tile != null)
+        {
+            setTileSelected(tile);
+        }
+    }
+
+    public void clearTilesSelection()
+    {
+        foreach (var tile in Tiles)
+        {
+            tile.GameObject.GetComponent<MeshRenderer>().material.color = Color.white;
+        }
+    }
+
+    private Tile getTile(TileCoord coord)
+    {
+        if (coord.isValid() == false)
+        {
+            return null;
+        }
+
+        return Tiles[coord.Square.y * Width + coord.Square.x];
     }
 }
 

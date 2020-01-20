@@ -37,12 +37,10 @@ public class MouseInputManager : MonoBehaviour
         if (Physics.Raycast(ray, out hitInfo, Mathf.Infinity, sail.LayerMask.Terrain))
         {
             HoveredGameObject = hitInfo.collider.transform.gameObject;
-            //Debug.Log(HoveredGameObject);
 
             if (Input.GetMouseButtonDown(sail.MouseButton.Left))
             {
-                HoveredGameObject.GetComponent<MeshRenderer>().material.color = Color.red;
-                Debug.Log("Test");
+                GlobalManagers.mapManager.TileClicked(HoveredGameObject);
             }
         }
         else

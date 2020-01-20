@@ -55,7 +55,7 @@ public class CameraController : MonoBehaviour
         }
         
         var target = GlobalManagers.mapManager.MapCenterPosition + Vector3.up;
-        var cameraPosition = target + (Vector3.right * Mathf.Cos(AngleRad) + Vector3.forward * Mathf.Sin(AngleRad)) * 2f;
+        var cameraPosition = target + (Vector3.right * Mathf.Sin(AngleRad) + Vector3.back * Mathf.Cos(AngleRad)) * 2f;
 
         Gizmos.color = Color.red;
         Gizmos.DrawLine(target, cameraPosition);
