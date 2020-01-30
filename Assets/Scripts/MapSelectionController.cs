@@ -50,7 +50,7 @@ public class AreaMapSelectionController : MapSelectionControllerBase
         Square
     }
 
-    public int Range { get; set; } = 2;
+    public int Range { get; set; } = 3;
 
     public AreaType ShapeType { get; set; } = AreaType.Cross;
 
@@ -90,6 +90,27 @@ public class AreaMapSelectionController : MapSelectionControllerBase
                     }
 
                     selectedCoord.Add(new TileCoord(InitialCoord.Square.x + x, InitialCoord.Square.y + y));
+                }
+            }
+        }
+        else if (type == TileType.Hex)
+        {
+            for (int q = -Range; q <= Range; ++q)
+            {
+                for (int r = Mathf.Max(-Range, -q - Range); r <= Mathf.Min(Range, -q + Range); ++r)
+                {
+                    var s = -q - r;
+
+                    if (ShapeType == AreaType.Cross)
+                    {
+                        if (q != 0 && r != 0 && s != 0)
+                        {
+                            continue;
+                        }
+                    }
+
+                    // Circle or Square
+                    selectedCoord.Add(new TileCoord(InitialCoord.Hex.q + q, InitialCoord.Hex.r + r, InitialCoord.Hex.s + s));
                 }
             }
         }

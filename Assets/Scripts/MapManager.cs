@@ -14,6 +14,8 @@ public class MapManager : MonoBehaviour
     public Vector3 MapCenterPosition = Vector3.zero;
 
     public TileType TileType { get; private set; } = TileType.Cube;
+    public AreaMapSelectionController.AreaType SelectionType = AreaMapSelectionController.AreaType.Circle;
+
     private List<Tile> Tiles = new List<Tile>();
 
     // Start is called before the first frame update
@@ -204,8 +206,13 @@ public class MapManager : MonoBehaviour
             return;
         }
 
-        AreaMapSelectionController controller = new AreaMapSelectionController(tile.Coord);
-        controller.update();
+        setTilesSelected(AStarSearch.search(new TileCoord(0, 0), tile.Coord));
+
+        //AreaMapSelectionController controller = new AreaMapSelectionController(tile.Coord);
+        //controller.ShapeType = SelectionType;
+        //controller.update();
+
+        //setTilesSelected(neighbors(tile.Coord));
 
         //setTileSelected(tile);
     }
@@ -249,6 +256,51 @@ public class MapManager : MonoBehaviour
         }
 
         return Tiles[coord.Square.y * Width + coord.Square.x];
+    }
+
+    static readonly TileCoord[] CubeNeighborsOffset = {
+        new TileCoord(-1, 0),
+        new TileCoord(0, -1),
+        new TileCoord(1, 0),
+        new TileCoord(0, 1) };
+
+    static readonly TileCoord[] HexNeighborsOffset = {
+        new TileCoord(-1, 1, 0),
+        new TileCoord(0, 1, -1),
+        new TileCoord(1, 0, -1),
+        new TileCoord(1, -1, 0),
+        new TileCoord(0, -1, 1),
+        new TileCoord(-1, 0, 1),
+        };
+
+    public List<TileCoord> neighbors(TileCoord coord)
+    {
+        List<TileCoord> neighborList = new List<TileCoord>();
+
+        if (TileType == TileType.Cube)
+        {
+            foreach (var n in CubeNeighborsOffset)
+            {
+                var current = new TileCoord(coord.Square.x + n.Square.x, coord.Square.y + n.Square.y);
+                if (current.isValid())
+                {
+                    neighborList.Add(current);
+                }
+            }
+        }
+        else if (TileType == TileType.Hex)
+        {
+            foreach (var n in CubeNeighborsOffset)
+            {
+                TileCoord current = new TileCoord(coord.Hex.q + n.Hex.q, coord.Hex.r + n.Hex.r, coord.Hex.s + n.Hex.s);
+                if (current.isValid())
+                {
+                    neighborList.Add(current);
+                }
+            }
+        }
+
+        return neighborList;
     }
 }
 

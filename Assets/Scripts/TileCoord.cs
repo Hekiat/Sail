@@ -1,6 +1,7 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using System;
 
 public struct HexCoord
 {
@@ -24,6 +25,16 @@ public struct TileCoord
         _Square.y = y;
 
         updateHex();
+    }
+
+    public TileCoord(int q, int r, int s)
+        : this()
+    {
+        _Hex.q = q;
+        _Hex.r = r;
+        _Hex.s = s;
+
+        updateSquare();
     }
 
     private HexCoord _Hex;
@@ -67,5 +78,30 @@ public struct TileCoord
         var h = GlobalManagers.mapManager.Height;
 
         return x >= 0 && x < w && y >= 0 && y < h;
+    }
+
+    public override bool Equals(object o)
+    {
+        if (!(o is TileCoord))
+        {
+            return false;
+        }
+
+        return this == (TileCoord)o;
+    }
+
+    public static bool operator ==(TileCoord a, TileCoord b)
+    {
+        return a._Square.x == b._Square.x && a._Square.y == b._Square.y;
+    }
+
+    public static bool operator !=(TileCoord a, TileCoord b)
+    {
+        return a._Square.x != b._Square.x || a._Square.y != b._Square.y;
+    }
+
+    public override int GetHashCode()
+    {
+        return Tuple.Create(_Square.x, _Square.y).GetHashCode();
     }
 }
