@@ -83,7 +83,8 @@ public class AStarSearch
                 {
                     cost_so_far[next] = new_cost;
             
-                    var priority = new_cost + heuristic(next, goal);
+                    //var priority = new_cost + heuristic(next, goal);
+                    var priority = new_cost + heuristic(start, next, goal);
                     frontier.add(next, priority);
                     came_from[next] = current;
                     Debug.Log($"{next.Square.x}, {next.Square.y} inserted");
@@ -133,5 +134,16 @@ public class AStarSearch
     public static float heuristic(TileCoord a, TileCoord b)
     {
         return Mathf.Abs(a.Square.x - b.Square.x) + Mathf.Abs(a.Square.y - b.Square.y);
+    }
+
+    public static float heuristic(TileCoord start, TileCoord current, TileCoord goal)
+    {
+        var h = heuristic(current, goal);
+        var dx1 = current.Square.x - goal.Square.x;
+        var dy1 = current.Square.y - goal.Square.y;
+        var dx2 = start.Square.x - goal.Square.x;
+        var dy2 = start.Square.y - goal.Square.y;
+        var cross = Mathf.Abs(dx1 * dy2 - dx2 * dy1);
+        return h + cross * 0.001f;
     }
 }
