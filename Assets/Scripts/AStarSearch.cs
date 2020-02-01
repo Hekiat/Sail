@@ -52,7 +52,7 @@ public class AStarSearch
 
     public static List<TileCoord> search(TileCoord start, TileCoord goal)
     {
-        Debug.Log($"Start {start.Square.x}, {start.Square.y} Goal {goal.Square.x}, {goal.Square.y}");
+        //Debug.Log($"Start {start.Square.x}, {start.Square.y} Goal {goal.Square.x}, {goal.Square.y}");
 
         var frontier = new PriorityQueue<TileCoord>();
 
@@ -70,7 +70,7 @@ public class AStarSearch
             var current = frontier.pop();
             if (current == goal)
             {
-                Debug.Log($"Goal found {current.Square.x}, {current.Square.y}");
+                //Debug.Log($"Goal found {current.Square.x}, {current.Square.y}");
                 break;
             }
 
@@ -87,30 +87,12 @@ public class AStarSearch
                     var priority = new_cost + heuristic(start, next, goal);
                     frontier.add(next, priority);
                     came_from[next] = current;
-                    Debug.Log($"{next.Square.x}, {next.Square.y} inserted");
+                    //Debug.Log($"{next.Square.x}, {next.Square.y} inserted");
                 }
             }
         }
 
-        //var reconstructCoord = goal;
-        //List<TileCoord> path = new List<TileCoord>();
-        //path.Add(reconstructCoord);
-        //
-        //while (reconstructCoord != start)
-        //{
-        //    Debug.Log(reconstructCoord.ToString());
-        //    
-        //    if (came_from[reconstructCoord] != null)
-        //    {
-        //        reconstructCoord = came_from[reconstructCoord].Value;
-        //        path.Add(reconstructCoord);
-        //    }
-        //    else
-        //    {
-        //        break;
-        //    }
-        //}
-
+        // Reconstruct Path
         List<TileCoord> path = new List<TileCoord>();
         TileCoord id = goal;
         path.Add(id);
