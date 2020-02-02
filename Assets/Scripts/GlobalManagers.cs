@@ -6,4 +6,6 @@ public static class GlobalManagers
 {
     public static MouseInputManager mouseInputManager = null;
     public static MapManager mapManager = null;
+    public static BattleHUD hud = null;
 }
+
