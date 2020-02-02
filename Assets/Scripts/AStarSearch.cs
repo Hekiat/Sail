@@ -45,7 +45,7 @@ public class AStarSearch
             dirty = false;
             elements.Sort((a, b) => a.Item1.CompareTo(b.Item1));
 
-            Debug.Log("SORT " + elements[0].Item1 + " " + elements[elements.Count-1].Item1);
+            //Debug.Log("SORT " + elements[0].Item1 + " " + elements[elements.Count-1].Item1);
         }
     }
 

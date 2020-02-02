@@ -1,6 +1,7 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.EventSystems;
 
 public class MouseInputManager : MonoBehaviour
 {
@@ -29,6 +30,24 @@ public class MouseInputManager : MonoBehaviour
 
     void updateHoveredObject()
     {
+
+        //var eventData = new PointerEventData(EventSystem.current);
+        //eventData.position = Input.mousePosition;
+        //var results = new List<RaycastResult>();
+        //EventSystem.current.RaycastAll(eventData, results);
+        //
+        //foreach (var result in results)
+        //{
+        //    Debug.Log("Over: " + result.gameObject.name);
+        //}
+
+        // If mouse is over a UI component dont do anything
+        //if (EventSystem.current.currentSelectedGameObject != null)
+        if (EventSystem.current.IsPointerOverGameObject())
+        {
+            return;
+        }
+
         Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
         RaycastHit hitInfo;
 
