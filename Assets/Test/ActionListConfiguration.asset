@@ -11,6 +11,7 @@ MonoBehaviour:
   m_EditorHideFlags: 0
   m_Script: {fileID: 0}
   m_Name: ActionListConfiguration
-  m_EditorClassIdentifier: Assembly-CSharp::ActionListConfiguration
+  m_EditorClassIdentifier: Assembly-CSharp::ActionConfigurationList
   ActionList:
   - {fileID: 11400000, guid: 3929fbc7260811945bb587319a119f22, type: 2}
+  - {fileID: 11400000, guid: 3f9dce8db1ca3fd40b1de5e0c2803070, type: 2}

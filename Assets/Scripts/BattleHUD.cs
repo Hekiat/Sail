@@ -3,20 +3,27 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 
+
 public class BattleHUD : MonoBehaviour
 {
+    // Prefab list
     public GameObject ActionButtonPrefab = null;
     public GameObject ActionWidgetPrefab = null;
 
-    private GameObject ActionListContent = null;
-    private GameObject ActionWidget = null;
-
+    // General purpose
     private GameObject RootCanvas = null;
+
+    // inner widgets
+    private GameObject ActionListContent = null;
+    private ActionWidget ActionWidget = null;
+
+    private void Awake()
+    {
+        
+    }
 
     void Start()
     {
-        ActionListContent = transform.Find("Canvas/ActionList/ScrollList/Viewport/Content").gameObject;
-
         // Remove all children from content widget
         //for (int i=0; i< actionListContent.transform.childCount; ++i)
         //{
@@ -24,36 +31,38 @@ public class BattleHUD : MonoBehaviour
         //    Destroy(child.gameObject);
         //}
 
+        ActionListContent = transform.Find("Canvas/ActionList/ScrollList/Viewport/Content").gameObject;
+
+        RootCanvas = transform.GetChild(0).gameObject;
+
+        var actionWidgetGO = Instantiate(ActionWidgetPrefab) as GameObject;
+
+        ActionWidget = actionWidgetGO.GetComponent<ActionWidget>();
+        actionWidgetGO.transform.SetParent(RootCanvas.transform, false);
+
         // Add some button for testing
         if (ActionButtonPrefab)
         {
-            for (int j = 0; j < 1; j++)
+            foreach (var action in GlobalManagers.actionManager.Actions)
             {
-                GameObject newButton = Instantiate(ActionButtonPrefab) as GameObject;
-                newButton.transform.SetParent(ActionListContent.transform, false);
-                //newButton.GetComponent<Button>().onClick.AddListener(() => Debug.Log("TEst"));
-                newButton.GetComponent<Button>().onClick.AddListener(createAction);
+                GameObject prefabInst = Instantiate(ActionButtonPrefab) as GameObject;
+                prefabInst.transform.SetParent(ActionListContent.transform, false);
+                prefabInst.GetComponent<Button>().onClick.AddListener(() => { showAction(action); });
+                prefabInst.GetComponentInChildren<Text>().text = action.Name;
             }
         }
 
-        RootCanvas = transform.GetChild(0).gameObject;
         GlobalManagers.hud = this;
     }
 
-    void createAction()
-    {
-        if (ActionWidget != null)
-        {
-            Destroy(ActionWidget);
-        }
-
-        ActionWidget = Instantiate(ActionWidgetPrefab) as GameObject;
-        ActionWidget.transform.SetParent(RootCanvas.transform, false);
-    }
-
-    // Update is called once per frame
     void Update()
     {
         
+    }
+
+    void showAction(ActionBase action)
+    {
+        ActionWidget.gameObject.SetActive(true);
+        ActionWidget.setAction(action);
     }
 }

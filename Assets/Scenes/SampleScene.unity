@@ -96,6 +96,7 @@ LightmapSettings:
     m_PVRFilteringAtrousPositionSigmaAO: 1
     m_ExportTrainingData: 0
     m_TrainingDataDestination: TrainingData
+    m_LightProbeSampleCountMultiplier: 4
   m_LightingDataAsset: {fileID: 0}
   m_UseShadowmask: 1
 --- !u!196 &4
@@ -211,8 +212,9 @@ Light:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 705507993}
   m_Enabled: 1
-  serializedVersion: 9
+  serializedVersion: 10
   m_Type: 1
+  m_Shape: 0
   m_Color: {r: 1, g: 0.95686275, b: 0.8392157, a: 1}
   m_Intensity: 1
   m_Range: 10
@@ -438,6 +440,7 @@ GameObject:
   - component: {fileID: 1294431738}
   - component: {fileID: 1294431737}
   - component: {fileID: 1294431739}
+  - component: {fileID: 1294431740}
   m_Layer: 0
   m_Name: Game
   m_TagString: Untagged
@@ -485,3 +488,17 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   HUDPrefab: {fileID: 6439349837382386383, guid: 60a55b65127c8004788c5536fbbf2636,
     type: 3}
+--- !u!114 &1294431740
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1294431736}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: fe26e4078fb71064dbf7af00f8869d83, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  ActionConfigurationList: {fileID: 11400000, guid: b5363432ccfbd7741bb86d60f0049df1,
+    type: 2}

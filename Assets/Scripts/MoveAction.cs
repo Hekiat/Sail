@@ -6,3 +6,7 @@ using System;
 public class MoveAction : ActionBase
 {
 }
+
+public class AttackAction : ActionBase
+{
+}

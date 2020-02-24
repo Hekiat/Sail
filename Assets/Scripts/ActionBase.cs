@@ -55,11 +55,11 @@ public abstract class ActionBase
     public string Name { get; private set; } = "Action Name";
 
     // As an action
-    List<ActionSlot> ActionSlots = new List<ActionSlot>();
-    List<VariableBase> VariableSlots = new List<VariableBase>();
+    public List<ActionSlot> ActionSlots = new List<ActionSlot>();
+    public List<VariableBase> VariableSlots = new List<VariableBase>();
 
     // As a slotted action
-    List<VariableBase> SecondaryVariableSlots = new List<VariableBase>();
+    public List<VariableBase> SecondaryVariableSlots = new List<VariableBase>();
 
     public virtual void configure(ActionBaseConfiguration config)
     {
@@ -85,7 +85,7 @@ public abstract class ActionBase
 }
 
 [CreateAssetMenu(fileName = "ActionListConfiguration", menuName = "Custom/ActionListConfiguration", order = 0)]
-public class ActionListConfiguration : ScriptableObject
+public class ActionConfigurationList : ScriptableObject
 {
     public List<ActionBaseConfiguration> ActionList = null;
 }
@@ -104,10 +104,16 @@ public abstract class ActionBaseConfiguration : ScriptableObject
 }
 
 
-[CreateAssetMenu(fileName = "MoveConfiguration", menuName = "Custom/MoveConfiguration", order = 2)]
+[CreateAssetMenu(fileName = "MoveConfiguration", menuName = "Custom/MoveConfiguration", order = 1)]
 public class MoveConfiguration : ActionBaseConfiguration
 {
     public int MoveRange = 3;
+}
+
+[CreateAssetMenu(fileName = "AttackConfiguration", menuName = "Custom/AttackConfiguration", order = 3)]
+public class AttackConfiguration : ActionBaseConfiguration
+{
+    public int Damage = 3;
 }
 
 

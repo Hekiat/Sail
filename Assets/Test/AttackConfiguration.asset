@@ -10,11 +10,11 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 0}
-  m_Name: MoveConfiguration
-  m_EditorClassIdentifier: Assembly-CSharp::MoveConfiguration
-  ActionID: 1
-  Name: MOVE
-  ActionSlot: 1
+  m_Name: AttackConfiguration
+  m_EditorClassIdentifier: Assembly-CSharp::AttackConfiguration
+  ActionID: 2
+  Name: Attack
+  ActionSlot: 2
   VariableSlot: 0
   SecondaryVariableSlot: 0
-  MoveRange: 3
+  Damage: 3
