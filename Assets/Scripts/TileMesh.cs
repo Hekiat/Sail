@@ -3,39 +3,41 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEditor;
 
-public class TileMesh : MonoBehaviour
+namespace sail
 {
-    public float Radius = 0.5f;
-    public float Height = 1f;
-
-    // Private
-    private MeshFilter MeshFilter = null;
-    private MeshCollider MeshCollider = null;
-
-    private Vector3[] Vertices = null;
-    private Vector3[] HexVertices = null;
-    private Vector3[] CubeVertices = null;
-
-    private Vector3[] Normals = null;
-
-    public TileType Type = TileType.Cube;
-
-    public void Start()
+    public class TileMesh : MonoBehaviour
     {
-        MeshFilter = GetComponent<MeshFilter>();
-        MeshCollider = GetComponent<MeshCollider>();
+        public float Radius = 0.5f;
+        public float Height = 1f;
 
-        var mesh = new Mesh();
-        MeshFilter.mesh = mesh;
+        // Private
+        private MeshFilter MeshFilter = null;
+        private MeshCollider MeshCollider = null;
 
-        mesh.name = "CustomMesh";
+        private Vector3[] Vertices = null;
+        private Vector3[] HexVertices = null;
+        private Vector3[] CubeVertices = null;
 
-        float r = Radius;
-        float hr = r / 2f; // Half radius
-        float w = Mathf.Sqrt(3) * hr;
-        float h = Height;
+        private Vector3[] Normals = null;
 
-        HexVertices = new Vector3[]{
+        public TileType Type = TileType.Cube;
+
+        public void Start()
+        {
+            MeshFilter = GetComponent<MeshFilter>();
+            MeshCollider = GetComponent<MeshCollider>();
+
+            var mesh = new Mesh();
+            MeshFilter.mesh = mesh;
+
+            mesh.name = "CustomMesh";
+
+            float r = Radius;
+            float hr = r / 2f; // Half radius
+            float w = Mathf.Sqrt(3) * hr;
+            float h = Height;
+
+            HexVertices = new Vector3[]{
             // Top Face
             new Vector3 ( 0, h,  0),  //  0 Center   Center
             new Vector3 ( 0, h,  r),  //  1 Center   Up
@@ -92,7 +94,7 @@ public class TileMesh : MonoBehaviour
             new Vector3 ( 0, 0,  r),  // 37 Center   Up
         };
 
-        CubeVertices = new Vector3[]{
+            CubeVertices = new Vector3[]{
             // Top Face
             new Vector3 ( 0, h,  0f), // 0  Center Center
             new Vector3 ( 0, h,  r),  // 1  Center Up
@@ -149,10 +151,10 @@ public class TileMesh : MonoBehaviour
             new Vector3 ( 0, 0,  r),  // 37 Center Up
         };
 
-        mesh.vertices = (Vector3[])CubeVertices.Clone();
-        Vertices = mesh.vertices;
+            mesh.vertices = (Vector3[])CubeVertices.Clone();
+            Vertices = mesh.vertices;
 
-        int[] triangles = {
+            int[] triangles = {
             /// Top
             0, 1, 2,
             0, 2, 3,
@@ -190,96 +192,97 @@ public class TileMesh : MonoBehaviour
             35, 37, 36
         };
 
-        mesh.triangles = triangles;
+            mesh.triangles = triangles;
 
-        Normals = new Vector3[mesh.triangles.Length];
-        MeshFilter.mesh.RecalculateNormals();
-
-        updateCollider();
-
-        //Vector2[] uvs = {
-        //    new Vector2(0, 0.66f),
-        //    new Vector2(0.25f, 0.66f),
-        //    new Vector2(0, 0.33f),
-        //    new Vector2(0.25f, 0.33f),
-        //
-        //    new Vector2(0.5f, 0.66f),
-        //    new Vector2(0.5f, 0.33f),
-        //    new Vector2(0.75f, 0.66f),
-        //    new Vector2(0.75f, 0.33f),
-        //
-        //    new Vector2(1, 0.66f),
-        //    new Vector2(1, 0.33f),
-        //
-        //    new Vector2(0.25f, 1),
-        //    new Vector2(0.5f, 1),
-        //
-        //    new Vector2(0.25f, 0),
-        //    new Vector2(0.5f, 0),
-        //};
-        //mesh.uv = uv;
-    }
-
-    public void Update()
-    {
-    }
-
-    public void morphTo(float blendDuration, TileType ToType)
-    {
-        StartCoroutine(startMorphTo(blendDuration, ToType));
-    }
-
-    private IEnumerator startMorphTo(float blendDuration, TileType ToType)
-    {
-        var initialVertices = Type == TileType.Cube ? CubeVertices : HexVertices;
-        Type = ToType;
-        var targetVertices = Type == TileType.Cube ? CubeVertices : HexVertices;
-
-        var verticeCount = MeshFilter.mesh.vertices.Length;
-
-        var timer = 0f;
-        while (timer < blendDuration)
-        {
-            timer = Mathf.Min(timer + Time.deltaTime, blendDuration);
-
-            for (int i = 0; i < verticeCount; ++i)
-            {
-                Vertices[i] = Vector3.Lerp(initialVertices[i], targetVertices[i], timer / blendDuration);
-            }
-
-            MeshFilter.mesh.vertices = Vertices;
+            Normals = new Vector3[mesh.triangles.Length];
             MeshFilter.mesh.RecalculateNormals();
 
-            yield return null;
+            updateCollider();
+
+            //Vector2[] uvs = {
+            //    new Vector2(0, 0.66f),
+            //    new Vector2(0.25f, 0.66f),
+            //    new Vector2(0, 0.33f),
+            //    new Vector2(0.25f, 0.33f),
+            //
+            //    new Vector2(0.5f, 0.66f),
+            //    new Vector2(0.5f, 0.33f),
+            //    new Vector2(0.75f, 0.66f),
+            //    new Vector2(0.75f, 0.33f),
+            //
+            //    new Vector2(1, 0.66f),
+            //    new Vector2(1, 0.33f),
+            //
+            //    new Vector2(0.25f, 1),
+            //    new Vector2(0.5f, 1),
+            //
+            //    new Vector2(0.25f, 0),
+            //    new Vector2(0.5f, 0),
+            //};
+            //mesh.uv = uv;
         }
 
-        updateCollider();
-    }
-
-    void updateCollider()
-    {
-        if (MeshCollider == null)
+        public void Update()
         {
-            return;
         }
 
-        MeshCollider.sharedMesh = null;
-        MeshCollider.sharedMesh = MeshFilter.mesh;
-    }
-}
-
-[CustomEditor(typeof(TileMesh))]
-public class TileMeshEditor : Editor
-{
-    public override void OnInspectorGUI()
-    {
-        DrawDefaultInspector();
-
-        TileMesh mesh = (TileMesh)target;
-        if (GUILayout.Button("Switch"))
+        public void morphTo(float blendDuration, TileType ToType)
         {
-            var type = (TileType)(((int)mesh.Type + 1) % (int)TileType.Count);
-            mesh.morphTo(2f, type);
+            StartCoroutine(startMorphTo(blendDuration, ToType));
+        }
+
+        private IEnumerator startMorphTo(float blendDuration, TileType ToType)
+        {
+            var initialVertices = Type == TileType.Cube ? CubeVertices : HexVertices;
+            Type = ToType;
+            var targetVertices = Type == TileType.Cube ? CubeVertices : HexVertices;
+
+            var verticeCount = MeshFilter.mesh.vertices.Length;
+
+            var timer = 0f;
+            while (timer < blendDuration)
+            {
+                timer = Mathf.Min(timer + Time.deltaTime, blendDuration);
+
+                for (int i = 0; i < verticeCount; ++i)
+                {
+                    Vertices[i] = Vector3.Lerp(initialVertices[i], targetVertices[i], timer / blendDuration);
+                }
+
+                MeshFilter.mesh.vertices = Vertices;
+                MeshFilter.mesh.RecalculateNormals();
+
+                yield return null;
+            }
+
+            updateCollider();
+        }
+
+        void updateCollider()
+        {
+            if (MeshCollider == null)
+            {
+                return;
+            }
+
+            MeshCollider.sharedMesh = null;
+            MeshCollider.sharedMesh = MeshFilter.mesh;
+        }
+    }
+
+    [CustomEditor(typeof(TileMesh))]
+    public class TileMeshEditor : Editor
+    {
+        public override void OnInspectorGUI()
+        {
+            DrawDefaultInspector();
+
+            TileMesh mesh = (TileMesh)target;
+            if (GUILayout.Button("Switch"))
+            {
+                var type = (TileType)(((int)mesh.Type + 1) % (int)TileType.Count);
+                mesh.morphTo(2f, type);
+            }
         }
     }
 }

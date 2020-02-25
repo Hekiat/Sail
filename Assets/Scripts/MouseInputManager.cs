@@ -3,68 +3,71 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.EventSystems;
 
-public class MouseInputManager : MonoBehaviour
+namespace sail
 {
-    Camera CurrentCamera = null;
-
-    public GameObject HoveredGameObject { get; private set; } = null;
-
-    // Start is called before the first frame update
-    void Start()
+    public class MouseInputManager : MonoBehaviour
     {
-        CurrentCamera = Camera.main;
+        Camera CurrentCamera = null;
 
-        GlobalManagers.mouseInputManager = this;
-    }
+        public GameObject HoveredGameObject { get; private set; } = null;
 
-    void OnDestroy()
-    {
-        GlobalManagers.mouseInputManager = null;
-    }
-
-    // Update is called once per frame
-    void Update()
-    {
-        updateHoveredObject();
-    }
-
-    void updateHoveredObject()
-    {
-
-        //var eventData = new PointerEventData(EventSystem.current);
-        //eventData.position = Input.mousePosition;
-        //var results = new List<RaycastResult>();
-        //EventSystem.current.RaycastAll(eventData, results);
-        //
-        //foreach (var result in results)
-        //{
-        //    Debug.Log("Over: " + result.gameObject.name);
-        //}
-
-        // If mouse is over a UI component dont do anything
-        //if (EventSystem.current.currentSelectedGameObject != null)
-        if (EventSystem.current.IsPointerOverGameObject())
+        // Start is called before the first frame update
+        void Start()
         {
-            return;
+            CurrentCamera = Camera.main;
+
+            GlobalManagers.mouseInputManager = this;
         }
 
-        Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
-        RaycastHit hitInfo;
-
-        Debug.DrawRay(Camera.main.transform.position, ray.direction, Color.magenta);
-
-        if (Physics.Raycast(ray, out hitInfo, Mathf.Infinity, sail.LayerMask.Terrain))
+        void OnDestroy()
         {
-            HoveredGameObject = hitInfo.collider.transform.gameObject;
+            GlobalManagers.mouseInputManager = null;
+        }
 
-            if (Input.GetMouseButtonDown(sail.MouseButton.Left))
+        // Update is called once per frame
+        void Update()
+        {
+            updateHoveredObject();
+        }
+
+        void updateHoveredObject()
+        {
+
+            //var eventData = new PointerEventData(EventSystem.current);
+            //eventData.position = Input.mousePosition;
+            //var results = new List<RaycastResult>();
+            //EventSystem.current.RaycastAll(eventData, results);
+            //
+            //foreach (var result in results)
+            //{
+            //    Debug.Log("Over: " + result.gameObject.name);
+            //}
+
+            // If mouse is over a UI component dont do anything
+            //if (EventSystem.current.currentSelectedGameObject != null)
+            if (EventSystem.current.IsPointerOverGameObject())
             {
-                GlobalManagers.mapManager.TileClicked(HoveredGameObject);
+                return;
             }
-        }
-        else
-        {
-            HoveredGameObject = null;
+
+            Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
+            RaycastHit hitInfo;
+
+            Debug.DrawRay(Camera.main.transform.position, ray.direction, Color.magenta);
+
+            if (Physics.Raycast(ray, out hitInfo, Mathf.Infinity, sail.LayerMask.Terrain))
+            {
+                HoveredGameObject = hitInfo.collider.transform.gameObject;
+
+                if (Input.GetMouseButtonDown(sail.MouseButton.Left))
+                {
+                    GlobalManagers.mapManager.TileClicked(HoveredGameObject);
+                }
+            }
+            else
+            {
+                HoveredGameObject = null;
+            }
         }
     }
 }

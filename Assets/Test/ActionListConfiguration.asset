@@ -9,9 +9,9 @@ MonoBehaviour:
   m_GameObject: {fileID: 0}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 0}
+  m_Script: {fileID: 11500000, guid: 1e617d10d077c1145880e6d253b54190, type: 3}
   m_Name: ActionListConfiguration
-  m_EditorClassIdentifier: Assembly-CSharp::ActionConfigurationList
+  m_EditorClassIdentifier: 
   ActionList:
-  - {fileID: 11400000, guid: 3929fbc7260811945bb587319a119f22, type: 2}
   - {fileID: 11400000, guid: 3f9dce8db1ca3fd40b1de5e0c2803070, type: 2}
+  - {fileID: 11400000, guid: 3929fbc7260811945bb587319a119f22, type: 2}

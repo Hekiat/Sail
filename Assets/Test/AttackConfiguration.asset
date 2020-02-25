@@ -9,12 +9,12 @@ MonoBehaviour:
   m_GameObject: {fileID: 0}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 0}
+  m_Script: {fileID: 11500000, guid: ddac19bcb8f563f4ab98fa5fdebe6bfb, type: 3}
   m_Name: AttackConfiguration
-  m_EditorClassIdentifier: Assembly-CSharp::AttackConfiguration
+  m_EditorClassIdentifier: 
   ActionID: 2
   Name: Attack
   ActionSlot: 2
-  VariableSlot: 0
+  VariableSlot: 1
   SecondaryVariableSlot: 0
   Damage: 3

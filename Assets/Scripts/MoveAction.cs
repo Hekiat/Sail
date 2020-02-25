@@ -3,10 +3,13 @@ using System.Collections.Generic;
 using UnityEngine;
 using System;
 
-public class MoveAction : ActionBase
+namespace sail
 {
-}
+    public class MoveAction : ActionBase
+    {
+    }
 
-public class AttackAction : ActionBase
-{
+    public class AttackAction : ActionBase
+    {
+    }
 }

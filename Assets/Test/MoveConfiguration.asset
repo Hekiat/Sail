@@ -9,12 +9,12 @@ MonoBehaviour:
   m_GameObject: {fileID: 0}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 0}
+  m_Script: {fileID: 11500000, guid: d11815308847a464cabff51af4b78fcb, type: 3}
   m_Name: MoveConfiguration
-  m_EditorClassIdentifier: Assembly-CSharp::MoveConfiguration
+  m_EditorClassIdentifier: 
   ActionID: 1
-  Name: MOVE
-  ActionSlot: 1
+  Name: Move
+  ActionSlot: 0
   VariableSlot: 0
   SecondaryVariableSlot: 0
   MoveRange: 3
