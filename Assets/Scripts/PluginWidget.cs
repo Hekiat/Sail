@@ -44,8 +44,8 @@ namespace sail
 
         public void clear()
         {
-            Text.text = string.Empty;
-            Image.color = Color.black;
+            //Text.text = string.Empty;
+            //Image.color = Color.black;
             //Text.transform.gameObject.SetActive(false);
         }
     }

@@ -8,11 +8,18 @@ namespace sail
     public class ActionWidget : MonoBehaviour
     {
         // Prefab list
-        public GameObject PluginWidgetPrefab = null;
+        public GameObject SecondaryActionWidgetPrefab = null;
 
         // Game Objects
-        public GameObject PluginSlotsGO = null;
+
         public GameObject ActionNameGO = null;
+        public GameObject ActionSlotBackground = null;
+
+        public GameObject SecondaryActionLeftTargetGO = null;
+        public GameObject SecondaryActionCenterTargetGO = null;
+        public GameObject SecondaryActionRightTargetGO = null;
+
+        public List<Sprite> SecondaryActionSlotImg = new List<Sprite>();
 
         // Data
         ActionBase Action = null;
@@ -31,27 +38,28 @@ namespace sail
         {
             Action = action;
 
-            if (PluginSlotsGO == null)
-            {
-                return;
-            }
-
-            // Clear old action
-            foreach (Transform child in PluginSlotsGO.transform)
-            {
-                Destroy(child.gameObject);
-            }
-
             // Init Action
             // -> Action Name
             Text.text = Action.Name;
 
-            // -> Action Slots
-            for (int i = 0; i < Action.ActionSlots.Count; ++i)
+            // -> Action Display Background
+            var slotCount = Action.ActionSlots.Count;
+            if (slotCount < SecondaryActionSlotImg.Count)
             {
-                GameObject prefabInst = Instantiate(PluginWidgetPrefab) as GameObject;
-                prefabInst.transform.SetParent(PluginSlotsGO.transform, false);
+                ActionSlotBackground.GetComponent<Image>().sprite = SecondaryActionSlotImg[slotCount];
             }
+            else
+            {
+                Debug.Log("This number of action slot is not supported by UI.");
+            }
+
+            // -> Action Slots
+            //for (int i = 0; i < Action.ActionSlots.Count; ++i)
+            //{
+            //    GameObject prefabInst = Instantiate(SecondaryActionWidgetPrefab) as GameObject;
+            //    prefabInst.transform.SetParent(transform, false);
+            //    //prefabInst.transform.SetParent(PluginSlotsGO.transform, false);
+            //}
         }
     }
 }
