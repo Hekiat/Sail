@@ -40,6 +40,7 @@ namespace sail
 
             ActionWidget = actionWidgetGO.GetComponent<ActionWidget>();
             actionWidgetGO.transform.SetParent(RootCanvas.transform, false);
+            ActionWidget.GetComponent<RectTransform>().localScale = new Vector3(0.6f, 0.6f, 0.6f);
 
             // Add some button for testing
             if (ActionButtonPrefab)

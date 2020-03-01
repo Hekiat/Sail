@@ -31,6 +31,11 @@ namespace sail
         {
             Action = action;
 
+            if (PluginSlotsGO == null)
+            {
+                return;
+            }
+
             // Clear old action
             foreach (Transform child in PluginSlotsGO.transform)
             {
