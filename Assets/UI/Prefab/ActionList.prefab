@@ -446,6 +446,7 @@ GameObject:
   - component: {fileID: 3423985671857342795}
   - component: {fileID: 3423985671857342793}
   - component: {fileID: 4100181183485671612}
+  - component: {fileID: 8751761703213810133}
   m_Layer: 5
   m_Name: ActionList
   m_TagString: Untagged
@@ -525,6 +526,21 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   m_HorizontalFit: 1
   m_VerticalFit: 1
+--- !u!114 &8751761703213810133
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3423985671857342790}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 18ab89a2cae419d409fe9ca27296522d, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  ActionButtonPrefab: {fileID: 5792341734489856633, guid: d1ee4e7089449da4e9d3fd44b4283d8b,
+    type: 3}
+  ActionListContent: {fileID: 3423985670616036495}
 --- !u!1 &3423985671923982614
 GameObject:
   m_ObjectHideFlags: 0

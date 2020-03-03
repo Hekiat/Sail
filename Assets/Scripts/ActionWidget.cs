@@ -27,7 +27,7 @@ namespace sail
 
         // Components
         private Text Text = null;
-        private List<GameObject> SecondaryActionWidgets = new List<GameObject>();
+        private List<SecondaryActionWidget> SecondaryActionWidgets = new List<SecondaryActionWidget>();
 
         private void Start()
         {
@@ -38,6 +38,16 @@ namespace sail
 
         public void setAction(ActionBase action)
         {
+            if (Action != null)
+            {
+                if (SecondaryActionWidgets.Count < SlotCount)
+                {
+                    setSecondaryAction(action, SecondaryActionWidgets.Count);
+                }
+
+                return;
+            }
+
             // Action
             Action = action;
             SlotCount = Action.ActionSlots.Count;
@@ -59,15 +69,9 @@ namespace sail
             // -> Action Slots
             foreach (var aw in SecondaryActionWidgets)
             {
-                Destroy(aw);
+                Destroy(aw.gameObject);
             }
-
             SecondaryActionWidgets.Clear();
-
-            for (int i = 0; i < SlotCount; i++)
-            {
-                setSecondaryAction(i);
-            }
 
             //for (int i = 0; i < Action.ActionSlots.Count; ++i)
             //{
@@ -77,34 +81,18 @@ namespace sail
             //}
         }
 
-        private void setSecondaryAction(int slotID)
+        private void setSecondaryAction(ActionBase action, int slotID)
         {
+            var targetGO = slotTarget(slotID);
+
             GameObject prefabInst = Instantiate(SecondaryActionWidgetPrefab) as GameObject;
             prefabInst.transform.SetParent(transform, false);
+            
+            var targetTransform = targetGO.GetComponent<RectTransform>();
+            var saw = prefabInst.GetComponent<SecondaryActionWidget>();
+            saw.setAction(action, targetTransform);
 
-            var rectTrans = prefabInst.GetComponent<RectTransform>();
-            var targetGO = slotTarget(slotID);
-            var target = targetGO.GetComponent<RectTransform>();
-
-            StartCoroutine(SecondaryActionTransition(rectTrans, target));
-
-            SecondaryActionWidgets.Add(prefabInst);
-        }
-
-        IEnumerator SecondaryActionTransition(RectTransform self, RectTransform target)
-        {
-            self.rotation = target.rotation;
-            self.position = target.position + self.transform.up * 100f;
-
-            var initPos = self.position;
-
-            var iteration = 30;
-            for (int i=0; i<=iteration; ++i)
-            {
-                var t = (float)i / iteration;
-                self.position = Vector3.Lerp(initPos, target.position, t);
-                yield return null;
-            }
+            SecondaryActionWidgets.Add(saw);
         }
 
         private GameObject slotTarget(int slotID)

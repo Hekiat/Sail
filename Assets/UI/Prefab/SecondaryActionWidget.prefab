@@ -88,7 +88,7 @@ GameObject:
   - component: {fileID: 7012108089963973145}
   - component: {fileID: 7012108089963973147}
   - component: {fileID: 7012108089963973144}
-  - component: {fileID: 4225692380640984296}
+  - component: {fileID: 5380999150539438254}
   m_Layer: 5
   m_Name: SecondaryActionWidget
   m_TagString: Untagged
@@ -152,7 +152,7 @@ MonoBehaviour:
   m_FillOrigin: 0
   m_UseSpriteMesh: 0
   m_PixelsPerUnitMultiplier: 1
---- !u!114 &4225692380640984296
+--- !u!114 &5380999150539438254
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}

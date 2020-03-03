@@ -5,7 +5,7 @@ using UnityEngine.UI;
 
 namespace sail
 {
-    public class PluginWidget : MonoBehaviour
+    public class SecondaryActionWidget : MonoBehaviour
     {
         ActionBase Action = null;
 
@@ -16,10 +16,15 @@ namespace sail
         private Text Text = null;
         private Image Image = null;
 
-        void Start()
+        private void Awake()
         {
             Text = ActionNameGO.GetComponent<Text>();
             Image = GetComponent<Image>();
+            Debug.Log(Text);
+        }
+
+        void Start()
+        {
             clear();
         }
 
@@ -29,7 +34,7 @@ namespace sail
 
         }
 
-        public void setAction(ActionBase action)
+        public void setAction(ActionBase action, RectTransform rectTrans)
         {
             Action = action;
 
@@ -40,6 +45,25 @@ namespace sail
             }
 
             Text.text = Action.Name;
+
+            var currentRectTrans = GetComponent<RectTransform>();
+            StartCoroutine(startTransition(currentRectTrans, rectTrans));
+        }
+
+        IEnumerator startTransition(RectTransform self, RectTransform target)
+        {
+            self.rotation = target.rotation;
+            self.position = target.position + self.transform.up * 100f;
+
+            var initPos = self.position;
+
+            var iteration = 30;
+            for (int i = 0; i <= iteration; ++i)
+            {
+                var t = (float)i / iteration;
+                self.position = Vector3.Lerp(initPos, target.position, t);
+                yield return null;
+            }
         }
 
         public void clear()

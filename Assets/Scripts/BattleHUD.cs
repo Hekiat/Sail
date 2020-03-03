@@ -8,14 +8,13 @@ namespace sail
     public class BattleHUD : MonoBehaviour
     {
         // Prefab list
-        public GameObject ActionButtonPrefab = null;
         public GameObject ActionWidgetPrefab = null;
 
         // General purpose
         private GameObject RootCanvas = null;
 
         // inner widgets
-        private GameObject ActionListContent = null;
+        public ActionListWidget ActionListWidget = null;
         private ActionWidget ActionWidget = null;
 
         private void Awake()
@@ -32,8 +31,6 @@ namespace sail
             //    Destroy(child.gameObject);
             //}
 
-            ActionListContent = transform.Find("Canvas/ActionList/ScrollList/Viewport/Content").gameObject;
-
             RootCanvas = transform.GetChild(0).gameObject;
 
             var actionWidgetGO = Instantiate(ActionWidgetPrefab) as GameObject;
@@ -42,17 +39,7 @@ namespace sail
             actionWidgetGO.transform.SetParent(RootCanvas.transform, false);
             ActionWidget.GetComponent<RectTransform>().localScale = new Vector3(0.6f, 0.6f, 0.6f);
 
-            // Add some button for testing
-            if (ActionButtonPrefab)
-            {
-                foreach (var action in GlobalManagers.actionManager.Actions)
-                {
-                    GameObject prefabInst = Instantiate(ActionButtonPrefab) as GameObject;
-                    prefabInst.transform.SetParent(ActionListContent.transform, false);
-                    prefabInst.GetComponent<Button>().onClick.AddListener(() => { showAction(action); });
-                    prefabInst.GetComponentInChildren<Text>().text = action.Name;
-                }
-            }
+            ActionListWidget.ActionSelected += showAction;
 
             GlobalManagers.hud = this;
         }
