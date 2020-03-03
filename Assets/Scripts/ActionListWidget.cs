@@ -17,6 +17,7 @@ namespace sail
 
         void Start()
         {
+            //for (int i = 0; i < 20; i++)
             foreach (var action in GlobalManagers.actionManager.Actions)
             {
                 GameObject prefabInst = Instantiate(ActionButtonPrefab) as GameObject;
