@@ -20,12 +20,10 @@ namespace sail
         {
             Text = ActionNameGO.GetComponent<Text>();
             Image = GetComponent<Image>();
-            Debug.Log(Text);
         }
 
         void Start()
         {
-            clear();
         }
 
         // Update is called once per frame
@@ -37,12 +35,6 @@ namespace sail
         public void setAction(ActionBase action, RectTransform rectTrans)
         {
             Action = action;
-
-            if (Action == null)
-            {
-                clear();
-                return;
-            }
 
             Text.text = Action.Name;
 
@@ -64,13 +56,6 @@ namespace sail
                 self.position = Vector3.Lerp(initPos, target.position, t);
                 yield return null;
             }
-        }
-
-        public void clear()
-        {
-            //Text.text = string.Empty;
-            //Image.color = Color.black;
-            //Text.transform.gameObject.SetActive(false);
         }
     }
 }

@@ -11,13 +11,15 @@ namespace sail
         public GameObject SecondaryActionWidgetPrefab = null;
 
         // Game Objects
-
         public GameObject ActionNameGO = null;
         public GameObject ActionSlotBackground = null;
 
         public GameObject SecondaryActionLeftTargetGO = null;
         public GameObject SecondaryActionCenterTargetGO = null;
         public GameObject SecondaryActionRightTargetGO = null;
+
+        public Button CancelBtn = null;
+        public Button AcceptBtn = null;
 
         public List<Sprite> SecondaryActionSlotImg = new List<Sprite>();
 
@@ -34,6 +36,9 @@ namespace sail
             Text = ActionNameGO.GetComponent<Text>();
 
             transform.gameObject.SetActive(false);
+
+            CancelBtn.onClick.AddListener(clear);
+            AcceptBtn.onClick.AddListener(accept);
         }
 
         public void setAction(ActionBase action)
@@ -65,13 +70,6 @@ namespace sail
             {
                 Debug.Log("This number of action slot is not supported by UI.");
             }
-
-            // -> Action Slots
-            foreach (var aw in SecondaryActionWidgets)
-            {
-                Destroy(aw.gameObject);
-            }
-            SecondaryActionWidgets.Clear();
 
             //for (int i = 0; i < Action.ActionSlots.Count; ++i)
             //{
@@ -133,6 +131,24 @@ namespace sail
             }
 
             return null;
+        }
+
+        void clear()
+        {
+            transform.gameObject.SetActive(false);
+
+            Action = null;
+
+            foreach (var aw in SecondaryActionWidgets)
+            {
+                Destroy(aw.gameObject);
+            }
+            SecondaryActionWidgets.Clear();
+        }
+
+        void accept()
+        {
+            clear();
         }
     }
 }

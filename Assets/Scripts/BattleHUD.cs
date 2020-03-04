@@ -37,8 +37,9 @@ namespace sail
 
             ActionWidget = actionWidgetGO.GetComponent<ActionWidget>();
             actionWidgetGO.transform.SetParent(RootCanvas.transform, false);
-            ActionWidget.GetComponent<RectTransform>().localScale = new Vector3(0.6f, 0.6f, 0.6f);
-
+            var rectTrans = ActionWidget.GetComponent<RectTransform>();
+            rectTrans.localScale = new Vector3(0.6f, 0.6f, 0.6f);
+            rectTrans.anchoredPosition -= Vector2.up * 60f;
             ActionListWidget.ActionSelected += showAction;
 
             GlobalManagers.hud = this;
