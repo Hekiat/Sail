@@ -10,6 +10,7 @@ namespace sail
         public static MouseInputManager mouseInputManager = null;
 
         // Gameplay
+        public static GameFlowManager gameManager = null;
         public static MapManager mapManager = null;
         public static ActionManager actionManager = null;
 

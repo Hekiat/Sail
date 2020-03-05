@@ -7,19 +7,14 @@ namespace sail
 {
     public class SecondaryActionWidget : MonoBehaviour
     {
-        ActionBase Action = null;
-
-        // Game Objects
-        public GameObject ActionNameGO = null;
+        public ActionBase Action { get; set; } = null;
 
         // Components
-        private Text Text = null;
-        private Image Image = null;
+        public Text ActionNameTxt = null;
+        //private Image Image = null;
 
         private void Awake()
         {
-            Text = ActionNameGO.GetComponent<Text>();
-            Image = GetComponent<Image>();
         }
 
         void Start()
@@ -36,7 +31,7 @@ namespace sail
         {
             Action = action;
 
-            Text.text = Action.Name;
+            ActionNameTxt.text = Action.Name;
 
             var currentRectTrans = GetComponent<RectTransform>();
             StartCoroutine(startTransition(currentRectTrans, rectTrans));

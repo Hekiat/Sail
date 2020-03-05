@@ -11,8 +11,8 @@ namespace sail
         public GameObject SecondaryActionWidgetPrefab = null;
 
         // Game Objects
-        public GameObject ActionNameGO = null;
-        public GameObject ActionSlotBackground = null;
+        public Text ActionNameText = null;
+        public Image ActionSlotBackgroundImg = null;
 
         public GameObject SecondaryActionLeftTargetGO = null;
         public GameObject SecondaryActionCenterTargetGO = null;
@@ -26,15 +26,14 @@ namespace sail
         // Data
         ActionBase Action = null;
         int SlotCount = 0;
-
-        // Components
-        private Text Text = null;
         private List<SecondaryActionWidget> SecondaryActionWidgets = new List<SecondaryActionWidget>();
+
+        // Events
+        //public delegate void RunAction(ActionBase action, List<ActionBase> secondaryActions);
+        //public event RunAction OnRunAction = null;
 
         private void Start()
         {
-            Text = ActionNameGO.GetComponent<Text>();
-
             transform.gameObject.SetActive(false);
 
             CancelBtn.onClick.AddListener(clear);
@@ -59,24 +58,17 @@ namespace sail
 
             // Init Action
             // -> Action Name
-            Text.text = Action.Name;
+            ActionNameText.text = Action.Name;
 
             // -> Action Display Background
             if (SlotCount < SecondaryActionSlotImg.Count)
             {
-                ActionSlotBackground.GetComponent<Image>().sprite = SecondaryActionSlotImg[SlotCount];
+                ActionSlotBackgroundImg.sprite = SecondaryActionSlotImg[SlotCount];
             }
             else
             {
                 Debug.Log("This number of action slot is not supported by UI.");
             }
-
-            //for (int i = 0; i < Action.ActionSlots.Count; ++i)
-            //{
-            //    GameObject prefabInst = Instantiate(SecondaryActionWidgetPrefab) as GameObject;
-            //    prefabInst.transform.SetParent(transform, false);
-            //    //prefabInst.transform.SetParent(PluginSlotsGO.transform, false);
-            //}
         }
 
         private void setSecondaryAction(ActionBase action, int slotID)
@@ -148,6 +140,21 @@ namespace sail
 
         void accept()
         {
+            //if (OnRunAction == null)
+            //{
+            //    return;
+            //}
+
+            List<ActionBase> secondaryActions = new List<ActionBase>();
+            foreach (var saw in SecondaryActionWidgets)
+            {
+                secondaryActions.Add(saw.Action);
+            }
+
+            //OnRunAction(Action, secondaryActions);
+
+            GlobalManagers.gameManager.runAction(Action, secondaryActions);
+
             clear();
         }
     }

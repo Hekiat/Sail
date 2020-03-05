@@ -583,8 +583,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   SecondaryActionWidgetPrefab: {fileID: 7012108089963973142, guid: bf2a9dd0e7120fc4286375e3aa67d6b7,
     type: 3}
-  ActionNameGO: {fileID: 600835968426309910}
-  ActionSlotBackground: {fileID: 4541658890383472489}
+  ActionNameText: {fileID: 6572349216198534197}
+  ActionSlotBackgroundImg: {fileID: 4269378266030103250}
   SecondaryActionLeftTargetGO: {fileID: 8523767451007533611}
   SecondaryActionCenterTargetGO: {fileID: 6730871988223631706}
   SecondaryActionRightTargetGO: {fileID: 5873368206858041893}

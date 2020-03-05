@@ -2,29 +2,37 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class GameFlowManager : MonoBehaviour
+namespace sail
 {
-
-    public static GameFlowManager instance = null;
-
-    public GameObject HUDPrefab = null;
-
-    void Awake()
+    public class GameFlowManager : MonoBehaviour
     {
-        instance = this;
-    }
+        public GameObject HUDPrefab = null;
 
-    void Start()
-    {
-        if(HUDPrefab)
+        void Awake()
         {
-            Instantiate(HUDPrefab, new Vector3(0, 0, 0), Quaternion.identity);
+            GlobalManagers.gameManager = this;
+        }
+
+        void Start()
+        {
+            if (HUDPrefab)
+            {
+                Instantiate(HUDPrefab, new Vector3(0, 0, 0), Quaternion.identity);
+            }
+        }
+
+
+        void Update()
+        {
+
+        }
+
+        public void runAction(ActionBase action, List<ActionBase> secondaryActions)
+        {
+            Debug.Log($"Run: {action.Name} secondary action {secondaryActions.Count}");
         }
     }
-
-    
-    void Update()
-    {
-        
-    }
 }
+
+
+
