@@ -8,14 +8,14 @@ namespace sail
     public class BattleHUD : MonoBehaviour
     {
         // Prefab list
-        public GameObject ActionWidgetPrefab = null;
+        //public GameObject ActionWidgetPrefab = null;
 
         // General purpose
         private GameObject RootCanvas = null;
 
         // inner widgets
         public ActionListWidget ActionListWidget = null;
-        private ActionWidget ActionWidget = null;
+        public ActionWidget ActionWidget = null;
 
         private void Awake()
         {
@@ -33,13 +33,13 @@ namespace sail
 
             RootCanvas = transform.GetChild(0).gameObject;
 
-            var actionWidgetGO = Instantiate(ActionWidgetPrefab) as GameObject;
-
-            ActionWidget = actionWidgetGO.GetComponent<ActionWidget>();
-            actionWidgetGO.transform.SetParent(RootCanvas.transform, false);
-            var rectTrans = ActionWidget.GetComponent<RectTransform>();
-            rectTrans.localScale = new Vector3(0.6f, 0.6f, 0.6f);
-            rectTrans.anchoredPosition -= Vector2.up * 60f;
+            //var actionWidgetGO = Instantiate(ActionWidgetPrefab) as GameObject;
+            //
+            //ActionWidget = actionWidgetGO.GetComponent<ActionWidget>();
+            //actionWidgetGO.transform.SetParent(RootCanvas.transform, false);
+            //var rectTrans = ActionWidget.GetComponent<RectTransform>();
+            //rectTrans.localScale = new Vector3(0.6f, 0.6f, 0.6f);
+            //rectTrans.anchoredPosition -= Vector2.up * 60f;
             ActionListWidget.ActionSelected += showAction;
 
             GlobalManagers.hud = this;

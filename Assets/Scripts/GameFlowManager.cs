@@ -4,9 +4,27 @@ using UnityEngine;
 
 namespace sail
 {
+    public enum TurnType
+    {
+        Player,
+        Enemy
+    }
+
+    public enum PlayerTurnPhase
+    {
+        Start,
+        ActionSetup,
+        ActionTargetSelection,
+        ActionRun,
+        End
+    }
+
     public class GameFlowManager : MonoBehaviour
     {
         public GameObject HUDPrefab = null;
+
+        public TurnType TurnType { get; private set; }
+        public PlayerTurnPhase PlayerTurnPhase { get; private set; }
 
         void Awake()
         {
