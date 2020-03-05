@@ -16,6 +16,7 @@ namespace sail
         // inner widgets
         public ActionListWidget ActionListWidget = null;
         public ActionWidget ActionWidget = null;
+        public Toggle ShowHideActionTgl = null;
 
         private void Awake()
         {
@@ -31,8 +32,6 @@ namespace sail
             //    Destroy(child.gameObject);
             //}
 
-            RootCanvas = transform.GetChild(0).gameObject;
-
             //var actionWidgetGO = Instantiate(ActionWidgetPrefab) as GameObject;
             //
             //ActionWidget = actionWidgetGO.GetComponent<ActionWidget>();
@@ -40,7 +39,15 @@ namespace sail
             //var rectTrans = ActionWidget.GetComponent<RectTransform>();
             //rectTrans.localScale = new Vector3(0.6f, 0.6f, 0.6f);
             //rectTrans.anchoredPosition -= Vector2.up * 60f;
+
+            RootCanvas = transform.GetChild(0).gameObject;
+
             ActionListWidget.ActionSelected += showAction;
+            ActionWidget.OnActionAccepted += onActionAccepted;
+            ActionWidget.OnActionCanceled += onActionCancel;
+
+            ActionWidget.gameObject.SetActive(false);
+            ShowHideActionTgl.gameObject.SetActive(false);
 
             GlobalManagers.hud = this;
         }
@@ -50,10 +57,25 @@ namespace sail
 
         }
 
+
+        void onActionAccepted(ActionBase action, List<ActionBase> secondaryActions)
+        {
+            GlobalManagers.gameManager.runAction(action, secondaryActions);
+        }
+
+        void onActionCancel()
+        {
+            ShowHideActionTgl.isOn = false;
+            ShowHideActionTgl.gameObject.SetActive(false);
+        }
+
         void showAction(ActionBase action)
         {
             ActionWidget.gameObject.SetActive(true);
             ActionWidget.setAction(action);
+
+            ShowHideActionTgl.isOn = true;
+            ShowHideActionTgl.gameObject.SetActive(true);
         }
     }
 }

@@ -29,13 +29,14 @@ namespace sail
         private List<SecondaryActionWidget> SecondaryActionWidgets = new List<SecondaryActionWidget>();
 
         // Events
-        //public delegate void RunAction(ActionBase action, List<ActionBase> secondaryActions);
-        //public event RunAction OnRunAction = null;
+        public delegate void ActionAccepted(ActionBase action, List<ActionBase> secondaryActions);
+        public event ActionAccepted OnActionAccepted = null;
+
+        public delegate void ActionCanceled();
+        public event ActionCanceled OnActionCanceled = null;
 
         private void Start()
         {
-            transform.gameObject.SetActive(false);
-
             CancelBtn.onClick.AddListener(clear);
             AcceptBtn.onClick.AddListener(accept);
         }
@@ -136,11 +137,14 @@ namespace sail
                 Destroy(aw.gameObject);
             }
             SecondaryActionWidgets.Clear();
+
+            OnActionCanceled();
         }
 
         void accept()
         {
-            //if (OnRunAction == null)
+            // should not be checked
+            //if (OnActionAccepted == null)
             //{
             //    return;
             //}
@@ -151,9 +155,7 @@ namespace sail
                 secondaryActions.Add(saw.Action);
             }
 
-            //OnRunAction(Action, secondaryActions);
-
-            GlobalManagers.gameManager.runAction(Action, secondaryActions);
+            OnActionAccepted(Action, secondaryActions);
 
             clear();
         }
