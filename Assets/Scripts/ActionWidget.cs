@@ -29,11 +29,11 @@ namespace sail
         private List<SecondaryActionWidget> SecondaryActionWidgets = new List<SecondaryActionWidget>();
 
         // Events
-        public delegate void ActionAccepted(ActionBase action, List<ActionBase> secondaryActions);
-        public event ActionAccepted OnActionAccepted = null;
+        public delegate void ActionAcceptedDelegate(ActionBase action, List<ActionBase> secondaryActions);
+        public event ActionAcceptedDelegate OnActionAccepted = null;
 
-        public delegate void ActionCanceled();
-        public event ActionCanceled OnActionCanceled = null;
+        public delegate void ActionCanceledDelegate();
+        public event ActionCanceledDelegate OnActionCanceled = null;
 
         private void Start()
         {

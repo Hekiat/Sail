@@ -46,15 +46,33 @@ namespace sail
             ActionWidget.OnActionAccepted += onActionAccepted;
             ActionWidget.OnActionCanceled += onActionCancel;
 
-            ActionWidget.gameObject.SetActive(false);
-            ShowHideActionTgl.gameObject.SetActive(false);
+            showActionSetupWidgets(false);
+
+            GlobalManagers.gameManager.TurnChanged += onTurnChanged;
+            GlobalManagers.gameManager.PhaseChanged += onPhaseChanged;
 
             GlobalManagers.hud = this;
         }
 
         void Update()
         {
+        }
 
+        void onTurnChanged(TurnType type)
+        {
+
+        }
+
+        void onPhaseChanged(PlayerTurnPhase phase)
+        {
+            if (phase == PlayerTurnPhase.ActionSetup)
+            {
+                showActionSetupWidgets(true);
+            }
+            else
+            {
+                showActionSetupWidgets(false);
+            }
         }
 
 
@@ -65,17 +83,24 @@ namespace sail
 
         void onActionCancel()
         {
-            ShowHideActionTgl.isOn = false;
-            ShowHideActionTgl.gameObject.SetActive(false);
+            //ShowHideActionTgl.isOn = false;
+            //ShowHideActionTgl.gameObject.SetActive(false);
         }
 
         void showAction(ActionBase action)
         {
-            ActionWidget.gameObject.SetActive(true);
             ActionWidget.setAction(action);
 
-            ShowHideActionTgl.isOn = true;
-            ShowHideActionTgl.gameObject.SetActive(true);
+            showActionSetupWidgets(true);
+        }
+
+        void showActionSetupWidgets(bool show)
+        {
+            ShowHideActionTgl.isOn = show;
+
+            ActionWidget.gameObject.SetActive(show);
+            ActionListWidget.gameObject.SetActive(show);
+            ShowHideActionTgl.gameObject.SetActive(show);
         }
     }
 }

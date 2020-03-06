@@ -26,6 +26,12 @@ namespace sail
         public TurnType TurnType { get; private set; }
         public PlayerTurnPhase PlayerTurnPhase { get; private set; }
 
+        public delegate void TurnChangedDelegate(TurnType type);
+        public event TurnChangedDelegate TurnChanged;
+
+        public delegate void PhaseChangedDelegate(PlayerTurnPhase phase);
+        public event PhaseChangedDelegate PhaseChanged;
+
         void Awake()
         {
             GlobalManagers.gameManager = this;
@@ -41,6 +47,54 @@ namespace sail
 
 
         void Update()
+        {
+            if (Input.GetKeyDown("space"))
+            {
+                var enumLen = System.Enum.GetNames(typeof(PlayerTurnPhase)).Length;
+                PlayerTurnPhase = (PlayerTurnPhase)((int)(PlayerTurnPhase + 1) % enumLen);
+
+                PhaseChanged(PlayerTurnPhase);
+            }
+        }
+
+        void updateTurn()
+        {
+            if (TurnType == TurnType.Player)
+            {
+                updatePlayerTurn();
+            }
+            else
+            {
+                updateEnemyTurn();
+            }
+        }
+
+
+        void updatePlayerTurn()
+        {
+            if (PlayerTurnPhase == PlayerTurnPhase.Start)
+            {
+
+            }
+            else if (PlayerTurnPhase == PlayerTurnPhase.ActionSetup)
+            {
+
+            }
+            else if (PlayerTurnPhase == PlayerTurnPhase.ActionTargetSelection)
+            {
+
+            }
+            else if (PlayerTurnPhase == PlayerTurnPhase.ActionRun)
+            {
+
+            }
+            else if (PlayerTurnPhase == PlayerTurnPhase.End)
+            {
+
+            }
+        }
+
+        void updateEnemyTurn()
         {
 
         }
