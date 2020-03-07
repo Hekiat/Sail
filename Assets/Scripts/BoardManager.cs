@@ -5,7 +5,7 @@ using UnityEditor;
 
 namespace sail
 {
-    public class MapManager : MonoBehaviour
+    public class BoardManager : MonoBehaviour
     {
         public int Width = 10;
         public int Height = 10;
@@ -13,10 +13,10 @@ namespace sail
 
         public float BlendDuration = 2f;
 
-        public Vector3 MapCenterPosition = Vector3.zero;
+        public Vector3 CenterPosition = Vector3.zero;
 
         public TileType TileType { get; private set; } = TileType.Cube;
-        public AreaMapSelectionController.AreaType SelectionType = AreaMapSelectionController.AreaType.Circle;
+        public AreaBoardSelectionController.AreaType SelectionType = AreaBoardSelectionController.AreaType.Circle;
 
         private List<Tile> Tiles = new List<Tile>();
 
@@ -40,17 +40,17 @@ namespace sail
                 }
             }
 
-            updateMapCenterPosition();
+            updateBoardCenterPosition();
 
-            GlobalManagers.mapManager = this;
+            GlobalManagers.boardManager = this;
         }
 
         void OnDestroy()
         {
-            GlobalManagers.mapManager = null;
+            GlobalManagers.boardManager = null;
         }
 
-        void updateMapCenterPosition()
+        void updateBoardCenterPosition()
         {
             //var bottomLeft = getTilePosition(new TileCoord(0, 0));
             //var topRight = getTilePosition(new TileCoord(Width - 1, Height - 1));
@@ -58,8 +58,8 @@ namespace sail
             var bottomLeft = Tiles[0].GameObject.transform.position;
             var topRight = Tiles[Tiles.Count - 1].GameObject.transform.position;
 
-            MapCenterPosition = (topRight - bottomLeft) / 2f;
-            MapCenterPosition += Vector3.up * 1f;
+            CenterPosition = (topRight - bottomLeft) / 2f;
+            CenterPosition += Vector3.up * 1f;
         }
 
         void onTileClicked(Tile tile)
@@ -123,7 +123,7 @@ namespace sail
         // Update is called once per frame
         void Update()
         {
-            updateMapCenterPosition();
+            updateBoardCenterPosition();
         }
 
         void OnDrawGizmos()
@@ -132,7 +132,7 @@ namespace sail
             if (EditorApplication.isPlaying == false)
             {
                 Gizmos.color = Color.red;
-                Gizmos.DrawSphere(MapCenterPosition, 0.5f);
+                Gizmos.DrawSphere(CenterPosition, 0.5f);
 
                 for (int i = 0; i < Width; ++i)
                 {
@@ -306,17 +306,17 @@ namespace sail
         }
     }
 
-    [CustomEditor(typeof(MapManager))]
-    public class MapManagerEditor : Editor
+    [CustomEditor(typeof(BoardManager))]
+    public class BoardManagerEditor : Editor
     {
         public override void OnInspectorGUI()
         {
             DrawDefaultInspector();
 
-            MapManager map = (MapManager)target;
+            BoardManager board = (BoardManager)target;
             if (GUILayout.Button("Switch"))
             {
-                map.Switch();
+                board.Switch();
             }
         }
     }

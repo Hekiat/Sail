@@ -5,7 +5,7 @@ using UnityEngine;
 namespace sail
 {
 
-    public abstract class MapSelectionControllerBase
+    public abstract class BoardSelectionControllerBase
     {
         enum Type
         {
@@ -13,7 +13,7 @@ namespace sail
             Count
         }
 
-        public MapSelectionControllerBase(TileCoord initialCoord)
+        public BoardSelectionControllerBase(TileCoord initialCoord)
         {
             InitialCoord = initialCoord;
         }
@@ -40,11 +40,11 @@ namespace sail
         public virtual void clear()
         {
             SelectedTiles.Clear();
-            GlobalManagers.mapManager.clearTilesSelection();
+            GlobalManagers.boardManager.clearTilesSelection();
         }
     }
 
-    public class AreaMapSelectionController : MapSelectionControllerBase
+    public class AreaBoardSelectionController : BoardSelectionControllerBase
     {
         public enum AreaType
         {
@@ -57,7 +57,7 @@ namespace sail
 
         public AreaType ShapeType { get; set; } = AreaType.Cross;
 
-        public AreaMapSelectionController(TileCoord initialCoord)
+        public AreaBoardSelectionController(TileCoord initialCoord)
             : base(initialCoord)
         {
         }
@@ -66,7 +66,7 @@ namespace sail
         {
             base.update();
 
-            var type = GlobalManagers.mapManager.TileType;
+            var type = GlobalManagers.boardManager.TileType;
 
             List<TileCoord> selectedCoord = new List<TileCoord>();
 
@@ -118,7 +118,7 @@ namespace sail
                 }
             }
 
-            GlobalManagers.mapManager.setTilesSelected(selectedCoord);
+            GlobalManagers.boardManager.setTilesSelected(selectedCoord);
         }
     }
 }

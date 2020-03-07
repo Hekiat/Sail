@@ -11,7 +11,7 @@ namespace sail
 
         // Gameplay
         public static GameFlowManager gameManager = null;
-        public static MapManager mapManager = null;
+        public static BoardManager boardManager = null;
         public static ActionManager actionManager = null;
 
         // UI

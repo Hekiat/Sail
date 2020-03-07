@@ -65,7 +65,7 @@ namespace sail
             came_from[start] = start;
             cost_so_far[start] = 0;
 
-            var map = GlobalManagers.mapManager;
+            var board = GlobalManagers.boardManager;
 
             while (frontier.isEmpty() == false)
             {
@@ -76,7 +76,7 @@ namespace sail
                     break;
                 }
 
-                var neighbors = map.neighbors(current);
+                var neighbors = board.neighbors(current);
                 foreach (var next in neighbors)
                 {
                     var new_cost = cost_so_far[current] + cost(current, next);
