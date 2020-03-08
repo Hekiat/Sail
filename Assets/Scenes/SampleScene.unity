@@ -506,6 +506,7 @@ GameObject:
   - component: {fileID: 1294431737}
   - component: {fileID: 1294431739}
   - component: {fileID: 1294431740}
+  - component: {fileID: 1294431741}
   m_Layer: 0
   m_Name: Game
   m_TagString: Untagged
@@ -551,8 +552,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 99b17df9cb932714289d78394b94acb4, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  HUDPrefab: {fileID: 6439349837382386383, guid: 60a55b65127c8004788c5536fbbf2636,
-    type: 3}
 --- !u!114 &1294431740
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -567,6 +566,22 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   ActionConfigurationList: {fileID: 11400000, guid: b5363432ccfbd7741bb86d60f0049df1,
     type: 2}
+--- !u!114 &1294431741
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1294431736}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 128810f3e9bb1204aab750d17b2e1e8d, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  HUDPrefab: {fileID: 6439349837382386383, guid: 60a55b65127c8004788c5536fbbf2636,
+    type: 3}
+  board: {fileID: 775446148}
+  hud: {fileID: 0}
 --- !u!1001 &3500812957664990188
 PrefabInstance:
   m_ObjectHideFlags: 0

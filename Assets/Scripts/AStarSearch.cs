@@ -65,7 +65,7 @@ namespace sail
             came_from[start] = start;
             cost_so_far[start] = 0;
 
-            var board = GlobalManagers.boardManager;
+            var board = GlobalManagers.board;
 
             while (frontier.isEmpty() == false)
             {

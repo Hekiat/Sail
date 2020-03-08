@@ -61,7 +61,7 @@ namespace sail
 
                 if (Input.GetMouseButtonDown(sail.MouseButton.Left))
                 {
-                    GlobalManagers.boardManager.TileClicked(HoveredGameObject);
+                    GlobalManagers.board.TileClicked(HoveredGameObject);
                 }
             }
             else

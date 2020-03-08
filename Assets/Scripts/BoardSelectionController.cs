@@ -40,7 +40,7 @@ namespace sail
         public virtual void clear()
         {
             SelectedTiles.Clear();
-            GlobalManagers.boardManager.clearTilesSelection();
+            GlobalManagers.board.clearTilesSelection();
         }
     }
 
@@ -66,7 +66,7 @@ namespace sail
         {
             base.update();
 
-            var type = GlobalManagers.boardManager.TileType;
+            var type = GlobalManagers.board.TileType;
 
             List<TileCoord> selectedCoord = new List<TileCoord>();
 
@@ -118,7 +118,7 @@ namespace sail
                 }
             }
 
-            GlobalManagers.boardManager.setTilesSelected(selectedCoord);
+            GlobalManagers.board.setTilesSelected(selectedCoord);
         }
     }
 }

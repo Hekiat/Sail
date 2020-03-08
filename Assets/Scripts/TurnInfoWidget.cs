@@ -11,36 +11,24 @@ namespace sail
         public Text TurnTypeText = null;
         public Text TurnPhaseText = null;
 
-        TurnType TurnType;
-        PlayerTurnPhase PlayerTurnPhase;
-
         private void Start()
         {
-            
-
             updateWidgets();
         }
 
         void Update()
         {
-            if (   GlobalManagers.gameManager.TurnType != TurnType
-                || GlobalManagers.gameManager.PlayerTurnPhase != PlayerTurnPhase)
-            {
-                updateWidgets();
-            }
+            updateWidgets();
         }
 
         void updateWidgets()
         {
-            TurnType = GlobalManagers.gameManager.TurnType;
-            PlayerTurnPhase = GlobalManagers.gameManager.PlayerTurnPhase;
-
             //Enum.GetName(TurnType.GetType(), TurnType);
 
-            TurnTypeText.text = TurnType.ToString();
-            TurnPhaseText.text = PlayerTurnPhase.ToString();
+            TurnTypeText.text = "Player"; //TurnType.ToString();
+            TurnPhaseText.text = BattleFSM.Instance.CurrentState.GetType().Name;
 
-            TurnPhaseText.gameObject.SetActive(TurnType == TurnType.Player);
+            TurnPhaseText.gameObject.SetActive(true);
         }
     }
 }

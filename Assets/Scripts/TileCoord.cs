@@ -76,8 +76,8 @@ namespace sail
         {
             var x = Square.x;
             var y = Square.y;
-            var w = GlobalManagers.boardManager.Width;
-            var h = GlobalManagers.boardManager.Height;
+            var w = GlobalManagers.board.Width;
+            var h = GlobalManagers.board.Height;
 
             return x >= 0 && x < w && y >= 0 && y < h;
         }

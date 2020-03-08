@@ -36,7 +36,7 @@ namespace sail
             Distance = Mathf.Clamp(Distance, MinTargetDistance, MaxTargetDistance);
 
             // Update Position
-            var target = GlobalManagers.boardManager.CenterPosition;
+            var target = GlobalManagers.board.CenterPosition;
 
             var hozizontalAxis = (Vector3.right * Mathf.Sin(AngleRad) + Vector3.back * Mathf.Cos(AngleRad)).normalized;
 
@@ -51,12 +51,12 @@ namespace sail
 
         private void OnDrawGizmos()
         {
-            if (GlobalManagers.boardManager == null)
+            if (GlobalManagers.board == null)
             {
                 return;
             }
 
-            var target = GlobalManagers.boardManager.CenterPosition + Vector3.up;
+            var target = GlobalManagers.board.CenterPosition + Vector3.up;
             var cameraPosition = target + (Vector3.right * Mathf.Sin(AngleRad) + Vector3.back * Mathf.Cos(AngleRad)) * 2f;
 
             Gizmos.color = Color.red;

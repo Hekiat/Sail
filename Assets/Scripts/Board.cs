@@ -5,7 +5,7 @@ using UnityEditor;
 
 namespace sail
 {
-    public class BoardManager : MonoBehaviour
+    public class Board : MonoBehaviour
     {
         public int Width = 10;
         public int Height = 10;
@@ -23,6 +23,16 @@ namespace sail
         // Start is called before the first frame update
         void Start()
         {
+            GlobalManagers.board = this;
+        }
+
+        void OnDestroy()
+        {
+            GlobalManagers.board = null;
+        }
+
+        public void Generate()
+        {
             for (int j = 0; j < Height; ++j)
             {
                 for (int i = 0; i < Width; ++i)
@@ -32,26 +42,19 @@ namespace sail
 
                     Tile ti = new Tile(pos, Quaternion.identity, transform, coord);
                     Tiles.Add(ti);
-
-                    //var meshc = ti.GameObject.AddComponent<MeshCollider>();
-                    //meshc.sharedMesh = ti.GameObject.GetComponent<MeshFilter>().mesh;
-
-                    //ti.Button.onClick.AddListener(() => { onTileClicked(ti); });
                 }
             }
 
             updateBoardCenterPosition();
-
-            GlobalManagers.boardManager = this;
-        }
-
-        void OnDestroy()
-        {
-            GlobalManagers.boardManager = null;
         }
 
         void updateBoardCenterPosition()
         {
+            if (Tiles == null || Tiles.Count == 0)
+            {
+                return;
+            }
+
             //var bottomLeft = getTilePosition(new TileCoord(0, 0));
             //var topRight = getTilePosition(new TileCoord(Width - 1, Height - 1));
 
@@ -306,14 +309,14 @@ namespace sail
         }
     }
 
-    [CustomEditor(typeof(BoardManager))]
+    [CustomEditor(typeof(Board))]
     public class BoardManagerEditor : Editor
     {
         public override void OnInspectorGUI()
         {
             DrawDefaultInspector();
 
-            BoardManager board = (BoardManager)target;
+            Board board = (Board)target;
             if (GUILayout.Button("Switch"))
             {
                 board.Switch();
