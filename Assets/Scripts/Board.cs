@@ -253,7 +253,7 @@ namespace sail
             }
         }
 
-        private Tile getTile(TileCoord coord)
+        public Tile getTile(TileCoord coord)
         {
             if (coord.isValid() == false)
             {

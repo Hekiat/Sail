@@ -25,9 +25,12 @@ namespace sail
         
         }
 
-        void Update()
+        private void Update()
         {
-        
+            if (Input.GetKeyDown("space"))
+            {
+                owner.ChangeToState<BattleUnitSelectionState>();
+            }
         }
     }
 }

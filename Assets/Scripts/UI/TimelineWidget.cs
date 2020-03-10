@@ -21,13 +21,15 @@ namespace sail
 
         void Start()
         {
-            for (int i = 0; i < 3; i++)
+            //for (int i = 0; i < 3; i++)
+            foreach (var unit in BattleFSM.Instance.units)
             {
                 var go = Instantiate(TimelineCharacterPrefab, new Vector3(0f, 0f, 0f), Quaternion.identity);
                 go.transform.SetParent(transform);
 
                 var character = go.GetComponent<TimelineCharacterWidget>();
-                character.currentTimer = i * 100f;
+                character.unit = unit;
+                character.currentTimer = unit.Cooldown;
                 characters.Add(character);
 
                 var rectTrans = character.GetComponent<RectTransform>();
@@ -37,7 +39,12 @@ namespace sail
                 rectTrans.pivot = new Vector2(0.5f, 1f);
             }
 
-            updateCharacters();
+            foreach (var character in characters)
+            {
+                var pos = character.RectTrans.anchoredPosition;
+                pos.x = character.currentTimer / MaxTimer * RectTrans.rect.width;
+                character.RectTrans.anchoredPosition = pos;
+            }
         }
 
         // Update is called once per frame
@@ -45,13 +52,11 @@ namespace sail
         {
         }
 
-        void updateCharacters()
+        public void updateCharacters()
         {
             foreach (var character in characters)
             {
-                var pos = character.RectTrans.anchoredPosition;
-                pos.x = character.currentTimer / MaxTimer * RectTrans.rect.width;
-                character.RectTrans.anchoredPosition = pos;
+                StartCoroutine(moveToTransition(character, character.unit.Cooldown));
             }
         }
 

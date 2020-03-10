@@ -17,6 +17,7 @@ namespace sail
         public ActionListWidget ActionListWidget = null;
         public ActionWidget ActionWidget = null;
         public Toggle ShowHideActionTgl = null;
+        public TimelineWidget TimelineWidget = null;
 
         private void Awake()
         {

@@ -6,6 +6,8 @@ namespace sail
 {
     public class TimelineCharacterWidget : MonoBehaviour
     {
+        public Unit unit = null;
+
         public float currentTimer = 100f;
         public RectTransform RectTrans = null;
 
