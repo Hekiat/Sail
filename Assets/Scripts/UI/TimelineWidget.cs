@@ -1,6 +1,7 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEditor;
 
 namespace sail
 {
@@ -10,6 +11,13 @@ namespace sail
 
         public float MaxTimer = 1000f;
         public List<TimelineCharacterWidget> characters = new List<TimelineCharacterWidget>();
+
+        private RectTransform RectTrans = null;
+
+        private void Awake()
+        {
+            RectTrans = GetComponent<RectTransform>();
+        }
 
         void Start()
         {
@@ -28,33 +36,64 @@ namespace sail
                 rectTrans.anchorMax = Vector2.zero;
                 rectTrans.pivot = new Vector2(0.5f, 1f);
             }
+
+            updateCharacters();
         }
 
         // Update is called once per frame
         void Update()
         {
-            updateCharacters();
         }
-
-        bool a = false;
 
         void updateCharacters()
         {
-            //if (a == true)
-            //{
-            //    return;
-            //}
-            //
-            var rootRectTrans = GetComponent<RectTransform>();
-
             foreach (var character in characters)
             {
-                var rectTrans = character.GetComponent<RectTransform>();
-                var newPos = rectTrans.anchoredPosition;
-                newPos.x = character.currentTimer / MaxTimer * rootRectTrans.rect.width;
-                rectTrans.anchoredPosition = newPos;
+                var pos = character.RectTrans.anchoredPosition;
+                pos.x = character.currentTimer / MaxTimer * RectTrans.rect.width;
+                character.RectTrans.anchoredPosition = pos;
             }
-            a = true;
+        }
+
+        IEnumerator moveToTransition(TimelineCharacterWidget character, float timer)
+        {
+            character.currentTimer = timer;
+
+            int duration = 20;
+            var initOffset = character.RectTrans.anchoredPosition.x;
+            var targetOffset = character.currentTimer / MaxTimer * RectTrans.rect.width;
+
+            var delta = targetOffset - initOffset;
+            var deltaSample = delta / duration;
+
+            for (int i = 0; i < duration; i++)
+            {
+                character.RectTrans.anchoredPosition += Vector2.right * deltaSample;
+                yield return null;
+            }
+        }
+
+        public void moveTo(TimelineCharacterWidget character, float timer)
+        {
+            StartCoroutine(moveToTransition(character, timer));
+        }
+    }
+    [CustomEditor(typeof(TimelineWidget))]
+    public class TimelineWidgetEditor : Editor
+    {
+        float timer = 0f;
+
+        public override void OnInspectorGUI()
+        {
+            DrawDefaultInspector();
+
+            timer = EditorGUILayout.FloatField("New Timer:", timer);
+
+            var tw = (TimelineWidget)target;
+            if (GUILayout.Button("Switch"))
+            {
+                tw.moveTo(tw.characters[0], timer);
+            }
         }
     }
 }
