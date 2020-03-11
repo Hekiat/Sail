@@ -10,11 +10,15 @@ namespace sail
         {
             BattleFSM battleFSM = BattleFSM.Instance;
 
+            if (battleFSM.units.Count == 0)
+            {
+                return null;
+            }
+
             List<Unit> units = new List<Unit>(battleFSM.units);
             units.Sort((a, b) => a.Cooldown.CompareTo(b.Cooldown));
 
             var minCD = units[0].Cooldown;
-
             foreach (var unit in units)
             {
                 unit.Cooldown -= minCD;

@@ -26,7 +26,7 @@ namespace sail
 
             yield return new WaitForSeconds(2f);
 
-            unit.Cooldown = Random.Range(400f, 1000f);
+            unit.Cooldown = Random.Range(5, 10);
             owner.hud.TimelineWidget.updateCharacters();
 
             owner.ChangeToState<BattleSetupActionState>();

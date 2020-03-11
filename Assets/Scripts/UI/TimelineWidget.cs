@@ -8,8 +8,9 @@ namespace sail
     public class TimelineWidget : MonoBehaviour
     {
         public GameObject TimelineCharacterPrefab = null;
+        public GameObject RangeWidget = null;
 
-        public float MaxTimer = 1000f;
+        public int TimeMax = 20;
         public List<TimelineCharacterWidget> characters = new List<TimelineCharacterWidget>();
 
         private RectTransform RectTrans = null;
@@ -17,6 +18,7 @@ namespace sail
         private void Awake()
         {
             RectTrans = GetComponent<RectTransform>();
+            RangeWidget.SetActive(false);
         }
 
         void Start()
@@ -42,7 +44,7 @@ namespace sail
             foreach (var character in characters)
             {
                 var pos = character.RectTrans.anchoredPosition;
-                pos.x = character.currentTimer / MaxTimer * RectTrans.rect.width;
+                pos.x = character.currentTimer / TimeMax * RectTrans.rect.width;
                 character.RectTrans.anchoredPosition = pos;
             }
         }
@@ -66,7 +68,7 @@ namespace sail
 
             int duration = 20;
             var initOffset = character.RectTrans.anchoredPosition.x;
-            var targetOffset = character.currentTimer / MaxTimer * RectTrans.rect.width;
+            var targetOffset = character.currentTimer / TimeMax * RectTrans.rect.width;
 
             var delta = targetOffset - initOffset;
             var deltaSample = delta / duration;

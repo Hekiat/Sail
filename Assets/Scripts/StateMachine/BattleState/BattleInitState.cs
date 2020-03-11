@@ -38,13 +38,13 @@ namespace sail
 
                 var unitGO = Instantiate(owner.UnitsPrefab[0], pos + heightOffset, Quaternion.identity);
                 var unit = unitGO.GetComponent<Unit>();
-                unit.Cooldown = 100f;
+                unit.Cooldown = 5;
                 units.Add(unit);
 
                 pos = board.getTile(new TileCoord(board.Width - 1, board.Height - 1)).GameObject.transform.position;
                 unitGO = Instantiate(owner.UnitsPrefab[1], pos + heightOffset, Quaternion.identity);
                 unit = unitGO.GetComponent<Unit>();
-                unit.Cooldown = 300f;
+                unit.Cooldown = 10;
                 units.Add(unit);
             }
         }

@@ -23,6 +23,11 @@ namespace sail
 
         void updateWidgets()
         {
+            //if (BattleFSM.Instance == null || BattleFSM.Instance.CurrentState == null)
+            //{
+            //    return;
+            //}
+
             //Enum.GetName(TurnType.GetType(), TurnType);
 
             TurnTypeText.text = "Player"; //TurnType.ToString();

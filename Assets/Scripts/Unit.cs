@@ -6,7 +6,7 @@ namespace sail
 {
     public class Unit : MonoBehaviour
     {
-        public float Cooldown = 0f;
+        public int Cooldown = 0;
 
         void Start()
         {
