@@ -18,6 +18,16 @@ namespace sail
             base.Exit();
         }
 
+        protected override void AddListeners()
+        {
+            InputController.ClickEvent += OnMouseClick;
+        }
+
+        protected override void RemoveListeners()
+        {
+            InputController.ClickEvent -= OnMouseClick;
+        }
+
         IEnumerator updateUnit()
         {
             var unit = owner.timelineController.getNextUnit();
@@ -31,6 +41,11 @@ namespace sail
             owner.hud.TimelineWidget.updateCharacters();
 
             owner.ChangeToState<BattleSetupActionState>();
+        }
+
+        void OnMouseClick(object sender, CustomEventArgs<Vector3> e)
+        {
+            throw new System.NotImplementedException();
         }
     }
 }
