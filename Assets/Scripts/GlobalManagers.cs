@@ -6,9 +6,6 @@ namespace sail
 {
     public static class GlobalManagers
     {
-        // System
-        public static MouseInputManager mouseInputManager = null;
-
         // Gameplay
         public static GameFlowManager gameManager = null;
         public static Board board = null;

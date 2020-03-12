@@ -7,6 +7,8 @@ namespace sail
 {
     public class Board : MonoBehaviour
     {
+        public GameObject TilePrefab = null;
+
         public int Width = 10;
         public int Height = 10;
         public float Spacing = 0.05f;
@@ -40,8 +42,13 @@ namespace sail
                     var coord = new TileCoord(i, j);
                     var pos = getTilePosition(coord);
 
-                    Tile ti = new Tile(pos, Quaternion.identity, transform, coord);
-                    Tiles.Add(ti);
+                    var heightOffset = Vector3.up * Random.value * 0.2f;
+                    var tileGO = Instantiate(TilePrefab, pos + heightOffset, Quaternion.identity, transform);
+
+                    Tile tile = tileGO.GetComponent<Tile>();
+                    tile.Coord = coord;
+                    tile.HeightOffset = heightOffset;
+                    Tiles.Add(tile);
                 }
             }
 
@@ -58,8 +65,8 @@ namespace sail
             //var bottomLeft = getTilePosition(new TileCoord(0, 0));
             //var topRight = getTilePosition(new TileCoord(Width - 1, Height - 1));
 
-            var bottomLeft = Tiles[0].GameObject.transform.position;
-            var topRight = Tiles[Tiles.Count - 1].GameObject.transform.position;
+            var bottomLeft = Tiles[0].transform.position;
+            var topRight = Tiles[Tiles.Count - 1].transform.position;
 
             CenterPosition = (topRight - bottomLeft) / 2f;
             CenterPosition += Vector3.up * 1f;
@@ -87,7 +94,7 @@ namespace sail
             List<Vector3> initialPositions = new List<Vector3>();
             foreach (var tile in Tiles)
             {
-                initialPositions.Add(tile.GameObject.transform.position);
+                initialPositions.Add(tile.transform.position);
             }
 
             while (duration < BlendDuration)
@@ -100,7 +107,7 @@ namespace sail
                     var tile = Tiles[i];
                     var targetPos = getTilePosition(tile.Coord) + tile.HeightOffset;
 
-                    tile.GameObject.transform.position = Vector3.Lerp(initialPositions[i], targetPos, ratio);
+                    tile.transform.position = Vector3.Lerp(initialPositions[i], targetPos, ratio);
                 }
 
                 yield return null;
@@ -197,7 +204,7 @@ namespace sail
 
         public void TileClicked(GameObject tileGO)
         {
-            var tile = Tiles.Find(t => t.GameObject == tileGO);
+            var tile = Tiles.Find(t => t.gameObject == tileGO);
 
             if (tile == null)
             {
@@ -225,7 +232,7 @@ namespace sail
         private void setTileSelected(Tile tile)
         {
             // tmp code
-            tile.GameObject.GetComponent<MeshRenderer>().material.color = Color.blue;
+            tile.GetComponent<MeshRenderer>().material.color = Color.blue;
         }
 
         public void setTilesSelected(List<TileCoord> coords)
@@ -249,7 +256,7 @@ namespace sail
         {
             foreach (var tile in Tiles)
             {
-                tile.GameObject.GetComponent<MeshRenderer>().material.color = Color.white;
+                tile.GetComponent<MeshRenderer>().material.color = Color.white;
             }
         }
 
