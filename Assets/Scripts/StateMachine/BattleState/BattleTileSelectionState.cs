@@ -10,7 +10,6 @@ namespace sail
         public override void Enter()
         {
             base.Enter();
-            StartCoroutine(updateUnit());
         }
 
         public override void Exit()
@@ -28,24 +27,34 @@ namespace sail
             InputController.ClickEvent -= OnMouseClick;
         }
 
-        IEnumerator updateUnit()
-        {
-            var unit = owner.timelineController.getNextUnit();
-            owner.hud.TimelineWidget.updateCharacters();
-
-            yield return null;
-
-            yield return new WaitForSeconds(2f);
-
-            unit.Cooldown = Random.Range(5, 10);
-            owner.hud.TimelineWidget.updateCharacters();
-
-            owner.ChangeToState<BattleSetupActionState>();
-        }
-
         void OnMouseClick(object sender, CustomEventArgs<Vector3> e)
         {
-            throw new System.NotImplementedException();
+            Tile tile = null;
+
+            RaycastHit hitInfo;
+            Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
+
+            //Debug.DrawRay(Camera.main.transform.position, ray.direction, Color.magenta);
+
+            if (Physics.Raycast(ray, out hitInfo, Mathf.Infinity, sail.LayerMask.Terrain))
+            {
+                var tileGO = hitInfo.collider.transform.gameObject;
+                tile = tileGO.GetComponent<Tile>();
+            }
+            else
+            {
+                return;
+            }
+
+            if (tile.Coord.Square.x == 0 && tile.Coord.Square.y == 0)
+            {
+                board.clearTilesSelection();
+                return;
+            }
+
+            board.setTilesSelected(AStarSearch.search(new TileCoord(0, 0), tile.Coord));
+
+            owner.ChangeToState<BattleUnitSelectionState>();
         }
     }
 }

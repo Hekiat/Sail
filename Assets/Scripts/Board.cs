@@ -202,33 +202,6 @@ namespace sail
             return Vector3.zero;
         }
 
-        public void TileClicked(GameObject tileGO)
-        {
-            var tile = Tiles.Find(t => t.gameObject == tileGO);
-
-            if (tile == null)
-            {
-                Debug.Log("Tile clicked is not found");
-                return;
-            }
-
-            if (tile.Coord.Square.x == 0 && tile.Coord.Square.y == 0)
-            {
-                clearTilesSelection();
-                return;
-            }
-
-            setTilesSelected(AStarSearch.search(new TileCoord(0, 0), tile.Coord));
-
-            //AreaMapSelectionController controller = new AreaMapSelectionController(tile.Coord);
-            //controller.ShapeType = SelectionType;
-            //controller.update();
-
-            //setTilesSelected(neighbors(tile.Coord));
-
-            //setTileSelected(tile);
-        }
-
         private void setTileSelected(Tile tile)
         {
             // tmp code

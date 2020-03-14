@@ -29,7 +29,7 @@ namespace sail
         {
             if (Input.GetKeyDown("space"))
             {
-                owner.ChangeToState<BattleUnitSelectionState>();
+                owner.ChangeToState<BattleTileSelectionState>();
             }
         }
     }
