@@ -19,6 +19,7 @@ namespace sail
         //public Point pos;
 
         public List<EnemyCore> enemies = new List<EnemyCore>();
+        public EnemyCore SelectedEnemy = null;
 
         private void Awake()
         {

@@ -46,6 +46,8 @@ namespace sail
                 em = enemyGO.GetComponent<EnemyCore>();
                 em.Cooldown = 10;
                 enemies.Add(em);
+
+                owner.SelectedEnemy = enemies[0];
             }
         }
     }

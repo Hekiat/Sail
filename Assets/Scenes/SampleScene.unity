@@ -525,7 +525,7 @@ MonoBehaviour:
   board: {fileID: 775446148}
   hud: {fileID: 0}
   timelineController: {fileID: 0}
-  units: []
+  enemies: []
 --- !u!114 &1294431742
 MonoBehaviour:
   m_ObjectHideFlags: 0
