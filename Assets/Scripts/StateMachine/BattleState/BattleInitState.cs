@@ -36,16 +36,16 @@ namespace sail
                 var heightOffset = Vector3.up;
                 var pos = board.getTile(new TileCoord(0, 0)).gameObject.transform.position;
 
-                var unitGO = Instantiate(owner.UnitsPrefab[0], pos + heightOffset, Quaternion.identity);
-                var unit = unitGO.GetComponent<Unit>();
-                unit.Cooldown = 5;
-                units.Add(unit);
+                var enemyGO = Instantiate(owner.UnitsPrefab[0], pos + heightOffset, Quaternion.identity);
+                var em = enemyGO.GetComponent<EnemyCore>();
+                em.Cooldown = 5;
+                enemies.Add(em);
 
                 pos = board.getTile(new TileCoord(board.Width - 1, board.Height - 1)).gameObject.transform.position;
-                unitGO = Instantiate(owner.UnitsPrefab[1], pos + heightOffset, Quaternion.identity);
-                unit = unitGO.GetComponent<Unit>();
-                unit.Cooldown = 10;
-                units.Add(unit);
+                enemyGO = Instantiate(owner.UnitsPrefab[1], pos + heightOffset, Quaternion.identity);
+                em = enemyGO.GetComponent<EnemyCore>();
+                em.Cooldown = 10;
+                enemies.Add(em);
             }
         }
     }

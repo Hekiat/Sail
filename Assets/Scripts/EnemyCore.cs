@@ -4,7 +4,7 @@ using UnityEngine;
 
 namespace sail
 {
-    public class Unit : MonoBehaviour
+    public class EnemyCore : MonoBehaviour
     {
         public int Cooldown = 0;
 

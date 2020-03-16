@@ -6,25 +6,25 @@ namespace sail
 {
     public class TimelineController : MonoBehaviour
     {
-        public Unit getNextUnit()
+        public EnemyCore getNextEnemy()
         {
             BattleFSM battleFSM = BattleFSM.Instance;
 
-            if (battleFSM.units.Count == 0)
+            if (battleFSM.enemies.Count == 0)
             {
                 return null;
             }
 
-            List<Unit> units = new List<Unit>(battleFSM.units);
-            units.Sort((a, b) => a.Cooldown.CompareTo(b.Cooldown));
+            List<EnemyCore> enemies = new List<EnemyCore>(battleFSM.enemies);
+            enemies.Sort((a, b) => a.Cooldown.CompareTo(b.Cooldown));
 
-            var minCD = units[0].Cooldown;
-            foreach (var unit in units)
+            var minCD = enemies[0].Cooldown;
+            foreach (var unit in enemies)
             {
                 unit.Cooldown -= minCD;
             }
 
-            return units[0];
+            return enemies[0];
         }
     }
 }

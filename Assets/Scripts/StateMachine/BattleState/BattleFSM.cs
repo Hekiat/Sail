@@ -18,7 +18,7 @@ namespace sail
         //public Transform tileSelectionIndicator;
         //public Point pos;
 
-        public List<Unit> units = new List<Unit>();
+        public List<EnemyCore> enemies = new List<EnemyCore>();
 
         private void Awake()
         {

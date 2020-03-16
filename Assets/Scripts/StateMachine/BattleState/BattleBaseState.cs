@@ -8,7 +8,7 @@ namespace sail
     {
         protected BattleFSM owner;
         public Board board { get { return owner.board; } }
-        public List<Unit> units { get { return owner.units; } }
+        public List<EnemyCore> enemies { get { return owner.enemies; } }
 
         protected virtual void Awake()
         {

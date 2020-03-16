@@ -24,13 +24,13 @@ namespace sail
         void Start()
         {
             //for (int i = 0; i < 3; i++)
-            foreach (var unit in BattleFSM.Instance.units)
+            foreach (var unit in BattleFSM.Instance.enemies)
             {
                 var go = Instantiate(TimelineCharacterPrefab, new Vector3(0f, 0f, 0f), Quaternion.identity);
                 go.transform.SetParent(transform);
 
                 var character = go.GetComponent<TimelineCharacterWidget>();
-                character.unit = unit;
+                character.enemy = unit;
                 character.currentTimer = unit.Cooldown;
                 characters.Add(character);
 
@@ -58,7 +58,7 @@ namespace sail
         {
             foreach (var character in characters)
             {
-                StartCoroutine(moveToTransition(character, character.unit.Cooldown));
+                StartCoroutine(moveToTransition(character, character.enemy.Cooldown));
             }
         }
 
