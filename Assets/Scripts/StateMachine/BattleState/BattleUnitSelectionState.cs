@@ -29,7 +29,9 @@ namespace sail
             unit.Cooldown = Random.Range(5, 10);
             owner.hud.TimelineWidget.updateCharacters();
 
-            owner.ChangeToState<BattleSetupActionState>();
+            owner.SelectedEnemy = unit;
+
+            owner.ChangeToState<BattleIdleState>();
         }
     }
 }

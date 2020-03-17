@@ -131,7 +131,7 @@ GameObject:
   - component: {fileID: 4284532392476940947}
   - component: {fileID: 4284532392483943795}
   - component: {fileID: 2718457758768882153}
-  m_Layer: 0
+  m_Layer: 11
   m_Name: Adam
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -194,6 +194,9 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   Configuration: {fileID: 11400000, guid: 776f1eb98aafc4847b05ee1f6d7b58ce, type: 2}
   Cooldown: 100
+  Health: 0
+  CharacterName: 
+  MaxHealth: 0
 --- !u!1 &4284532392476640953
 GameObject:
   m_ObjectHideFlags: 0
