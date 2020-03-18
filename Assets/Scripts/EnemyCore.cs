@@ -8,6 +8,8 @@ namespace sail
     {
         public EnemyConfiguration Configuration = null;
 
+        public TileCoord Coord { get; set; }
+
         public int Cooldown = 0;
         public int Health;
 

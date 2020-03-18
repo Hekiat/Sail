@@ -34,16 +34,20 @@ namespace sail
             //foreach (var prefab in UnitsPrefab)
             {
                 var heightOffset = Vector3.up;
-                var pos = board.getTile(new TileCoord(0, 0)).gameObject.transform.position;
+                var tileCoord = new TileCoord(0, 0);
+                var pos = board.getTile(tileCoord).gameObject.transform.position;
 
                 var enemyGO = Instantiate(owner.UnitsPrefab[0], pos + heightOffset, Quaternion.identity);
                 var em = enemyGO.GetComponent<EnemyCore>();
                 em.Cooldown = 5;
+                em.Coord = tileCoord;
                 enemies.Add(em);
 
-                pos = board.getTile(new TileCoord(board.Width - 1, board.Height - 1)).gameObject.transform.position;
+                tileCoord = new TileCoord(board.Width - 1, board.Height - 1);
+                pos = board.getTile(tileCoord).gameObject.transform.position;
                 enemyGO = Instantiate(owner.UnitsPrefab[1], pos + heightOffset, Quaternion.identity);
                 em = enemyGO.GetComponent<EnemyCore>();
+                em.Coord = tileCoord;
                 em.Cooldown = 10;
                 enemies.Add(em);
 
