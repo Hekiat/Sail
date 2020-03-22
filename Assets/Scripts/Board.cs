@@ -89,29 +89,54 @@ namespace sail
 
         IEnumerator startRootBlend()
         {
-            float duration = 0f;
+            List<sail.animation.Tweener> tweenerList = new List<sail.animation.Tweener>();
 
-            List<Vector3> initialPositions = new List<Vector3>();
-            foreach (var tile in Tiles)
+            for (int i = 0; i < Tiles.Count; ++i)
             {
-                initialPositions.Add(tile.transform.position);
+                var tile = Tiles[i];
+                var targetPos = getTilePosition(tile.Coord) + tile.HeightOffset;
+
+                var t = sail.animation.TransformAnimationExtensions.MoveTo(tile.transform, targetPos);
+                tweenerList.Add(t);
             }
 
-            while (duration < BlendDuration)
-            {
-                duration = Mathf.Min(duration + Time.deltaTime, BlendDuration);
-                var ratio = duration / BlendDuration;
+            bool allTweenerEnded = false;
 
-                for (int i = 0; i < Tiles.Count; ++i)
+            while (allTweenerEnded == false)
+            {
+                var foundTweener = tweenerList.Find(a => a != null);
+                allTweenerEnded = foundTweener == null;
+
+                if (allTweenerEnded == false)
                 {
-                    var tile = Tiles[i];
-                    var targetPos = getTilePosition(tile.Coord) + tile.HeightOffset;
-
-                    tile.transform.position = Vector3.Lerp(initialPositions[i], targetPos, ratio);
+                    yield return null;
                 }
-
-                yield return null;
             }
+
+
+            //float duration = 0f;
+            //
+            //List<Vector3> initialPositions = new List<Vector3>();
+            //foreach (var tile in Tiles)
+            //{
+            //    initialPositions.Add(tile.transform.position);
+            //}
+            //
+            //while (duration < BlendDuration)
+            //{
+            //    duration = Mathf.Min(duration + Time.deltaTime, BlendDuration);
+            //    var ratio = duration / BlendDuration;
+            //
+            //    for (int i = 0; i < Tiles.Count; ++i)
+            //    {
+            //        var tile = Tiles[i];
+            //        var targetPos = getTilePosition(tile.Coord) + tile.HeightOffset;
+            //
+            //        tile.transform.position = Vector3.Lerp(initialPositions[i], targetPos, ratio);
+            //    }
+            //
+            //    yield return null;
+            //}
         }
 
         private IEnumerator startTransitionToHex()
