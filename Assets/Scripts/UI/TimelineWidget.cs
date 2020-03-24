@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEditor;
+using sail.animation;
 
 namespace sail
 {
@@ -58,31 +59,20 @@ namespace sail
         {
             foreach (var character in characters)
             {
-                StartCoroutine(moveToTransition(character, character.enemy.Cooldown));
+                character.currentTimer = character.enemy.Cooldown;
+
+                var targetOffset = character.currentTimer / TimeMax * RectTrans.rect.width;
+                var target = new Vector2(targetOffset, character.RectTrans.anchoredPosition.y);
+                character.RectTrans.MoveAnchoredPositionTo(target);
             }
         }
 
-        IEnumerator moveToTransition(TimelineCharacterWidget character, float timer)
-        {
-            character.currentTimer = timer;
-
-            int duration = 20;
-            var initOffset = character.RectTrans.anchoredPosition.x;
-            var targetOffset = character.currentTimer / TimeMax * RectTrans.rect.width;
-
-            var delta = targetOffset - initOffset;
-            var deltaSample = delta / duration;
-
-            for (int i = 0; i < duration; i++)
-            {
-                character.RectTrans.anchoredPosition += Vector2.right * deltaSample;
-                yield return null;
-            }
-        }
-
+        //Test only
         public void moveTo(TimelineCharacterWidget character, float timer)
         {
-            StartCoroutine(moveToTransition(character, timer));
+            var targetOffset = timer / TimeMax * RectTrans.rect.width;
+            var target = new Vector2(targetOffset, character.RectTrans.anchoredPosition.y);
+            character.RectTrans.MoveAnchoredPositionTo(target);
         }
     }
     [CustomEditor(typeof(TimelineWidget))]

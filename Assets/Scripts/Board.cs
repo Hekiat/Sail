@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEditor;
+using sail.animation;
 
 namespace sail
 {
@@ -96,7 +97,8 @@ namespace sail
                 var tile = Tiles[i];
                 var targetPos = getTilePosition(tile.Coord) + tile.HeightOffset;
 
-                var t = sail.animation.TransformAnimationExtensions.MoveTo(tile.transform, targetPos);
+                var t = tile.transform.MoveTo(targetPos);
+                
                 tweenerList.Add(t);
             }
 
