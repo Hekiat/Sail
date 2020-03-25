@@ -18,6 +18,7 @@ namespace sail
             InitialCoord = initialCoord;
         }
 
+        // Utiliser un class unit
         public TileCoord InitialCoord = new TileCoord();
 
         public List<TileCoord> SelectedTiles = new List<TileCoord>();
