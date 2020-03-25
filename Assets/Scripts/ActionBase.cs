@@ -60,6 +60,8 @@ namespace sail
         public List<ActionSlot> ActionSlots = new List<ActionSlot>();
         public List<VariableBase> VariableSlots = new List<VariableBase>();
 
+        private List<ActionBase> SecondaryActions = new List<ActionBase>();
+
         // As a slotted action
         public List<VariableBase> SecondaryVariableSlots = new List<VariableBase>();
 
@@ -84,5 +86,12 @@ namespace sail
                 SecondaryVariableSlots.Add(new FloatVariable());
             }
         }
+
+        public virtual void start(List<ActionBase> secondaryActions)
+        {
+            SecondaryActions = new List<ActionBase>(secondaryActions);
+        }
+
+        public virtual IEnumerator run(){ yield break; }
     }
 }
