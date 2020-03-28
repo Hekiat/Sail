@@ -54,37 +54,39 @@ namespace sail
 
     public abstract class ActionBase
     {
+        public static ActionID ID { get; set; } = ActionID.UNDEFINED;
+
         public string Name { get; private set; } = "Action Name";
 
-        // As an action
-        public List<ActionSlot> ActionSlots = new List<ActionSlot>();
-        public List<VariableBase> VariableSlots = new List<VariableBase>();
+        // As a Main Action
+        //public List<ActionSlot> ActionSlots = new List<ActionSlot>();
+        //public List<VariableBase> VariableSlots = new List<VariableBase>();
 
+        // As a Seconcary Action
+        //public List<VariableBase> SecondaryVariableSlots = new List<VariableBase>();
+
+        // Configure data
+        public int MaxSecondaryActionSlots { get; private set; }
+
+        // Runtime data
         private List<ActionBase> SecondaryActions = new List<ActionBase>();
-
-        // As a slotted action
-        public List<VariableBase> SecondaryVariableSlots = new List<VariableBase>();
 
         public virtual void configure(ActionBaseConfiguration config)
         {
             Assert.IsNotNull(config, "Action Configuration is null. Type: " + GetType());
 
             Name = config.Name;
+            MaxSecondaryActionSlots = config.ActionSlot;
 
-            for (int i = 0; i < config.ActionSlot; i++)
-            {
-                ActionSlots.Add(new ActionSlot());
-            }
+            //for (int i = 0; i < config.ActionSlot; i++)
+            //{
+            //    ActionSlots.Add(new ActionSlot());
+            //}
 
-            for (int i = 0; i < config.VariableSlot; i++)
-            {
-                VariableSlots.Add(new FloatVariable());
-            }
-
-            for (int i = 0; i < config.SecondaryVariableSlot; i++)
-            {
-                SecondaryVariableSlots.Add(new FloatVariable());
-            }
+            //for (int i = 0; i < config.SecondaryVariableSlot; i++)
+            //{
+            //    SecondaryVariableSlots.Add(new FloatVariable());
+            //}
         }
 
         public virtual void start(List<ActionBase> secondaryActions)

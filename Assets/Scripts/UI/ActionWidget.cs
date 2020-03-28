@@ -55,7 +55,7 @@ namespace sail
 
             // Action
             Action = action;
-            SlotCount = Action.ActionSlots.Count;
+            SlotCount = Action.MaxSecondaryActionSlots;
 
             // Init Action
             // -> Action Name

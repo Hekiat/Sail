@@ -11,7 +11,6 @@ namespace sail.animation
         {
             base.OnUpdate();
             GetComponent<RectTransform>().anchoredPosition = currentTweenValue;
-            Debug.Log(currentTweenValue);
         }
     }
 }
