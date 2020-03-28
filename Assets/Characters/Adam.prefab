@@ -192,11 +192,12 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 5491038058f37ea49997d6f50559a139, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  Configuration: {fileID: 11400000, guid: 776f1eb98aafc4847b05ee1f6d7b58ce, type: 2}
+  UnitName: Adam
   Cooldown: 100
   Health: 0
   CharacterName: 
-  MaxHealth: 0
+  MaxHealth: 1000
+  Configuration: {fileID: 11400000, guid: 776f1eb98aafc4847b05ee1f6d7b58ce, type: 2}
 --- !u!1 &4284532392476640953
 GameObject:
   m_ObjectHideFlags: 0

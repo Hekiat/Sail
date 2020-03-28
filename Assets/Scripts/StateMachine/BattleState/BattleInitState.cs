@@ -38,7 +38,8 @@ namespace sail
                 var pos = board.getTile(tileCoord).gameObject.transform.position;
 
                 var enemyGO = Instantiate(owner.UnitsPrefab[0], pos + heightOffset, Quaternion.identity);
-                var em = enemyGO.GetComponent<EnemyCore>();
+                var em = enemyGO.GetComponent<EnemyBase>();
+                //em.UnitName = 
                 em.Cooldown = 5;
                 em.Coord = tileCoord;
                 enemies.Add(em);
@@ -46,7 +47,7 @@ namespace sail
                 tileCoord = new TileCoord(board.Width - 1, board.Height - 1);
                 pos = board.getTile(tileCoord).gameObject.transform.position;
                 enemyGO = Instantiate(owner.UnitsPrefab[1], pos + heightOffset, Quaternion.identity);
-                em = enemyGO.GetComponent<EnemyCore>();
+                em = enemyGO.GetComponent<EnemyBase>();
                 em.Coord = tileCoord;
                 em.Cooldown = 10;
                 enemies.Add(em);

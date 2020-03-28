@@ -13,5 +13,5 @@ MonoBehaviour:
   m_Name: AdamConfiguration
   m_EditorClassIdentifier: 
   ID: 0
-  Name: EM 0000
+  Name: Adam
   Health: 1000

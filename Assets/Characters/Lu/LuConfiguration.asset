@@ -13,5 +13,5 @@ MonoBehaviour:
   m_Name: LuConfiguration
   m_EditorClassIdentifier: 
   ID: 1
-  Name: EM 1000
+  Name: Lu
   Health: 800

@@ -6,7 +6,7 @@ namespace sail
 {
     public class TimelineCharacterWidget : MonoBehaviour
     {
-        public EnemyCore enemy = null;
+        public EnemyBase enemy = null;
 
         public float currentTimer = 100f;
         public RectTransform RectTrans = null;

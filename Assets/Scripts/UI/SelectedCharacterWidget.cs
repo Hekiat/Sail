@@ -33,7 +33,7 @@ namespace sail
 
             gameObject.SetActive(true);
 
-            CharacterNameTxt.text = inst.SelectedEnemy.CharacterName;
+            CharacterNameTxt.text = inst.SelectedEnemy.UnitName;
 
             var health = inst.SelectedEnemy.Health;
             var maxHealth = inst.SelectedEnemy.MaxHealth;

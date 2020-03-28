@@ -7112,11 +7112,11 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 5491038058f37ea49997d6f50559a139, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  Configuration: {fileID: 11400000, guid: 314b1beb4f723d14e9b5e2857b560b6b, type: 2}
+  UnitName: E
   Cooldown: 200
   Health: 0
-  CharacterName: 
-  MaxHealth: 0
+  MaxHealth: 1000
+  Configuration: {fileID: 11400000, guid: 314b1beb4f723d14e9b5e2857b560b6b, type: 2}
 --- !u!1 &3500812957451600155
 GameObject:
   m_ObjectHideFlags: 0

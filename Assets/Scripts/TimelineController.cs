@@ -6,7 +6,7 @@ namespace sail
 {
     public class TimelineController : MonoBehaviour
     {
-        public EnemyCore getNextEnemy()
+        public EnemyBase getNextEnemy()
         {
             BattleFSM battleFSM = BattleFSM.Instance;
 
@@ -15,7 +15,7 @@ namespace sail
                 return null;
             }
 
-            List<EnemyCore> enemies = new List<EnemyCore>(battleFSM.enemies);
+            List<EnemyBase> enemies = new List<EnemyBase>(battleFSM.enemies);
             enemies.Sort((a, b) => a.Cooldown.CompareTo(b.Cooldown));
 
             var minCD = enemies[0].Cooldown;

@@ -4,18 +4,9 @@ using UnityEngine;
 
 namespace sail
 {
-    public class EnemyCore : MonoBehaviour
+    public class EnemyBase : Unit
     {
         public EnemyConfiguration Configuration = null;
-
-        public TileCoord Coord { get; set; }
-
-        public int Cooldown = 0;
-        public int Health;
-
-        // Configure data
-        public string CharacterName;
-        public int MaxHealth;
 
         void Start()
         {
@@ -35,7 +26,7 @@ namespace sail
                 return;
             }
 
-            CharacterName = Configuration.Name;
+            UnitName = Configuration.Name;
             MaxHealth = Configuration.Health;
             Health = MaxHealth;
         }
