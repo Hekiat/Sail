@@ -19,7 +19,7 @@ namespace sail
 
         IEnumerator updateUnit()
         {
-            var unit = owner.timelineController.getNextEnemy();
+            var unit = owner.TimelineController.getNextEnemy();
             Debug.Log(unit.name);
 
             owner.hud.TimelineWidget.updateCharacters();

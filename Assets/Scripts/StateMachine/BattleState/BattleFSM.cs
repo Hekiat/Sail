@@ -13,7 +13,7 @@ namespace sail
 
         public Board board;
         public BattleHUD hud;
-        public TimelineController timelineController;
+        public TimelineController TimelineController;
         //public LevelData levelData;
         //public Transform tileSelectionIndicator;
         //public Point pos;
@@ -21,11 +21,14 @@ namespace sail
         public List<EnemyBase> enemies = new List<EnemyBase>();
         public EnemyBase SelectedEnemy = null;
 
+        public ActionController ActionController { get; private set; }
+
         private void Awake()
         {
             Instance = this;
 
-            timelineController = GetComponent<TimelineController>();
+            TimelineController = GetComponent<TimelineController>();
+            ActionController = GetComponent<ActionController>();
         }
 
         void Start()

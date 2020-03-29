@@ -54,6 +54,8 @@ namespace sail
 
             board.setTilesSelected(AStarSearch.search(new TileCoord(0, 0), tile.Coord));
 
+            BattleFSM.Instance.ActionController.requestAction(GlobalManagers.actionManager.Actions[1], new List<ActionBase>());
+
             owner.ChangeToState<BattleUnitSelectionState>();
         }
     }

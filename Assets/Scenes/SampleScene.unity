@@ -446,6 +446,7 @@ GameObject:
   - component: {fileID: 1294431741}
   - component: {fileID: 1294431742}
   - component: {fileID: 1294431743}
+  - component: {fileID: 1294431744}
   m_Layer: 0
   m_Name: Game
   m_TagString: Untagged
@@ -524,8 +525,9 @@ MonoBehaviour:
   - {fileID: 3500812957451600153, guid: 29801c831e70d354488b2fc38a8419f4, type: 3}
   board: {fileID: 775446148}
   hud: {fileID: 0}
-  timelineController: {fileID: 0}
+  TimelineController: {fileID: 0}
   enemies: []
+  SelectedEnemy: {fileID: 0}
 --- !u!114 &1294431742
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -548,5 +550,17 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: a99e0ea05280bbf478fea85743c8d152, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+--- !u!114 &1294431744
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1294431736}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 89b6c1150a53f58478f37773d6645f55, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 

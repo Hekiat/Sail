@@ -4,7 +4,7 @@ using UnityEngine;
 
 namespace sail
 {
-    public class ActionExecutionController : MonoBehaviour
+    public class ActionController : MonoBehaviour
     {
         void Start()
         {
