@@ -19,7 +19,7 @@ namespace sail
         public Vector3 CenterPosition = Vector3.zero;
 
         public TileType TileType { get; private set; } = TileType.Cube;
-        public AreaBoardSelectionController.AreaType SelectionType = AreaBoardSelectionController.AreaType.Circle;
+        public AreaTileSelection.AreaType SelectionType = AreaTileSelection.AreaType.Circle;
 
         private List<Tile> Tiles = new List<Tile>();
 
