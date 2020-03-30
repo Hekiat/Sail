@@ -4,38 +4,16 @@ using UnityEngine;
 
 namespace sail
 {
-
-    public abstract class BoardSelectionControllerBase
+    public class TileSelectionController : MonoBehaviour
     {
-        enum Type
-        {
-            Area,
-            Count
-        }
-
-        public BoardSelectionControllerBase(TileCoord initialCoord)
-        {
-            InitialCoord = initialCoord;
-        }
-
-        // Utiliser un class unit
-        public TileCoord InitialCoord = new TileCoord();
+        public TileSelectionBase currentSelection { get; set; } = null;
 
         public List<TileCoord> SelectedTiles = new List<TileCoord>();
 
-        public virtual void update()
+        protected virtual void select()
         {
-
-        }
-
-        public virtual void enable()
-        {
-
-        }
-
-        public virtual void disable()
-        {
-
+            clear();
+            GlobalManagers.board.clearTilesSelection();
         }
 
         public virtual void clear()
@@ -45,7 +23,27 @@ namespace sail
         }
     }
 
-    public class AreaBoardSelectionController : BoardSelectionControllerBase
+    public abstract class TileSelectionBase
+    {
+        enum Type
+        {
+            Area,
+            Count
+        }
+
+        public abstract List<TileCoord> activeTile(Unit unit);
+    }
+
+    public class SelfTileSelection : TileSelectionBase
+    {
+        public override List<TileCoord> activeTile(Unit unit)
+        {
+            List<TileCoord> selectedTiles = new List<TileCoord>();
+            selectedTiles.Add(unit.Coord);
+            return selectedTiles;
+        }
+    }
+    public class AreaTileSelection : TileSelectionBase
     {
         public enum AreaType
         {
@@ -58,18 +56,12 @@ namespace sail
 
         public AreaType ShapeType { get; set; } = AreaType.Cross;
 
-        public AreaBoardSelectionController(TileCoord initialCoord)
-            : base(initialCoord)
+        public override List<TileCoord> activeTile(Unit unit)
         {
-        }
-
-        public override void update()
-        {
-            base.update();
-
             var type = GlobalManagers.board.TileType;
 
-            List<TileCoord> selectedCoord = new List<TileCoord>();
+            var selectedTiles = new List<TileCoord>();
+            var origin = unit.Coord;
 
             if (type == TileType.Cube)
             {
@@ -93,7 +85,7 @@ namespace sail
                             }
                         }
 
-                        selectedCoord.Add(new TileCoord(InitialCoord.Square.x + x, InitialCoord.Square.y + y));
+                        selectedTiles.Add(new TileCoord(origin.Square.x + x, origin.Square.y + y));
                     }
                 }
             }
@@ -114,12 +106,12 @@ namespace sail
                         }
 
                         // Circle or Square
-                        selectedCoord.Add(new TileCoord(InitialCoord.Hex.q + q, InitialCoord.Hex.r + r, InitialCoord.Hex.s + s));
+                        selectedTiles.Add(new TileCoord(origin.Hex.q + q, origin.Hex.r + r, origin.Hex.s + s));
                     }
                 }
             }
 
-            GlobalManagers.board.setTilesSelected(selectedCoord);
+            return selectedTiles;
         }
     }
 }
