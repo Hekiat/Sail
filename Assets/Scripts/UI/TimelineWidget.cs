@@ -31,7 +31,7 @@ namespace sail
                 go.transform.SetParent(transform);
 
                 var character = go.GetComponent<TimelineCharacterWidget>();
-                character.enemy = unit;
+                character.Unit = unit;
                 character.currentTimer = unit.Cooldown;
                 characters.Add(character);
 
@@ -59,7 +59,7 @@ namespace sail
         {
             foreach (var character in characters)
             {
-                character.currentTimer = character.enemy.Cooldown;
+                character.currentTimer = character.Unit.Cooldown;
 
                 var targetOffset = character.currentTimer / TimeMax * RectTrans.rect.width;
                 var target = new Vector2(targetOffset, character.RectTrans.anchoredPosition.y);

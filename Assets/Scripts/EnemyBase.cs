@@ -8,7 +8,7 @@ namespace sail
     {
         public EnemyConfiguration Configuration = null;
 
-        void Start()
+        void Awake()
         {
             configure();
         }

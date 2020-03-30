@@ -87,7 +87,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 67b9ae70e96b4ee449fe45f10ea574a2, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  unit: {fileID: 0}
+  Text: {fileID: 6394557440729866116}
   currentTimer: 100
   RectTrans: {fileID: 0}
 --- !u!1 &6028996203546790665
@@ -102,7 +102,7 @@ GameObject:
   - component: {fileID: 54503708465757255}
   - component: {fileID: 6394557440729866116}
   m_Layer: 0
-  m_Name: Text
+  m_Name: UnitNameText
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
