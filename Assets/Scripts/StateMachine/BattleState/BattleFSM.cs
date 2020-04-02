@@ -14,6 +14,7 @@ namespace sail
         public Board board;
         public BattleHUD hud;
         public TimelineController TimelineController;
+        public TileSelectionController TileSelectionController;
         //public LevelData levelData;
         //public Transform tileSelectionIndicator;
         //public Point pos;
@@ -29,6 +30,7 @@ namespace sail
 
             TimelineController = GetComponent<TimelineController>();
             ActionController = GetComponent<ActionController>();
+            TileSelectionController = GetComponent<TileSelectionController>();
         }
 
         void Start()

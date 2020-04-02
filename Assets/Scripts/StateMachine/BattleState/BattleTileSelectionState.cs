@@ -19,11 +19,13 @@ namespace sail
 
         protected override void AddListeners()
         {
+            base.AddListeners();
             InputController.ClickEvent += OnMouseClick;
         }
 
         protected override void RemoveListeners()
         {
+            base.RemoveListeners();
             InputController.ClickEvent -= OnMouseClick;
         }
 
@@ -52,11 +54,10 @@ namespace sail
                 return;
             }
 
-            board.setTilesSelected(AStarSearch.search(new TileCoord(0, 0), tile.Coord));
+            var nextState = owner.GetState<BattleRunActionState>();
+            nextState.Target = tile.Coord;
 
-            BattleFSM.Instance.ActionController.requestAction(GlobalManagers.actionManager.Actions[1], new List<ActionBase>());
-
-            owner.ChangeToState<BattleUnitSelectionState>();
+            owner.ChangeToState<BattleRunActionState>();
         }
     }
 }

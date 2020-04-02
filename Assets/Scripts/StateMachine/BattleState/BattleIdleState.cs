@@ -37,13 +37,6 @@ namespace sail
             {
                 return;
             }
-
-            var coord = hitInfo.collider.gameObject.GetComponent<Tile>().Coord;
-            //get em from coord
-            //var em = hitInfo.collider.gameObject.GetComponent<EnemyCore>();
-
-            //BattleFSM.Instance.SelectedEnemy = em;
-
             owner.ChangeToState<BattleSetupActionState>();
         }
     }

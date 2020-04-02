@@ -10,13 +10,26 @@ namespace sail
 
         public List<TileCoord> SelectedTiles = new List<TileCoord>();
 
-        protected virtual void select()
+        public void select(List<TileCoord> tiles)
         {
             clear();
-            GlobalManagers.board.clearTilesSelection();
+
+            addToSelection(tiles);
         }
 
-        public virtual void clear()
+        public void addToSelection(List<TileCoord> tiles)
+        {
+            SelectedTiles = tiles;
+            BattleFSM.Instance.board.setTilesSelected(SelectedTiles);
+        }
+
+        public void addToSelection(TileCoord tile)
+        {
+            SelectedTiles.Add(tile);
+            BattleFSM.Instance.board.setTileSelected(tile);
+        }
+
+        public void clear()
         {
             SelectedTiles.Clear();
             GlobalManagers.board.clearTilesSelection();
