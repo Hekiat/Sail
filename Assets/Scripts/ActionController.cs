@@ -7,10 +7,10 @@ namespace sail
 {
     public class ActionController : MonoBehaviour
     {
+        public event EventHandler OnActionEnded;
 
-        public event EventHandler OnActionEnded = delegate { };
-
-        private ActionBase RunningAction = null;
+        private ActionBase Action { get; set; } = null;
+        private List<ActionBase> SecondaryActions { get; set; } = new List<ActionBase>();
 
         void Start()
         {
@@ -22,21 +22,35 @@ namespace sail
         
         }
 
-        public void requestAction(ActionBase action, List<ActionBase> secondaryActions)
+        public void setup(ActionBase action, List<ActionBase> secondaryActions)
         {
-            RunningAction = action;
-            RunningAction.start(secondaryActions);
-            
+            Action = action;
+            SecondaryActions = new List<ActionBase>(secondaryActions);
+
+            Action.setup(SecondaryActions);
+        }
+
+        public void setupSelection()
+        {
+            Action.setupSelection();
+        }
+
+        public void request()
+        {
             StartCoroutine(runAction());
         }
 
         IEnumerator runAction()
         {
-            yield return RunningAction.run();
-            OnActionEnded(RunningAction, EventArgs.Empty);
-            RunningAction = null;
+            yield return Action.run();
+            OnActionEnded(Action, EventArgs.Empty);
+            clear();
         }
 
-        
+        void clear()
+        {
+            Action = null;
+            SecondaryActions.Clear();
+        }
     }
 }

@@ -20,11 +20,6 @@ namespace sail
         {
 
         }
-
-        public void runAction(ActionBase action, List<ActionBase> secondaryActions)
-        {
-            Debug.Log($"Run: {action.Name} secondary action {secondaryActions.Count}");
-        }
     }
 }
 

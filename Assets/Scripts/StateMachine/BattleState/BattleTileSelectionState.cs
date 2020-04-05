@@ -10,6 +10,8 @@ namespace sail
         public override void Enter()
         {
             base.Enter();
+
+            owner.ActionController.setupSelection();
         }
 
         public override void Exit()
@@ -48,14 +50,15 @@ namespace sail
                 return;
             }
 
-            if (tile.Coord.Square.x == 0 && tile.Coord.Square.y == 0)
-            {
-                board.clearTilesSelection();
-                return;
-            }
+            //if (tile.Coord.Square.x == 0 && tile.Coord.Square.y == 0)
+            //{
+            //    board.clearTilesSelection();
+            //    return;
+            //}
 
-            var nextState = owner.GetState<BattleRunActionState>();
-            nextState.Target = tile.Coord;
+            board.clearTilesSelection();
+
+            owner.TileSelectionController.select(AStarSearch.search(owner.SelectedEnemy.Coord, tile.Coord));
 
             owner.ChangeToState<BattleRunActionState>();
         }

@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
+using System;
 
 namespace sail
 {
@@ -18,6 +19,8 @@ namespace sail
         public ActionWidget ActionWidget = null;
         public Toggle ShowHideActionTgl = null;
         public TimelineWidget TimelineWidget = null;
+
+        public event ActionWidget.ActionAcceptedDelegate OnActionSetupAccepted;
 
         private void Awake()
         {
@@ -43,7 +46,8 @@ namespace sail
 
         void onActionAccepted(ActionBase action, List<ActionBase> secondaryActions)
         {
-            GlobalManagers.gameManager.runAction(action, secondaryActions);
+            Debug.Log($"Run: {action.Name} secondary action {secondaryActions.Count}");
+            OnActionSetupAccepted?.Invoke(action, secondaryActions);
         }
 
         void onActionCancel()

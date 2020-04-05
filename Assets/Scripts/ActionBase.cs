@@ -89,9 +89,16 @@ namespace sail
             //}
         }
 
-        public virtual void start(List<ActionBase> secondaryActions)
+        public virtual int SelectionCount { get { return 0; } }
+
+        public virtual void setup(List<ActionBase> secondaryActions)
         {
             SecondaryActions = new List<ActionBase>(secondaryActions);
+        }
+
+        public virtual void setupSelection()
+        {
+
         }
 
         public virtual IEnumerator run(){ yield break; }

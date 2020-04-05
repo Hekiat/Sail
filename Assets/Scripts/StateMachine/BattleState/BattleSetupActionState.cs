@@ -20,17 +20,29 @@ namespace sail
             owner.hud.showActionSetupWidgets(false);
         }
 
-        void Start()
+        protected override void AddListeners()
         {
-        
+            base.AddListeners();
+            owner.hud.OnActionSetupAccepted += onActionSetuped;
         }
 
-        private void Update()
+        protected override void RemoveListeners()
         {
-            if (Input.GetKeyDown("space"))
+            base.RemoveListeners();
+            owner.hud.OnActionSetupAccepted -= onActionSetuped;
+        }
+
+        void onActionSetuped(ActionBase action, List<ActionBase> secondaryActions)
+        {
+            owner.ActionController.setup(action, secondaryActions);
+
+            if (action.SelectionCount > 0)
             {
                 owner.ChangeToState<BattleTileSelectionState>();
+                return;
             }
+
+            owner.ChangeToState<BattleRunActionState>();
         }
     }
 }

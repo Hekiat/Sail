@@ -9,15 +9,11 @@ namespace sail
     {
         public ActionBase Action = null;
 
-        public TileCoord Target { get; set; }
-
         public override void Enter()
         {
             base.Enter();
 
-            owner.TileSelectionController.select(AStarSearch.search(new TileCoord(0, 0), Target));
-
-            BattleFSM.Instance.ActionController.requestAction(GlobalManagers.actionManager.Actions[1], new List<ActionBase>());
+            BattleFSM.Instance.ActionController.request();
         }
 
         public override void Exit()
