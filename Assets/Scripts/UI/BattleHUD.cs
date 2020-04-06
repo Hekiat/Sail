@@ -61,13 +61,14 @@ namespace sail
             ActionWidget.setAction(action);
 
             showActionSetupWidgets(true);
+            ActionWidget.gameObject.SetActive(true);
         }
 
         public void showActionSetupWidgets(bool show)
         {
             ShowHideActionTgl.isOn = show;
 
-            ActionWidget.gameObject.SetActive(show);
+            ActionWidget.gameObject.SetActive(false);
             ActionListWidget.gameObject.SetActive(show);
             ShowHideActionTgl.gameObject.SetActive(show);
         }
