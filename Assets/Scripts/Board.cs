@@ -229,26 +229,20 @@ namespace sail
             return Vector3.zero;
         }
 
-        private void setTileSelected(Tile tile)
-        {
-            // tmp code
-            tile.GetComponent<MeshRenderer>().material.color = Color.blue;
-        }
-
-        public void setTilesSelected(List<TileCoord> coords)
+        public void setTilesColor(List<TileCoord> coords, Color color)
         {
             foreach (var coord in coords)
             {
-                setTileSelected(coord);
+                setTileColor(coord, color);
             }
         }
 
-        public void setTileSelected(TileCoord coord)
+        public void setTileColor(TileCoord coord, Color color)
         {
             var tile = getTile(coord);
             if (tile != null)
             {
-                setTileSelected(tile);
+                tile.GetComponent<MeshRenderer>().material.color = color;
             }
         }
 
