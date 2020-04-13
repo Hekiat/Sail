@@ -428,6 +428,9 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   MinTargetDistance: 3
   MaxTargetDistance: 30
+  MinPitchDeg: 20
+  MaxPitchDeg: 45
+  PitchTriggerDistance: 10
   RotationSpeed: 0.1
   ScrollSpeed: 1
   VerticalAngleDeg: 45
@@ -527,6 +530,7 @@ MonoBehaviour:
   board: {fileID: 775446148}
   hud: {fileID: 0}
   TimelineController: {fileID: 0}
+  TileSelectionController: {fileID: 0}
   enemies: []
   SelectedEnemy: {fileID: 0}
 --- !u!114 &1294431742

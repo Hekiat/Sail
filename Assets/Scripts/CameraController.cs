@@ -9,6 +9,10 @@ namespace sail
         public float MinTargetDistance = 3f;
         public float MaxTargetDistance = 30f;
 
+        public float MinPitchDeg = 10f;
+        public float MaxPitchDeg = 45f;
+        public float PitchTriggerDistance = 10f;
+
         public float RotationSpeed = 0.25f;
         public float ScrollSpeed = 1f;
         public float VerticalAngleDeg = 30f;
@@ -45,8 +49,13 @@ namespace sail
             var verticalLength = Mathf.Sin(verticalAngleRad) * Distance;
 
             transform.position = target + horizontalLength * hozizontalAxis + Vector3.up * verticalLength;
-
             transform.LookAt(target);
+
+            var ea = transform.rotation.eulerAngles;
+            var t = (Distance - MinTargetDistance) / (PitchTriggerDistance - MinTargetDistance);
+            t = Mathf.Clamp01(t);
+            var pitch = Mathf.Lerp(MinPitchDeg, MaxPitchDeg, t);
+            transform.rotation = Quaternion.Euler(pitch, ea.y, ea.z);
         }
 
         private void OnDrawGizmos()

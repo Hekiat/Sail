@@ -59,7 +59,7 @@ namespace sail
             board.clearTilesSelection();
 
             var path = AStarSearch.search(owner.SelectedEnemy.Coord, tile.Coord);
-            owner.TileSelectionController.addToHighlight(path);
+            owner.TileSelectionController.addToHighlighted(path);
             owner.TileSelectionController.addToSelection(path[path.Count-1]);
 
             owner.ChangeToState<BattleRunActionState>();

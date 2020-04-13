@@ -913,7 +913,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!4 &3500812956778941166
 Transform:
   m_ObjectHideFlags: 0
@@ -11568,7 +11568,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!4 &3500812957901929765
 Transform:
   m_ObjectHideFlags: 0
@@ -20058,7 +20058,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!4 &3500812958522510494
 Transform:
   m_ObjectHideFlags: 0
@@ -20660,7 +20660,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!4 &3500812958645367863
 Transform:
   m_ObjectHideFlags: 0
@@ -20906,7 +20906,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!4 &3500812958693105846
 Transform:
   m_ObjectHideFlags: 0
@@ -21701,6 +21701,10 @@ PrefabInstance:
       propertyPath: m_Layer
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 100040, guid: 417d8d57bf413b0438132c22581f69b5, type: 3}
+      propertyPath: m_IsActive
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 100042, guid: 417d8d57bf413b0438132c22581f69b5, type: 3}
       propertyPath: m_Layer
       value: 0
@@ -21775,6 +21779,10 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 100078, guid: 417d8d57bf413b0438132c22581f69b5, type: 3}
       propertyPath: m_Layer
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 100078, guid: 417d8d57bf413b0438132c22581f69b5, type: 3}
+      propertyPath: m_IsActive
       value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 400036, guid: 417d8d57bf413b0438132c22581f69b5, type: 3}
@@ -22429,6 +22437,10 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 100150, guid: c35d5352e59b6b6489524a62e5bf303a, type: 3}
       propertyPath: m_Layer
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 100150, guid: c35d5352e59b6b6489524a62e5bf303a, type: 3}
+      propertyPath: m_IsActive
       value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 100154, guid: c35d5352e59b6b6489524a62e5bf303a, type: 3}
