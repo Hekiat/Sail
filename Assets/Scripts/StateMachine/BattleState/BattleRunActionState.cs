@@ -20,6 +20,14 @@ namespace sail
         {
             base.Exit();
 
+            //var idleAction = GlobalManagers.actionManager.Actions[0];
+            //
+            //BattleFSM.Instance.ActionController.setup(idleAction, new List<ActionBase>());
+            //BattleFSM.Instance.ActionController.request();
+
+            var character = BattleFSM.Instance.SelectedEnemy;
+            character.Animator.CrossFade("Idle", 0.5f);
+
             owner.TileSelectionController.clear();
         }
 

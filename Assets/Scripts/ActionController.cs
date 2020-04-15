@@ -42,6 +42,8 @@ namespace sail
 
         IEnumerator runAction()
         {
+            Debug.Log("start action controller");
+            Action.start();
             yield return Action.run();
             OnActionEnded(Action, EventArgs.Empty);
             clear();

@@ -12,10 +12,17 @@ namespace sail
 
         public override int SelectionCount => 1; //{ get { return 1; } }
 
+        public override void start()
+        {
+            base.start();
+
+            var character = BattleFSM.Instance.SelectedEnemy;
+            character.Animator.CrossFade("Walk", 0.5f);
+
+        }
+
         public override IEnumerator run()
         {
-            Debug.Log("Start run action.");
-
             var character = BattleFSM.Instance.SelectedEnemy;
 
             //TODO tmp
@@ -24,13 +31,6 @@ namespace sail
             yield return ActionFunctionLibrary.moveTo(character.gameObject, target);
 
             character.Coord = target;
-
-            Debug.Log("End run action.");
         }
-    }
-
-    public class AttackAction : ActionBase
-    {
-        public static new ActionID ID { get; set; } = ActionID.ATTACK;
     }
 }

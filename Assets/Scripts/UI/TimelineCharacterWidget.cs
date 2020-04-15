@@ -30,7 +30,7 @@ namespace sail
 
         private void updateUI()
         {
-            Debug.Log(Unit.UnitName);
+            //Debug.Log(Unit.UnitName);
             Text.text = Unit.UnitName.Substring(0, 1);
         }
     }

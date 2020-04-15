@@ -8,8 +8,9 @@ namespace sail
     {
         public EnemyConfiguration Configuration = null;
 
-        void Awake()
+        protected override void Awake()
         {
+            base.Awake();
             configure();
         }
 

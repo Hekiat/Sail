@@ -11,6 +11,7 @@ namespace sail
         // All existing actions
         static List<Type> ActionTypes = new List<Type>()
         {
+            typeof(IdleAction),
             typeof(MoveAction),
             typeof(AttackAction),
         };

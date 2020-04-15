@@ -46,6 +46,7 @@ namespace sail
     public enum ActionID
     {
         UNDEFINED,
+        IDLE,
         MOVE,
         ATTACK,
         COUNT
@@ -96,10 +97,9 @@ namespace sail
             SecondaryActions = new List<ActionBase>(secondaryActions);
         }
 
-        public virtual void setupSelection()
-        {
+        public virtual void setupSelection() { }
 
-        }
+        public virtual void start() { }
 
         public virtual IEnumerator run(){ yield break; }
     }

@@ -12,9 +12,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: ddac19bcb8f563f4ab98fa5fdebe6bfb, type: 3}
   m_Name: AttackConfiguration
   m_EditorClassIdentifier: 
-  ActionID: 2
+  ActionID: 3
   Name: Attack
   ActionSlot: 2
   VariableSlot: 1
   SecondaryVariableSlot: 0
+  Cooldown: 1
   Damage: 3

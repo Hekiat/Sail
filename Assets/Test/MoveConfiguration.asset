@@ -12,9 +12,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d11815308847a464cabff51af4b78fcb, type: 3}
   m_Name: MoveConfiguration
   m_EditorClassIdentifier: 
-  ActionID: 1
+  ActionID: 2
   Name: Move
   ActionSlot: 0
   VariableSlot: 0
   SecondaryVariableSlot: 0
+  Cooldown: 1
   MoveRange: 3
