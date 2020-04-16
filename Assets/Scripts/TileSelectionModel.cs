@@ -4,7 +4,7 @@ using UnityEngine;
 
 namespace sail
 {
-    public abstract class TileSelectionBase
+    public abstract class TileSelectionModelBase
     {
         enum Type
         {
@@ -15,7 +15,7 @@ namespace sail
         public abstract List<TileCoord> activeTiles(Unit unit);
     }
 
-    public class SelfTileSelection : TileSelectionBase
+    public class SelfTileSelection : TileSelectionModelBase
     {
         public override List<TileCoord> activeTiles(Unit unit)
         {
@@ -24,7 +24,7 @@ namespace sail
             return selectedTiles;
         }
     }
-    public class AreaTileSelection : TileSelectionBase
+    public class AreaTileSelection : TileSelectionModelBase
     {
         public enum AreaType
         {
@@ -66,7 +66,11 @@ namespace sail
                             }
                         }
 
-                        selectedTiles.Add(new TileCoord(origin.Square.x + x, origin.Square.y + y));
+                        var current = new TileCoord(origin.Square.x + x, origin.Square.y + y);
+                        if (current.isValid())
+                        {
+                            selectedTiles.Add(current);
+                        }
                     }
                 }
             }
@@ -87,7 +91,11 @@ namespace sail
                         }
 
                         // Circle or Square
-                        selectedTiles.Add(new TileCoord(origin.Hex.q + q, origin.Hex.r + r, origin.Hex.s + s));
+                        var current = new TileCoord(origin.Hex.q + q, origin.Hex.r + r, origin.Hex.s + s);
+                        if (current.isValid())
+                        {
+                            selectedTiles.Add(current);
+                        }
                     }
                 }
             }

@@ -11,7 +11,6 @@ namespace sail
         {
             base.Enter();
 
-            owner.ActionController.setupSelection();
             owner.TileSelectionController.enable();
         }
 

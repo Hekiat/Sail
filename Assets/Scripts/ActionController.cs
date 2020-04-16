@@ -9,7 +9,7 @@ namespace sail
     {
         public event EventHandler OnActionEnded;
 
-        private ActionBase Action { get; set; } = null;
+        public ActionBase Action { get; private set; } = null;
         private List<ActionBase> SecondaryActions { get; set; } = new List<ActionBase>();
 
         void Start()
@@ -28,11 +28,6 @@ namespace sail
             SecondaryActions = new List<ActionBase>(secondaryActions);
 
             Action.setup(SecondaryActions);
-        }
-
-        public void setupSelection()
-        {
-            Action.setupSelection();
         }
 
         public void request()

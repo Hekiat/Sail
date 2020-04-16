@@ -90,14 +90,14 @@ namespace sail
             //}
         }
 
-        public virtual int SelectionCount { get { return 0; } }
+        public virtual int SelectionCount { get { return selectionModels().Count; } }
+
+        public virtual List<ActionSelectionModel> selectionModels() { return new List<ActionSelectionModel>(); }
 
         public virtual void setup(List<ActionBase> secondaryActions)
         {
             SecondaryActions = new List<ActionBase>(secondaryActions);
         }
-
-        public virtual void setupSelection() { }
 
         public virtual void start() { }
 

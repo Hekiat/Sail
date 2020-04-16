@@ -74,5 +74,18 @@ namespace sail
 
             character.Coord = Path[Path.Count-1];
         }
+
+        public override List<ActionSelectionModel> selectionModels()
+        {
+            var selectionModel = new AreaTileSelection();
+            selectionModel.Range = 3;
+            selectionModel.ShapeType = AreaTileSelection.AreaType.Circle;
+
+            var model = new ActionSelectionModel(selectionModel, new AreaTileSelection());
+            var models = new List<ActionSelectionModel>();
+            models.Add(model);
+
+            return models;
+        }
     }
 }

@@ -21,8 +21,22 @@ namespace sail
 
         public void enable()
         {
-            // TMP
-            SelectionStack.Add(new TileSelectionElement());
+            var models = BattleFSM.Instance.ActionController.Action.selectionModels();
+
+            if (models == null || models.Count == 0)
+            {
+                return;
+            }
+
+            var character = BattleFSM.Instance.SelectedEnemy;
+
+            foreach (var model in models)
+            {
+                SelectionStack.Add(new TileSelectionElement(model, character));
+            }
+
+            CurrentStackID = 0;
+            SelectionStack[0].enable();
         }
 
         public void disable()

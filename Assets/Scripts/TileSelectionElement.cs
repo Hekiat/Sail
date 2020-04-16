@@ -15,15 +15,17 @@ namespace sail
 
     public class TileSelectionElement
     {
-        Unit Owner { get; set; } = null;
+        private Unit Owner { get; set; } = null;
 
-        TileSelectionBase SelectionModel { get; set; } = null;
-        TileSelectionBase TargetModel { get; set; } = null;
+        private ActionSelectionModel Model { get; set; } = null;
 
-        public List<TileCoord>[] TileLayers = new List<TileCoord>[(int)TileLayerID.COUNT];
+        private List<TileCoord>[] TileLayers = new List<TileCoord>[(int)TileLayerID.COUNT];
 
-        public TileSelectionElement()
+        public TileSelectionElement(ActionSelectionModel model, Unit owner)
         {
+            Owner = owner;
+            Model = model;
+
             for (int i=0; i < TileLayers.Length; ++i)
             {
                 TileLayers[i] = new List<TileCoord>();
@@ -33,10 +35,9 @@ namespace sail
         public void enable()
         {
             Assert.IsNotNull(Owner, "Tile selection: Owner is null.");
-            Assert.IsNotNull(SelectionModel, "Tile selection: Selection Model is null.");
-            Assert.IsNotNull(TargetModel, "Tile selection: Target Model is null.");
+            Assert.IsNotNull(Model, "Tile selection: Selection Model is null.");
 
-            var tiles = SelectionModel.activeTiles(Owner);
+            var tiles = Model.SelectionModel.activeTiles(Owner);
             set(TileLayerID.SELECTABLE, tiles);
         }
 
