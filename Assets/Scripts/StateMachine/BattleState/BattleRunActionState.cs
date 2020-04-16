@@ -28,7 +28,7 @@ namespace sail
             var character = BattleFSM.Instance.SelectedEnemy;
             character.Animator.CrossFade("Idle", 0.5f);
 
-            owner.TileSelectionController.clear();
+            owner.TileSelectionController.disable();
         }
 
         protected override void AddListeners()

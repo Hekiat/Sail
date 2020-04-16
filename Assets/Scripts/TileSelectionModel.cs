@@ -12,12 +12,12 @@ namespace sail
             Count
         }
 
-        public abstract List<TileCoord> activeTile(Unit unit);
+        public abstract List<TileCoord> activeTiles(Unit unit);
     }
 
     public class SelfTileSelection : TileSelectionBase
     {
-        public override List<TileCoord> activeTile(Unit unit)
+        public override List<TileCoord> activeTiles(Unit unit)
         {
             List<TileCoord> selectedTiles = new List<TileCoord>();
             selectedTiles.Add(unit.Coord);
@@ -37,7 +37,7 @@ namespace sail
 
         public AreaType ShapeType { get; set; } = AreaType.Cross;
 
-        public override List<TileCoord> activeTile(Unit unit)
+        public override List<TileCoord> activeTiles(Unit unit)
         {
             var type = GlobalManagers.board.TileType;
 

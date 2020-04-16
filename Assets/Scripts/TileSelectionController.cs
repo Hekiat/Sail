@@ -6,96 +6,41 @@ namespace sail
 {
     public class TileSelectionController : MonoBehaviour
     {
-        public TileSelectionBase currentSelection { get; set; } = null;
+        int CurrentStackID = 0;
+        List<TileSelectionElement> SelectionStack = new List<TileSelectionElement>();
 
-        public List<TileCoord> SelectedTiles = new List<TileCoord>();
-        public List<TileCoord> HighlightedTiles = new List<TileCoord>();
-
-        ///
-        /// SELECTION
-        ///
-        public void setSelection(TileCoord tile)
+        public void next()
         {
-            clearSelection();
-            addToSelection(tile);
+            CurrentStackID++;
         }
 
-        public void setSelection(List<TileCoord> tiles)
+        public List<TileCoord> selectedTiles()
         {
-            clearSelection();
-            addToSelection(tiles);
+            return SelectionStack[CurrentStackID].get(TileLayerID.SELECTED);
         }
 
-        public void addToSelection(TileCoord tile)
+        public void enable()
         {
-            SelectedTiles.Add(tile);
-            BattleFSM.Instance.board.setTileColor(tile, Color.blue);
+            // TMP
+            SelectionStack.Add(new TileSelectionElement());
         }
 
-        public void addToSelection(List<TileCoord> tiles)
+        public void disable()
         {
-            foreach (var tile in tiles)
-            {
-                addToSelection(tile);
-            }
+            SelectionStack[CurrentStackID].disable();
+            SelectionStack.Clear();
         }
 
-        public void clearSelection()
-        {
-            var board = GlobalManagers.board;
-            foreach (var tile in SelectedTiles)
-            {
-                board.getTile(tile).GetComponent<MeshRenderer>().material.color = Color.white;
-            }
 
-            SelectedTiles.Clear();
+        // TMP
+        public void highlight(List<TileCoord> list)
+        {
+            SelectionStack[CurrentStackID].add(TileLayerID.HIGHLIGHTED, list);
         }
 
-        ///
-        /// HIGHLIGHT
-        ///
-
-        public void setHighlighted(TileCoord tile)
+        public void select(TileCoord tile)
         {
-            clear();
-            addToHighlighted(tile);
-        }
-
-        public void setHighlighted(List<TileCoord> tiles)
-        {
-            clear();
-            addToHighlighted(tiles);
-        }
-
-        public void addToHighlighted(TileCoord tile)
-        {
-            HighlightedTiles.Add(tile);
-            BattleFSM.Instance.board.setTileColor(tile, Color.cyan);
-        }
-
-        public void addToHighlighted(List<TileCoord> tiles)
-        {
-            foreach (var tile in tiles)
-            {
-                addToHighlighted(tile);
-            }
-        }
-
-        public void clearHighlighted()
-        {
-            var board = GlobalManagers.board;
-            foreach (var tile in HighlightedTiles)
-            {
-                board.getTile(tile).GetComponent<MeshRenderer>().material.color = Color.white;
-            }
-
-            HighlightedTiles.Clear();
-        }
-
-        public void clear()
-        {
-            clearSelection();
-            clearHighlighted();
+            SelectionStack[CurrentStackID].add(TileLayerID.SELECTED, tile);
         }
     }
 }

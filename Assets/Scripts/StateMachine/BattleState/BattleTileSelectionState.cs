@@ -12,6 +12,7 @@ namespace sail
             base.Enter();
 
             owner.ActionController.setupSelection();
+            owner.TileSelectionController.enable();
         }
 
         public override void Exit()
@@ -59,8 +60,8 @@ namespace sail
             board.clearTilesSelection();
 
             var path = AStarSearch.search(owner.SelectedEnemy.Coord, tile.Coord);
-            owner.TileSelectionController.addToHighlighted(path);
-            owner.TileSelectionController.addToSelection(path[path.Count-1]);
+            owner.TileSelectionController.highlight(path);
+            owner.TileSelectionController.select(path[path.Count-1]);
 
             owner.ChangeToState<BattleRunActionState>();
         }
