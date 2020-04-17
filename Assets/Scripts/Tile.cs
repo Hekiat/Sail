@@ -15,6 +15,7 @@ namespace sail
     {
         public TileMesh Mesh { get; set; } = null;
         public UnityEngine.UI.Text Text { get; set; } = null;
+        private MeshRenderer MeshRenderer { get; set; } = null;
 
         TileCoord _Coord;
         public TileCoord Coord {
@@ -28,6 +29,7 @@ namespace sail
         {
             Mesh = gameObject.GetComponent<TileMesh>();
             Text = gameObject.GetComponentInChildren<UnityEngine.UI.Text>();
+            MeshRenderer = gameObject.GetComponent<MeshRenderer>();
         }
 
         void updateText()
@@ -40,6 +42,11 @@ namespace sail
         public override string ToString()
         {
             return $"({Coord.Square.x}, {Coord.Square.y})";
+        }
+
+        public void setColor(Color color)
+        {
+            MeshRenderer.material.color = color;
         }
     }
 }

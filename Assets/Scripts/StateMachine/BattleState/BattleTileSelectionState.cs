@@ -22,19 +22,35 @@ namespace sail
         protected override void AddListeners()
         {
             base.AddListeners();
+            InputController.MoveEvent += OnMouseMove;
             InputController.ClickEvent += OnMouseClick;
         }
 
         protected override void RemoveListeners()
         {
             base.RemoveListeners();
+            InputController.MoveEvent -= OnMouseMove;
             InputController.ClickEvent -= OnMouseClick;
+        }
+
+        void OnMouseMove(object sender, CustomEventArgs<Vector3> e)
+        {
+            RaycastHit hitInfo;
+            Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
+            if (Physics.Raycast(ray, out hitInfo, Mathf.Infinity, sail.LayerMask.Terrain))
+            {
+                var tileGO = hitInfo.collider.transform.gameObject;
+                var tile = tileGO.GetComponent<Tile>();
+                owner.TileSelectionController.HoveredTile = tile.Coord;
+            }
+            else
+            {
+                owner.TileSelectionController.HoveredTile = null;
+            }
         }
 
         void OnMouseClick(object sender, CustomEventArgs<Vector3> e)
         {
-            Tile tile = null;
-
             RaycastHit hitInfo;
             Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
 
@@ -43,26 +59,19 @@ namespace sail
             if (Physics.Raycast(ray, out hitInfo, Mathf.Infinity, sail.LayerMask.Terrain))
             {
                 var tileGO = hitInfo.collider.transform.gameObject;
-                tile = tileGO.GetComponent<Tile>();
-            }
-            else
-            {
-                return;
-            }
+                Tile tile = tileGO.GetComponent<Tile>();
+                owner.TileSelectionController.select(tile.Coord);
 
-            //if (tile.Coord.Square.x == 0 && tile.Coord.Square.y == 0)
+                owner.ChangeToState<BattleRunActionState>();
+            }
+            //else
             //{
-            //    board.clearTilesSelection();
             //    return;
             //}
 
-            board.clearTilesSelection();
+            //var path = AStarSearch.search(owner.SelectedEnemy.Coord, tile.Coord);
+            //owner.TileSelectionController.highlight(path);
 
-            var path = AStarSearch.search(owner.SelectedEnemy.Coord, tile.Coord);
-            owner.TileSelectionController.highlight(path);
-            owner.TileSelectionController.select(path[path.Count-1]);
-
-            owner.ChangeToState<BattleRunActionState>();
         }
     }
 }

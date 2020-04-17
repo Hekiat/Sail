@@ -6,6 +6,8 @@ namespace sail
 {
     public class TileSelectionController : MonoBehaviour
     {
+        public TileCoord? HoveredTile { get; set; } = null;
+
         int CurrentStackID = 0;
         List<TileSelectionElement> SelectionStack = new List<TileSelectionElement>();
 
@@ -41,20 +43,55 @@ namespace sail
 
         public void disable()
         {
+            if (SelectionStack.Count == 0)
+            {
+                return;
+            }
+
             SelectionStack[CurrentStackID].disable();
             SelectionStack.Clear();
         }
 
+        public void updateHoveredTile()
+        {
+            SelectionStack[CurrentStackID].clear(TileLayerID.HIGHLIGHTED);
+
+            if (HoveredTile == null)
+            {
+                return;
+            }
+
+            SelectionStack[CurrentStackID].set(HoveredTile.Value, TileLayerID.HIGHLIGHTED);
+
+            // TMP
+            var fsm = BattleFSM.Instance;
+            if (fsm.ActionController.Action.Name == "Move")
+            {
+                var path = AStarSearch.search(fsm.SelectedEnemy.Coord, HoveredTile.Value);
+                SelectionStack[CurrentStackID].set(path, TileLayerID.HIGHLIGHTED);
+            }
+        }
 
         // TMP
         public void highlight(List<TileCoord> list)
         {
-            SelectionStack[CurrentStackID].add(TileLayerID.HIGHLIGHTED, list);
+            SelectionStack[CurrentStackID].add(list, TileLayerID.HIGHLIGHTED);
         }
 
         public void select(TileCoord tile)
         {
-            SelectionStack[CurrentStackID].add(TileLayerID.SELECTED, tile);
+            SelectionStack[CurrentStackID].add(tile, TileLayerID.SELECTED);
+        }
+
+        private void Update()
+        {
+            if(SelectionStack.Count == 0)
+            {
+                return;
+            }
+
+            updateHoveredTile();
+            SelectionStack[CurrentStackID].update();
         }
     }
 }

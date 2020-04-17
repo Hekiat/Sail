@@ -2,15 +2,26 @@
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Assertions;
+using System;
+using System.Linq;
 
 namespace sail
 {
+    [Flags]
     public enum TileLayerID
     {
-        SELECTABLE,
-        HIGHLIGHTED,
-        SELECTED,
-        COUNT
+        NONE = 0,
+        SELECTABLE = 1 << 0,
+        HIGHLIGHTED = 1 << 1,
+        SELECTED = 1 << 2
+    }
+
+    public static class TileLayerIDExtensions
+    {
+        public static bool isBitSet(this TileLayerID flag, TileLayerID bit)
+        {
+            return (flag & bit) != 0;
+        }
     }
 
     public class TileSelectionElement
@@ -19,17 +30,12 @@ namespace sail
 
         private ActionSelectionModel Model { get; set; } = null;
 
-        private List<TileCoord>[] TileLayers = new List<TileCoord>[(int)TileLayerID.COUNT];
+        private Dictionary<TileCoord, TileLayerID> Tiles = new Dictionary<TileCoord, TileLayerID>();
 
         public TileSelectionElement(ActionSelectionModel model, Unit owner)
         {
             Owner = owner;
             Model = model;
-
-            for (int i=0; i < TileLayers.Length; ++i)
-            {
-                TileLayers[i] = new List<TileCoord>();
-            }
         }
 
         public void enable()
@@ -38,7 +44,7 @@ namespace sail
             Assert.IsNotNull(Model, "Tile selection: Selection Model is null.");
 
             var tiles = Model.SelectionModel.activeTiles(Owner);
-            set(TileLayerID.SELECTABLE, tiles);
+            set(tiles, TileLayerID.SELECTABLE);
         }
 
         public void disable()
@@ -48,60 +54,91 @@ namespace sail
 
         public List<TileCoord> get(TileLayerID layer)
         {
-            return new List<TileCoord>(TileLayers[(int)layer]);
+            var list = Tiles.Where(pair => (pair.Value & layer) == layer).Select(pair => pair.Key).ToList();
+
+            if (layer == TileLayerID.SELECTED)
+            {
+                Debug.Log("SELECT TILES " + list);
+            }
+
+            return list;
         }
 
-        public void set(TileLayerID layer, TileCoord tile)
+        public void set(TileCoord tile, TileLayerID layer)
         {
             clear(layer);
-            add(layer, tile);
+            add(tile, layer);
         }
 
-        public void set(TileLayerID layer, List<TileCoord> tiles)
+        public void set(List<TileCoord> tiles, TileLayerID layer)
         {
             clear(layer);
-            add(layer, tiles);
+            add(tiles, layer);
         }
 
-        public void add(TileLayerID layer, TileCoord tile)
+        public void add(TileCoord tile, TileLayerID layer)
         {
-            TileLayers[(int)layer].Add(tile);
-            BattleFSM.Instance.board.setTileColor(tile, Color.blue);
+            if (Tiles.ContainsKey(tile) == false)
+            {
+                Tiles.Add(tile, layer);
+                return;
+            }
+
+            Tiles[tile] |= layer;
         }
 
-        public void add(TileLayerID layer, List<TileCoord> tiles)
+        public void add(List<TileCoord> tiles, TileLayerID layer)
         {
             foreach (var tile in tiles)
             {
-                add(layer, tile);
+                add(tile, layer);
             }
         }
 
         public void clear(TileLayerID layer)
         {
-            var list = TileLayers[(int)layer];
-            var board = GlobalManagers.board;
-            foreach (var tile in list)
+            foreach (var key in Tiles.Keys.ToList())
             {
-                board.getTile(tile).GetComponent<MeshRenderer>().material.color = Color.white;
+                 Tiles[key] = Tiles[key] & ~layer;
             }
-
-            list.Clear();
         }
 
         public void clear()
         {
             var board = GlobalManagers.board;
 
-            foreach (var layer in TileLayers)
+            foreach (var pair in Tiles)
             {
-                foreach (var tile in layer)
+                var tile = board.getTile(pair.Key);
+                tile.setColor(Color.white);
+            }
+
+            Tiles.Clear();
+        }
+
+        public void update()
+        {
+            var board = GlobalManagers.board;
+
+            foreach (var pair in Tiles)
+            {
+                Color color = Color.white;
+
+                if (pair.Value.isBitSet(TileLayerID.SELECTED))
                 {
-                    board.getTile(tile).GetComponent<MeshRenderer>().material.color = Color.white;
+                    color = Color.yellow;
+                }
+                else if(pair.Value.isBitSet(TileLayerID.HIGHLIGHTED))
+                {
+                    color = Color.cyan;
+                }
+                else if (pair.Value.isBitSet(TileLayerID.SELECTABLE))
+                {
+                    color = Color.blue;
                 }
 
-                layer.Clear();
-            }   
+                board.getTile(pair.Key).setColor(color);
+            }
         }
     }
 }
