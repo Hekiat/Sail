@@ -49,6 +49,7 @@ namespace sail
         IDLE,
         MOVE,
         ATTACK,
+        SHIELD,
         COUNT
     }
 
@@ -57,7 +58,7 @@ namespace sail
     {
         public static ActionID ID { get; set; } = ActionID.UNDEFINED;
 
-        public string Name { get; private set; } = "Action Name";
+        public string Name { get; private set; } = "UNDEFINED";
 
         // As a Main Action
         //public List<ActionSlot> ActionSlots = new List<ActionSlot>();

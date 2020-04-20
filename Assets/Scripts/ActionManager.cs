@@ -14,6 +14,7 @@ namespace sail
             typeof(IdleAction),
             typeof(MoveAction),
             typeof(AttackAction),
+            typeof(ShieldAction)
         };
 
         // public
