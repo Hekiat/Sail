@@ -60,8 +60,13 @@ namespace sail
             {
                 var tileGO = hitInfo.collider.transform.gameObject;
                 Tile tile = tileGO.GetComponent<Tile>();
-                owner.TileSelectionController.select(tile.Coord);
 
+                if (owner.TileSelectionController.selectableTiles().Contains(tile.Coord) == false)
+                {
+                    return;
+                }
+
+                owner.TileSelectionController.select(tile.Coord);
                 owner.ChangeToState<BattleRunActionState>();
             }
             //else

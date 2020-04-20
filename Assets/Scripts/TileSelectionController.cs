@@ -21,6 +21,11 @@ namespace sail
             return SelectionStack[CurrentStackID].get(TileLayerID.SELECTED);
         }
 
+        public List<TileCoord> selectableTiles()
+        {
+            return SelectionStack[CurrentStackID].get(TileLayerID.SELECTABLE);
+        }
+
         public void enable()
         {
             var models = BattleFSM.Instance.ActionController.Action.selectionModels();
@@ -61,13 +66,21 @@ namespace sail
                 return;
             }
 
-            SelectionStack[CurrentStackID].set(HoveredTile.Value, TileLayerID.HIGHLIGHTED);
+            var hoveredTile = HoveredTile.Value;
+            var isSelectable = SelectionStack[CurrentStackID].isLayerOn(hoveredTile, TileLayerID.SELECTABLE);
+
+            if (isSelectable == false)
+            {
+                return;
+            }
+
+            SelectionStack[CurrentStackID].set(hoveredTile, TileLayerID.HIGHLIGHTED);
 
             // TMP
             var fsm = BattleFSM.Instance;
             if (fsm.ActionController.Action.Name == "Move")
             {
-                var path = AStarSearch.search(fsm.SelectedEnemy.Coord, HoveredTile.Value);
+                var path = AStarSearch.search(fsm.SelectedEnemy.Coord, hoveredTile);
                 SelectionStack[CurrentStackID].set(path, TileLayerID.HIGHLIGHTED);
             }
         }

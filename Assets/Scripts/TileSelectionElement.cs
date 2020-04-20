@@ -64,6 +64,16 @@ namespace sail
             return list;
         }
 
+        public bool isLayerOn(TileCoord tile, TileLayerID layer)
+        {
+            if (Tiles.ContainsKey(tile) == false)
+            {
+                return false;
+            }
+
+            return Tiles[tile].isBitSet(layer);
+        }
+
         public void set(TileCoord tile, TileLayerID layer)
         {
             clear(layer);

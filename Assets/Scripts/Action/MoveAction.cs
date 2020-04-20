@@ -46,6 +46,8 @@ namespace sail
                 else if (i == Path.Count - 1)
                 {
                     fun = EasingFunctions.EaseOutSine;
+
+                    character.Animator.CrossFade("Idle", 0.5f);
                 }
 
                 //yield return ActionFunctionLibrary.moveTo(character.gameObject, target, fun);
