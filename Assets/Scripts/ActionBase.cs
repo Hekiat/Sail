@@ -103,5 +103,7 @@ namespace sail
         public virtual void start() { }
 
         public virtual IEnumerator run(){ yield break; }
+
+        public virtual List<ActionEffectBase> predictEffects(List<TileCoord> targets) { return new List<ActionEffectBase>(); }
     }
 }

@@ -80,7 +80,7 @@ namespace sail
         public override List<ActionSelectionModel> selectionModels()
         {
             var selectionModel = new AreaTileSelection();
-            selectionModel.Range = 3;
+            selectionModel.Range = 5;
             selectionModel.ShapeType = AreaTileSelection.AreaType.Circle;
 
             var model = new ActionSelectionModel(selectionModel, new AreaTileSelection());

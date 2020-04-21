@@ -18,4 +18,4 @@ MonoBehaviour:
   VariableSlot: 0
   SecondaryVariableSlot: 0
   Cooldown: 1
-  MoveRange: 3
+  MoveRange: 5
