@@ -17,17 +17,20 @@ namespace sail
             base.start();
 
             Animator = BattleFSM.Instance.SelectedEnemy.Animator;
-            Animator.CrossFade("Shield", 0.5f);
+            Animator.CrossFade("Shield", 0.2f);
         }
 
         public override IEnumerator run()
         {
-            if (Animator.GetCurrentAnimatorStateInfo(0).IsName("Shield") && Animator.GetCurrentAnimatorStateInfo(0).normalizedTime < 1.0f)
-            {
-                yield return null;
-            }
+            // Transitioning
+            yield return new WaitUntil(() => Animator.GetCurrentAnimatorStateInfo(0).IsName("Shield"));
 
-            Animator.CrossFade("Idle", 0.5f);
+            // Waiting for the end of the motion
+            yield return new WaitUntil(() => Animator.GetCurrentAnimatorStateInfo(0).normalizedTime >= 1.0f);
+
+            BattleFSM.Instance.SelectedEnemy.Shield += 6;
+
+            Animator.CrossFade("Idle", 0.2f);
             Animator = null;
         }
 

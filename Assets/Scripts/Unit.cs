@@ -14,6 +14,7 @@ namespace sail
 
         public int Cooldown = 0;
         public int Health;
+        public int Shield;
 
         public int MaxHealth;
 

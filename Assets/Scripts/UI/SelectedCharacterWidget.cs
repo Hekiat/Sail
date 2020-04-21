@@ -42,6 +42,10 @@ namespace sail
 
             var healthRect = HealthBarForeground.GetComponent<RectTransform>();
             healthRect.SetSizeWithCurrentAnchors(RectTransform.Axis.Horizontal, (float)health / maxHealth * 190f);
+
+            // tmp
+            var shieldText = GameObject.Find("ShieldText").GetComponent<Text>();
+            shieldText.text = $"{inst.SelectedEnemy.Shield}";
         }
     }
 }
