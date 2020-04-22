@@ -4,9 +4,9 @@ using UnityEngine;
 
 namespace sail
 {
-    public class AttackAction : ActionBase
+    public class RangedAttackAction : ActionBase
     {
-        public static new ActionID ID { get; set; } = ActionID.ATTACK;
+        public static new ActionID ID { get; set; } = ActionID.RANGED_ATTACK;
 
         public override int SelectionCount => 1;
 
@@ -18,21 +18,20 @@ namespace sail
             base.start();
 
             Animator = BattleFSM.Instance.SelectedEnemy.Animator;
-
-            Animator.CrossFade("BasicAttack", 0.2f);
-            //Animator.applyRootMotion = true;
+            Animator.CrossFade("RangedAttack", 0.2f);
 
             Target = BattleFSM.Instance.TileSelectionController.selectedTiles()[0];
         }
 
         public override IEnumerator run()
         {
-            if (Animator.HasState(0, Animator.StringToHash("BasicAttack")) == false)
+            if (Animator.HasState(0, Animator.StringToHash("RangedAttack")) == false)
             {
                 yield break;
             }
 
             var character = BattleFSM.Instance.SelectedEnemy;
+            var targetPos = character.transform.position;
             var tile = BattleFSM.Instance.board.getTile(Target);
 
             // Homing
@@ -56,7 +55,7 @@ namespace sail
             }
 
             // Transitioning
-            yield return new WaitUntil(() => Animator.GetCurrentAnimatorStateInfo(0).IsName("BasicAttack"));
+            yield return new WaitUntil(() => Animator.GetCurrentAnimatorStateInfo(0).IsName("RangedAttack"));
 
             // Waiting for the end of the motion
             yield return new WaitUntil(() => Animator.GetCurrentAnimatorStateInfo(0).normalizedTime >= 1.0f);
@@ -66,7 +65,7 @@ namespace sail
             if (targetEM != null)
             {
                 var damageInterface = targetEM as IDamageable;
-                damageInterface.Damage(10);
+                damageInterface.Damage(20);
             }
 
             Animator.CrossFade("Idle", 0.2f);
@@ -77,8 +76,8 @@ namespace sail
         public override List<ActionSelectionModel> selectionModels()
         {
             var selectionModel = new AreaTileSelection();
-            selectionModel.Range = 1;
-            selectionModel.ShapeType = AreaTileSelection.AreaType.Cross;
+            selectionModel.Range = 20;
+            selectionModel.ShapeType = AreaTileSelection.AreaType.Circle;
 
             var model = new ActionSelectionModel(selectionModel, new AreaTileSelection());
             var models = new List<ActionSelectionModel>();

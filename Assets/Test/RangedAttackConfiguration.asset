@@ -9,13 +9,13 @@ MonoBehaviour:
   m_GameObject: {fileID: 0}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 20d02f2256139b54cb0ba0cd25ad6c1a, type: 3}
-  m_Name: ShieldConfiguration
+  m_Script: {fileID: 11500000, guid: 6d279204455365b41a8547fb9f000171, type: 3}
+  m_Name: RangedAttackConfiguration
   m_EditorClassIdentifier: 
-  ActionID: 5
-  Name: Shield
+  ActionID: 4
+  Name: Ranged Attack
   ActionSlot: 1
   VariableSlot: 0
   SecondaryVariableSlot: 0
   Cooldown: 1
-  ShieldAmount: 100
+  Damage: 20

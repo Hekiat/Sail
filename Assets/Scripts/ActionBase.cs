@@ -49,6 +49,7 @@ namespace sail
         IDLE,
         MOVE,
         ATTACK,
+        RANGED_ATTACK,
         SHIELD,
         COUNT
     }
