@@ -10,6 +10,8 @@ namespace sail
 
         public override int SelectionCount => 1;
 
+        public bool isSetuped = false;
+
         private Animator Animator = null;
         private TileCoord Target;
 
@@ -18,6 +20,9 @@ namespace sail
             base.start();
 
             Animator = BattleFSM.Instance.SelectedEnemy.Animator;
+
+            isSetuped = Animator.HasState(0, Animator.StringToHash("BasicAttack"));
+
             Animator.CrossFade("BasicAttack", 0.2f);
             //Animator.applyRootMotion = true;
 
@@ -26,6 +31,11 @@ namespace sail
 
         public override IEnumerator run()
         {
+            if (isSetuped == false)
+            {
+                yield break;
+            }
+
             var character = BattleFSM.Instance.SelectedEnemy;
             var tile = BattleFSM.Instance.board.getTile(Target);
 
