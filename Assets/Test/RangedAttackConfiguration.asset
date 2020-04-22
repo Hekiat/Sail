@@ -18,4 +18,6 @@ MonoBehaviour:
   VariableSlot: 0
   SecondaryVariableSlot: 0
   Cooldown: 1
+  ProjectilePrefab: {fileID: 4633071326167101048, guid: d0d9ae0d2e0720541a60e82a8079f35e,
+    type: 3}
   Damage: 20

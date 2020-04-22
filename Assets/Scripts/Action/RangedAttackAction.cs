@@ -13,6 +13,16 @@ namespace sail
         private Animator Animator = null;
         private TileCoord Target;
 
+        private GameObject ProjectilePrefab = null;
+
+        public override void configure(ActionBaseConfiguration config)
+        {
+            base.configure(config);
+
+            var selfConfig = config as RangedAttackConfiguration;
+            ProjectilePrefab = selfConfig.ProjectilePrefab;
+        }
+
         public override void start()
         {
             base.start();
@@ -56,6 +66,16 @@ namespace sail
 
             // Transitioning
             yield return new WaitUntil(() => Animator.GetCurrentAnimatorStateInfo(0).IsName("RangedAttack"));
+
+            // Waiting for the end of the motion
+            yield return new WaitUntil(() => Animator.GetCurrentAnimatorStateInfo(0).normalizedTime >= 0.4f);
+
+            var characterPos = character.transform.position;
+
+            var projectileStartPos = characterPos + Vector3.up * 1.3f + character.transform.forward;
+            var tileGO = GameObject.Instantiate(ProjectilePrefab, projectileStartPos, Quaternion.identity, character.transform);
+
+            // WAIT END PROJECTILE
 
             // Waiting for the end of the motion
             yield return new WaitUntil(() => Animator.GetCurrentAnimatorStateInfo(0).normalizedTime >= 1.0f);
