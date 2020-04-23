@@ -73,9 +73,15 @@ namespace sail
             var characterPos = character.transform.position;
 
             var projectileStartPos = characterPos + Vector3.up * 1.3f + character.transform.forward;
-            var tileGO = GameObject.Instantiate(ProjectilePrefab, projectileStartPos, Quaternion.identity, character.transform);
+            var projectileGO = GameObject.Instantiate(ProjectilePrefab, projectileStartPos, Quaternion.identity, character.transform);
+            var projectile = projectileGO.GetComponent<Projectile>();
+            projectile.StartPosition = projectileStartPos;
+            projectile.EndPosition = tile.transform.position + Vector3.up * (1f + 1.3f) + tile.HeightOffset;
+            projectile.Speed = 20f;
+            //GameObject.CreatePrimitive(PrimitiveType.Sphere).transform.position = projectile.EndPosition;
 
-            // WAIT END PROJECTILE
+            // wait projectile to reach
+            yield return new WaitUntil(() => projectile == null);
 
             // Waiting for the end of the motion
             yield return new WaitUntil(() => Animator.GetCurrentAnimatorStateInfo(0).normalizedTime >= 1.0f);
@@ -89,7 +95,6 @@ namespace sail
             }
 
             Animator.CrossFade("Idle", 0.2f);
-            //Animator.applyRootMotion = false;
             Animator = null;
         }
 
