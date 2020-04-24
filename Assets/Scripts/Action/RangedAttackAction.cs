@@ -101,8 +101,9 @@ namespace sail
         public override List<ActionSelectionModel> selectionModels()
         {
             var selectionModel = new AreaTileSelection();
-            selectionModel.Range = 20;
             selectionModel.ShapeType = AreaTileSelection.AreaType.Circle;
+            selectionModel.Range = 5;
+            selectionModel.Filter = TileSelectionFilter.ENEMIES;
 
             var model = new ActionSelectionModel(selectionModel, new AreaTileSelection());
             var models = new List<ActionSelectionModel>();

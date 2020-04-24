@@ -55,12 +55,6 @@ namespace sail
         public List<TileCoord> get(TileLayerID layer)
         {
             var list = Tiles.Where(pair => (pair.Value & layer) == layer).Select(pair => pair.Key).ToList();
-
-            if (layer == TileLayerID.SELECTED)
-            {
-                Debug.Log("SELECT TILES " + list);
-            }
-
             return list;
         }
 

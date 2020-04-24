@@ -1,18 +1,61 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using System;
 
 namespace sail
 {
+    [Flags]
+    public enum TileSelectionFilter
+    {
+        NONE = 0 << 0,
+        ENEMIES = 1 << 0,
+        TERRAIN = 1 << 1,
+
+        ALL = ENEMIES | TERRAIN
+    }
+
     public abstract class TileSelectionModelBase
     {
-        enum Type
-        {
-            Area,
-            Count
-        }
+        public TileSelectionFilter Filter = TileSelectionFilter.ALL;
 
         public abstract List<TileCoord> activeTiles(Unit unit);
+
+        protected virtual void filter(List<TileCoord> tiles)
+        {
+            if (Filter == TileSelectionFilter.ALL)
+            {
+                return;
+            }
+
+            bool[] keep = new bool[tiles.Count];
+            for (int i = 0; i < keep.Length; i++) { keep[i] = false; }
+
+            // Enemies
+            if (Filter.HasFlag(TileSelectionFilter.ENEMIES))
+            {
+                foreach(var enemy in BattleFSM.Instance.enemies)
+                {
+                    var index = tiles.FindIndex((e) => e == enemy.Coord);
+                    if (index != -1)
+                    {
+                        keep[index] = true;
+                    }
+                }
+            }
+
+            // OTHER TODO
+
+
+            // Clean
+            for (int i=keep.Length-1; i>=0; i--)
+            {
+                if (keep[i] == false)
+                {
+                    tiles.RemoveAt(i);
+                }
+            }
+        }
     }
 
     public class SelfTileSelection : TileSelectionModelBase
@@ -24,6 +67,29 @@ namespace sail
             return selectedTiles;
         }
     }
+
+    //public class EnemyTileSelection : TileSelectionModelBase
+    //{
+    //    public int Range { get; set; } = int.MaxValue;
+    //
+    //    public override List<TileCoord> activeTiles(Unit unit)
+    //    {
+    //        List<TileCoord> selectedTiles = new List<TileCoord>();
+    //
+    //        foreach (var enemy in BattleFSM.Instance.enemies)
+    //        {
+    //            var distance = Mathf.Abs(unit.Coord.Square.x - enemy.Coord.Square.x) + Mathf.Abs(unit.Coord.Square.y - enemy.Coord.Square.y);
+    //
+    //            if (distance <= Range)
+    //            {
+    //                selectedTiles.Add(enemy.Coord);
+    //            }
+    //        }
+    //
+    //        return selectedTiles;
+    //    }
+    //}
+
     public class AreaTileSelection : TileSelectionModelBase
     {
         public enum AreaType
@@ -99,6 +165,9 @@ namespace sail
                     }
                 }
             }
+
+            // filter
+            filter(selectedTiles);
 
             return selectedTiles;
         }
