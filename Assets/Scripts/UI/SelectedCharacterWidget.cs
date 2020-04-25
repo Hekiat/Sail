@@ -38,7 +38,7 @@ namespace sail
             var health = inst.SelectedEnemy.Health;
             var maxHealth = inst.SelectedEnemy.MaxHealth;
 
-            HealthTxt.text = $"{health}/{maxHealth}";
+            HealthTxt.text = $"{health} / {maxHealth}";
 
             var healthRect = HealthBarForeground.GetComponent<RectTransform>();
             healthRect.SetSizeWithCurrentAnchors(RectTransform.Axis.Horizontal, (float)health / maxHealth * 190f);
