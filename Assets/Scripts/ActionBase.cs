@@ -69,6 +69,7 @@ namespace sail
         //public List<VariableBase> SecondaryVariableSlots = new List<VariableBase>();
 
         // Configure data
+        public int Cost { get; private set; }
         public int MaxSecondaryActionSlots { get; private set; }
 
         // Runtime data
@@ -80,6 +81,7 @@ namespace sail
 
             Name = config.Name;
             MaxSecondaryActionSlots = config.ActionSlot;
+            Cost = config.Cost;
 
             //for (int i = 0; i < config.ActionSlot; i++)
             //{

@@ -9,9 +9,9 @@ namespace sail
     public class TimelineWidget : MonoBehaviour
     {
         public GameObject TimelineCharacterPrefab = null;
-        public GameObject RangeWidget = null;
+        public GameObject ActionPreviewWidget = null;
 
-        public int TimeMax = 20;
+        public int TimeMax = 10;
         public List<TimelineCharacterWidget> characters = new List<TimelineCharacterWidget>();
 
         private RectTransform RectTrans = null;
@@ -19,12 +19,11 @@ namespace sail
         private void Awake()
         {
             RectTrans = GetComponent<RectTransform>();
-            RangeWidget.SetActive(false);
+            ActionPreviewWidget.SetActive(false);
         }
 
         void Start()
         {
-            //for (int i = 0; i < 3; i++)
             foreach (var unit in BattleFSM.Instance.enemies)
             {
                 var go = Instantiate(TimelineCharacterPrefab, new Vector3(0f, 0f, 0f), Quaternion.identity);
@@ -50,9 +49,21 @@ namespace sail
             }
         }
 
-        // Update is called once per frame
         void Update()
         {
+            var action = BattleFSM.Instance.ActionController.Action;
+            if (action == null)
+            {
+                ActionPreviewWidget.SetActive(false);
+                return;
+            }
+
+            ActionPreviewWidget.SetActive(true);
+            var cost = action.Cost;
+            var width = (float)action.Cost / TimeMax * RectTrans.rect.width;
+            var rectTransform = ActionPreviewWidget.GetComponent<RectTransform>();
+
+            rectTransform.sizeDelta = new Vector2(width, rectTransform.sizeDelta.y);
         }
 
         public void updateCharacters()
@@ -64,32 +75,6 @@ namespace sail
                 var targetOffset = character.currentTimer / TimeMax * RectTrans.rect.width;
                 var target = new Vector2(targetOffset, character.RectTrans.anchoredPosition.y);
                 character.RectTrans.MoveAnchoredPositionTo(target);
-            }
-        }
-
-        //Test only
-        public void moveTo(TimelineCharacterWidget character, float timer)
-        {
-            var targetOffset = timer / TimeMax * RectTrans.rect.width;
-            var target = new Vector2(targetOffset, character.RectTrans.anchoredPosition.y);
-            character.RectTrans.MoveAnchoredPositionTo(target);
-        }
-    }
-    [CustomEditor(typeof(TimelineWidget))]
-    public class TimelineWidgetEditor : Editor
-    {
-        float timer = 0f;
-
-        public override void OnInspectorGUI()
-        {
-            DrawDefaultInspector();
-
-            timer = EditorGUILayout.FloatField("New Timer:", timer);
-
-            var tw = (TimelineWidget)target;
-            if (GUILayout.Button("Switch"))
-            {
-                tw.moveTo(tw.characters[0], timer);
             }
         }
     }

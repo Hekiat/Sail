@@ -26,12 +26,12 @@ namespace sail
         {
             Action = action;
             SecondaryActions = new List<ActionBase>(secondaryActions);
-
-            Action.setup(SecondaryActions);
         }
 
         public void request()
         {
+            Action.setup(SecondaryActions);
+
             StartCoroutine(runAction());
         }
 

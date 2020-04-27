@@ -89,7 +89,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   TimelineCharacterPrefab: {fileID: 154530070171392917, guid: 5cc25baba498b1f419c8ef9d29068ef4,
     type: 3}
-  RangeWidget: {fileID: 7836440449242135831}
+  ActionPreviewWidget: {fileID: 7836440449242135831}
   TimeMax: 20
   characters: []
 --- !u!1 &7836440449242135831
@@ -104,7 +104,7 @@ GameObject:
   - component: {fileID: 4046258542569102434}
   - component: {fileID: 7246988875833153403}
   m_Layer: 0
-  m_Name: RangeWidget
+  m_Name: ActionPreviewWidget
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0

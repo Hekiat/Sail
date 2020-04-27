@@ -23,19 +23,24 @@ namespace sail
         protected override void AddListeners()
         {
             base.AddListeners();
-            owner.hud.OnActionSetupAccepted += onActionSetuped;
+            owner.hud.OnActionSetupAccepted += onActionAccepted;
+            owner.hud.OnActionSetupSelected += onActionSelected;
         }
 
         protected override void RemoveListeners()
         {
             base.RemoveListeners();
-            owner.hud.OnActionSetupAccepted -= onActionSetuped;
+            owner.hud.OnActionSetupAccepted -= onActionAccepted;
+            owner.hud.OnActionSetupAccepted -= onActionSelected;
         }
 
-        void onActionSetuped(ActionBase action, List<ActionBase> secondaryActions)
+        void onActionSelected(ActionBase action, List<ActionBase> secondaryActions)
         {
             owner.ActionController.setup(action, secondaryActions);
+        }
 
+        void onActionAccepted(ActionBase action, List<ActionBase> secondaryActions)
+        {
             if (action.SelectionCount > 0)
             {
                 owner.ChangeToState<BattleTileSelectionState>();

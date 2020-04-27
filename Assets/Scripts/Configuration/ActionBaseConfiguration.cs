@@ -16,6 +16,6 @@ namespace sail
 
         public int SecondaryVariableSlot = 0;
 
-        public int Cooldown = 1;
+        public int Cost = 1;
     }
 }

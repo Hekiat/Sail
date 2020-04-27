@@ -17,13 +17,14 @@ namespace sail
 
         void Start()
         {
-            //for (int i = 0; i < 20; i++)
             foreach (var action in GlobalManagers.actionManager.Actions)
             {
                 GameObject prefabInst = Instantiate(ActionButtonPrefab) as GameObject;
                 prefabInst.transform.SetParent(ActionListContent.transform, false);
-                prefabInst.GetComponent<Button>().onClick.AddListener(() => { showAction(action); });
-                prefabInst.GetComponentInChildren<Text>().text = action.Name;
+
+                var actionWidget = prefabInst.GetComponent<ActionWidget>();
+                actionWidget.ActionSelected += showAction;
+                actionWidget.setup(action);
             }
         }
 

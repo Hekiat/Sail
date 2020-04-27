@@ -17,5 +17,5 @@ MonoBehaviour:
   ActionSlot: 2
   VariableSlot: 1
   SecondaryVariableSlot: 0
-  Cooldown: 1
+  Cost: 2
   Damage: 3

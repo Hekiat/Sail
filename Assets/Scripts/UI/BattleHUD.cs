@@ -16,11 +16,13 @@ namespace sail
 
         // inner widgets
         public ActionListWidget ActionListWidget = null;
-        public ActionWidget ActionWidget = null;
+        public ActionSetupWidget ActionWidget = null;
         public Toggle ShowHideActionTgl = null;
         public TimelineWidget TimelineWidget = null;
 
-        public event ActionWidget.ActionAcceptedDelegate OnActionSetupAccepted;
+        
+        public event Action<ActionBase, List<ActionBase>> OnActionSetupSelected;
+        public event Action<ActionBase, List<ActionBase>> OnActionSetupAccepted;
 
         private void Awake()
         {
@@ -32,6 +34,7 @@ namespace sail
             RootCanvas = transform.GetChild(0).gameObject;
 
             ActionListWidget.ActionSelected += showAction;
+            ActionWidget.OnActionSelected += onActionSelected;
             ActionWidget.OnActionAccepted += onActionAccepted;
             ActionWidget.OnActionCanceled += onActionCancel;
 
@@ -42,6 +45,11 @@ namespace sail
 
         void Update()
         {
+        }
+
+        void onActionSelected(ActionBase action, List<ActionBase> secondaryActions)
+        {
+            OnActionSetupSelected?.Invoke(action, secondaryActions);
         }
 
         void onActionAccepted(ActionBase action, List<ActionBase> secondaryActions)
