@@ -60,8 +60,7 @@ namespace sail
 
         void onActionCancel()
         {
-            //ShowHideActionTgl.isOn = false;
-            //ShowHideActionTgl.gameObject.SetActive(false);
+            OnActionSetupSelected?.Invoke(null, new List<ActionBase>());
         }
 
         void showAction(ActionBase action)

@@ -17,5 +17,5 @@ MonoBehaviour:
   ActionSlot: 1
   VariableSlot: 0
   SecondaryVariableSlot: 0
-  Cooldown: 1
+  Cost: 1
   ShieldAmount: 100

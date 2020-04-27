@@ -32,6 +32,9 @@ namespace sail
             {
                 MoveEvent(this, new CustomEventArgs<Vector3>(Input.mousePosition));
             }
+
+            var cameraController = Camera.main.GetComponent<CameraController>();
+            cameraController.scroll(Input.mouseScrollDelta.y);
         }
     }
 }

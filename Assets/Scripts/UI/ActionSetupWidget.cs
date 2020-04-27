@@ -19,8 +19,8 @@ namespace sail
         public GameObject SecondaryActionCenterTargetGO = null;
         public GameObject SecondaryActionRightTargetGO = null;
 
-        public Button CancelBtn = null;
         public Button AcceptBtn = null;
+        public Button CancelBtn = null;
 
         public List<Sprite> SecondaryActionSlotImg = new List<Sprite>();
 
@@ -36,8 +36,8 @@ namespace sail
 
         private void Start()
         {
-            CancelBtn.onClick.AddListener(clear);
-            AcceptBtn.onClick.AddListener(accept);
+            CancelBtn.onClick.AddListener(onCancel);
+            AcceptBtn.onClick.AddListener(onAccept);
         }
 
         public void setAction(ActionBase action)
@@ -134,6 +134,26 @@ namespace sail
             return null;
         }
 
+        void onCancel()
+        {
+            OnActionCanceled();
+
+            clear();
+        }
+
+        void onAccept()
+        {
+            List<ActionBase> secondaryActions = new List<ActionBase>();
+            foreach (var saw in SecondaryActionWidgets)
+            {
+                secondaryActions.Add(saw.Action);
+            }
+
+            OnActionAccepted(Action, secondaryActions);
+
+            clear();
+        }
+
         void clear()
         {
             transform.gameObject.SetActive(false);
@@ -145,21 +165,6 @@ namespace sail
                 Destroy(aw.gameObject);
             }
             SecondaryActionWidgets.Clear();
-
-            OnActionCanceled();
-        }
-
-        void accept()
-        {
-            List<ActionBase> secondaryActions = new List<ActionBase>();
-            foreach (var saw in SecondaryActionWidgets)
-            {
-                secondaryActions.Add(saw.Action);
-            }
-
-            OnActionAccepted(Action, secondaryActions);
-
-            clear();
         }
     }
 }

@@ -27,7 +27,25 @@ namespace sail
 
         void Update()
         {
-            transform.position += transform.forward * Input.mouseScrollDelta.y;
+        }
+
+        private void OnDrawGizmos()
+        {
+            if (GlobalManagers.board == null)
+            {
+                return;
+            }
+
+            var target = GlobalManagers.board.CenterPosition + Vector3.up;
+            var cameraPosition = target + (Vector3.right * Mathf.Sin(AngleRad) + Vector3.back * Mathf.Cos(AngleRad)) * 2f;
+
+            Gizmos.color = Color.red;
+            Gizmos.DrawLine(target, cameraPosition);
+        }
+
+        public void scroll(float scrollDelta)
+        {
+            transform.position += transform.forward * scrollDelta;
 
             if (Input.GetMouseButton(sail.MouseButton.Middle) == true)
             {
@@ -36,7 +54,7 @@ namespace sail
             }
 
             // Wheel
-            Distance -= Input.mouseScrollDelta.y;
+            Distance -= scrollDelta; // Input.mouseScrollDelta.y;
             Distance = Mathf.Clamp(Distance, MinTargetDistance, MaxTargetDistance);
 
             // Update Position
@@ -56,20 +74,6 @@ namespace sail
             t = Mathf.Clamp01(t);
             var pitch = Mathf.Lerp(MinPitchDeg, MaxPitchDeg, t);
             transform.rotation = Quaternion.Euler(pitch, ea.y, ea.z);
-        }
-
-        private void OnDrawGizmos()
-        {
-            if (GlobalManagers.board == null)
-            {
-                return;
-            }
-
-            var target = GlobalManagers.board.CenterPosition + Vector3.up;
-            var cameraPosition = target + (Vector3.right * Mathf.Sin(AngleRad) + Vector3.back * Mathf.Cos(AngleRad)) * 2f;
-
-            Gizmos.color = Color.red;
-            Gizmos.DrawLine(target, cameraPosition);
         }
     }
 }
