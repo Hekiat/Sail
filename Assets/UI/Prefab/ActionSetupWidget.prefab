@@ -534,7 +534,7 @@ GameObject:
   - component: {fileID: 5073735712589430746}
   - component: {fileID: 7297250459182077283}
   m_Layer: 5
-  m_Name: ActionWidget
+  m_Name: ActionSetupWidget
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -558,8 +558,8 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: 0, y: 0}
-  m_SizeDelta: {x: 800, y: 1000}
+  m_AnchoredPosition: {x: 0, y: 55.4}
+  m_SizeDelta: {x: 800, y: 900}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!222 &5073735712589430746
 CanvasRenderer:
@@ -588,8 +588,8 @@ MonoBehaviour:
   SecondaryActionLeftTargetGO: {fileID: 8523767451007533611}
   SecondaryActionCenterTargetGO: {fileID: 6730871988223631706}
   SecondaryActionRightTargetGO: {fileID: 5873368206858041893}
-  CancelBtn: {fileID: 5236403324309092000}
   AcceptBtn: {fileID: 2088178511737280977}
+  CancelBtn: {fileID: 5236403324309092000}
   SecondaryActionSlotImg:
   - {fileID: 21300000, guid: 0b1ef47607c2e7248aa60e46bb49ba21, type: 3}
   - {fileID: 21300000, guid: 62b4973a94083df4e93d014e38b01e7d, type: 3}
@@ -951,7 +951,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   m_AspectMode: 1
-  m_AspectRatio: 4.5
+  m_AspectRatio: 10
 --- !u!1 &8523767451007533611
 GameObject:
   m_ObjectHideFlags: 0

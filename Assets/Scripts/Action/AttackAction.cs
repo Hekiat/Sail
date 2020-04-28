@@ -80,7 +80,7 @@ namespace sail
             selectionModel.Range = 1;
             selectionModel.ShapeType = AreaTileSelection.AreaType.Cross;
 
-            var model = new ActionSelectionModel(selectionModel, new AreaTileSelection());
+            var model = new ActionSelectionModel(selectionModel, null);
             var models = new List<ActionSelectionModel>();
             models.Add(model);
 

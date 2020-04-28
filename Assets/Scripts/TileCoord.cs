@@ -20,6 +20,15 @@ namespace sail
 
     public struct TileCoord
     {
+        // Shorthand
+
+        public static TileCoord AxisX { get { return new TileCoord(1, 0); } }
+        public static TileCoord AxisY { get { return new TileCoord(0, 1); } }
+        public static TileCoord AxisQ { get { return new TileCoord(1, 0, 0); } }
+        public static TileCoord AxisR { get { return new TileCoord(0, 1, 0); } }
+        public static TileCoord AxisS { get { return new TileCoord(0, 0, 1); } }
+
+
         public TileCoord(int x, int y)
             : this()
         {
@@ -90,6 +99,26 @@ namespace sail
             }
 
             return this == (TileCoord)o;
+        }
+
+        public static TileCoord operator *(TileCoord a, int b)
+        {
+            return new TileCoord(a._Square.x * b, a._Square.y * b);
+        }
+
+        public static TileCoord operator *(int a, TileCoord b)
+        {
+            return new TileCoord(a * b._Square.x, a * b._Square.y);
+        }
+
+        public static TileCoord operator +(TileCoord a, TileCoord b)
+        {
+            return new TileCoord(a._Square.x + b._Square.x, a._Square.y + b._Square.y);
+        }
+
+        public static TileCoord operator -(TileCoord a, TileCoord b)
+        {
+            return new TileCoord(a._Square.x - b._Square.x, a._Square.y - b._Square.y);
         }
 
         public static bool operator ==(TileCoord a, TileCoord b)

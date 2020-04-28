@@ -38,7 +38,7 @@ namespace sail
         {
             var selectionModel = new SelfTileSelection();
 
-            var model = new ActionSelectionModel(selectionModel, new SelfTileSelection());
+            var model = new ActionSelectionModel(selectionModel, null);
             var models = new List<ActionSelectionModel>();
             models.Add(model);
 

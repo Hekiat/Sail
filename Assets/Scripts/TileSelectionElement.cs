@@ -13,7 +13,8 @@ namespace sail
         NONE = 0,
         SELECTABLE = 1 << 0,
         HIGHLIGHTED = 1 << 1,
-        SELECTED = 1 << 2
+        SELECTED = 1 << 2,
+        TARGETED = 1 << 3
     }
 
     public static class TileLayerIDExtensions
@@ -28,7 +29,7 @@ namespace sail
     {
         private Unit Owner { get; set; } = null;
 
-        private ActionSelectionModel Model { get; set; } = null;
+        public ActionSelectionModel Model { get; set; } = null;
 
         private Dictionary<TileCoord, TileLayerID> Tiles = new Dictionary<TileCoord, TileLayerID>();
 
@@ -43,7 +44,7 @@ namespace sail
             Assert.IsNotNull(Owner, "Tile selection: Owner is null.");
             Assert.IsNotNull(Model, "Tile selection: Selection Model is null.");
 
-            var tiles = Model.SelectionModel.activeTiles(Owner);
+            var tiles = Model.SelectionModel.activeTiles(Owner.Coord);
             set(tiles, TileLayerID.SELECTABLE);
         }
 
@@ -131,6 +132,10 @@ namespace sail
                 if (pair.Value.isBitSet(TileLayerID.SELECTED))
                 {
                     color = Color.yellow;
+                }
+                else if (pair.Value.isBitSet(TileLayerID.TARGETED))
+                {
+                    color = Color.red;
                 }
                 else if(pair.Value.isBitSet(TileLayerID.HIGHLIGHTED))
                 {

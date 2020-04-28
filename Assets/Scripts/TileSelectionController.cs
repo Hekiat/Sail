@@ -85,6 +85,28 @@ namespace sail
             }
         }
 
+        void updateTargetTiles()
+        {
+            SelectionStack[CurrentStackID].clear(TileLayerID.TARGETED);
+
+            var targetModel = SelectionStack[CurrentStackID].Model.TargetModel;
+            if (targetModel == null || HoveredTile == null)
+            {
+                return;
+            }
+
+            var hoveredTile = HoveredTile.Value;
+            var isSelectable = SelectionStack[CurrentStackID].isLayerOn(hoveredTile, TileLayerID.SELECTABLE);
+
+            if (isSelectable == false)
+            {
+                return;
+            }
+
+            var targetTiles = targetModel.activeTiles(hoveredTile, hoveredTile - BattleFSM.Instance.SelectedEnemy.Coord);
+            SelectionStack[CurrentStackID].set(targetTiles, TileLayerID.TARGETED);
+        }
+
         // TMP
         public void highlight(List<TileCoord> list)
         {
@@ -104,6 +126,7 @@ namespace sail
             }
 
             updateHoveredTile();
+            updateTargetTiles();
             SelectionStack[CurrentStackID].update();
         }
     }

@@ -4,44 +4,36 @@ using UnityEngine;
 
 namespace sail
 {
-    public class RangedAttackAction : ActionBase
+    public class FireAction : ActionBase
     {
-        public static new ActionID ID { get; set; } = ActionID.RANGED_ATTACK;
+        public static new ActionID ID { get; set; } = ActionID.FIRE;
 
         public override int SelectionCount => 1;
 
         private Animator Animator = null;
+
         private TileCoord Target;
-
-        private GameObject ProjectilePrefab = null;
-
-        public override void configure(ActionBaseConfiguration config)
-        {
-            base.configure(config);
-
-            var selfConfig = config as RangedAttackConfiguration;
-            ProjectilePrefab = selfConfig.ProjectilePrefab;
-        }
 
         public override void start()
         {
             base.start();
 
             Animator = BattleFSM.Instance.SelectedEnemy.Animator;
-            Animator.CrossFade("RangedAttack", 0.2f);
+
+            Animator.CrossFade("Fire", 0.2f);
+            //Animator.applyRootMotion = true;
 
             Target = BattleFSM.Instance.TileSelectionController.selectedTiles()[0];
         }
 
         public override IEnumerator run()
         {
-            if (Animator.HasState(0, Animator.StringToHash("RangedAttack")) == false)
+            if (Animator.HasState(0, Animator.StringToHash("Fire")) == false)
             {
                 yield break;
             }
 
             var character = BattleFSM.Instance.SelectedEnemy;
-            var targetPos = character.transform.position;
             var tile = BattleFSM.Instance.board.getTile(Target);
 
             // Homing
@@ -65,23 +57,7 @@ namespace sail
             }
 
             // Transitioning
-            yield return new WaitUntil(() => Animator.GetCurrentAnimatorStateInfo(0).IsName("RangedAttack"));
-
-            // Waiting for the end of the motion
-            yield return new WaitUntil(() => Animator.GetCurrentAnimatorStateInfo(0).normalizedTime >= 0.4f);
-
-            var characterPos = character.transform.position;
-
-            var projectileStartPos = characterPos + Vector3.up * 1.3f + character.transform.forward;
-            var projectileGO = GameObject.Instantiate(ProjectilePrefab, projectileStartPos, Quaternion.identity, character.transform);
-            var projectile = projectileGO.GetComponent<Projectile>();
-            projectile.StartPosition = projectileStartPos;
-            projectile.EndPosition = tile.transform.position + Vector3.up * (1f + 1.3f) + tile.HeightOffset;
-            projectile.Speed = 20f;
-            //GameObject.CreatePrimitive(PrimitiveType.Sphere).transform.position = projectile.EndPosition;
-
-            // wait projectile to reach
-            yield return new WaitUntil(() => projectile == null);
+            yield return new WaitUntil(() => Animator.GetCurrentAnimatorStateInfo(0).IsName("Fire"));
 
             // Waiting for the end of the motion
             yield return new WaitUntil(() => Animator.GetCurrentAnimatorStateInfo(0).normalizedTime >= 1.0f);
@@ -91,25 +67,29 @@ namespace sail
             if (targetEM != null)
             {
                 var damageInterface = targetEM as IDamageable;
-                damageInterface.Damage(20);
+                damageInterface.Damage(10);
             }
 
             Animator.CrossFade("Idle", 0.2f);
+            //Animator.applyRootMotion = false;
             Animator = null;
         }
 
         public override List<ActionSelectionModel> selectionModels()
         {
             var selectionModel = new AreaTileSelection();
-            selectionModel.ShapeType = AreaTileSelection.AreaType.Circle;
-            selectionModel.Range = 5;
-            selectionModel.Filter = TileSelectionFilter.ENEMIES;
+            selectionModel.Range = 1;
+            selectionModel.ShapeType = AreaTileSelection.AreaType.Cross;
 
-            var model = new ActionSelectionModel(selectionModel, null);
+            var targetModel = new ConeTileSelection();
+            targetModel.Range = 3;
+
+            var model = new ActionSelectionModel(selectionModel, targetModel);
             var models = new List<ActionSelectionModel>();
             models.Add(model);
 
             return models;
         }
     }
+
 }

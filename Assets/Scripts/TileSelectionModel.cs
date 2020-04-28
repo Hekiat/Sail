@@ -19,7 +19,7 @@ namespace sail
     {
         public TileSelectionFilter Filter = TileSelectionFilter.ALL;
 
-        public abstract List<TileCoord> activeTiles(Unit unit);
+        public abstract List<TileCoord> activeTiles(TileCoord origin, TileCoord? direction = null);
 
         protected virtual void filter(List<TileCoord> tiles)
         {
@@ -60,10 +60,45 @@ namespace sail
 
     public class SelfTileSelection : TileSelectionModelBase
     {
-        public override List<TileCoord> activeTiles(Unit unit)
+        public override List<TileCoord> activeTiles(TileCoord origin, TileCoord? direction = null)
         {
             List<TileCoord> selectedTiles = new List<TileCoord>();
-            selectedTiles.Add(unit.Coord);
+            selectedTiles.Add(origin);
+            return selectedTiles;
+        }
+    }
+
+    public class ConeTileSelection : TileSelectionModelBase
+    {
+        public int Range { get; set; } = 3;
+
+        public override List<TileCoord> activeTiles(TileCoord origin, TileCoord? direction = null)
+        {
+            List<TileCoord> selectedTiles = new List<TileCoord>();
+
+            if (direction == null)
+            {
+                return selectedTiles;
+            }
+
+            // todo HEX
+            var orto = direction.Value.Square.x == 0 ? TileCoord.AxisX : TileCoord.AxisY;
+
+            for (int i=0; i<Range; ++i)
+            {
+                var dirOffset = direction.Value * i;
+
+                for (int j=0-i; j<=i; ++j)
+                {
+                    var offset = dirOffset + orto * j;
+                    var tileCoord = origin + offset;
+                    if (tileCoord.isValid())
+                    {
+                        selectedTiles.Add(tileCoord);
+                    }
+                }
+            }
+
             return selectedTiles;
         }
     }
@@ -103,12 +138,11 @@ namespace sail
 
         public AreaType ShapeType { get; set; } = AreaType.Cross;
 
-        public override List<TileCoord> activeTiles(Unit unit)
+        public override List<TileCoord> activeTiles(TileCoord origin, TileCoord? direction = null)
         {
             var type = GlobalManagers.board.TileType;
 
             var selectedTiles = new List<TileCoord>();
-            var origin = unit.Coord;
 
             if (type == TileType.Cube)
             {
