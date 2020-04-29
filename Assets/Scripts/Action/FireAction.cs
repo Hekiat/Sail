@@ -14,6 +14,24 @@ namespace sail
 
         private TileCoord Target;
 
+        private GameObject FireInst = null;
+        private ParticleSystem FirePS = null;
+
+        public override void configure(ActionBaseConfiguration config)
+        {
+            base.configure(config);
+
+            var c = config as FireConfiguration;
+            if (c == null)
+            {
+                return;
+            }
+
+            FireInst = GameObject.Instantiate(c.FireFXPrefab);
+            FirePS = FireInst.GetComponent<ParticleSystem>();
+            FirePS.Stop(true);
+        }
+
         public override void start()
         {
             base.start();
@@ -59,6 +77,13 @@ namespace sail
             // Transitioning
             yield return new WaitUntil(() => Animator.GetCurrentAnimatorStateInfo(0).IsName("Fire"));
 
+            yield return new WaitUntil(() => Animator.GetCurrentAnimatorStateInfo(0).normalizedTime >= 0.25f);
+            FireInst.transform.position = character.transform.position + Vector3.up * 1f + character.transform.forward * 1f;
+            var rotation = character.transform.eulerAngles;
+            rotation.x += 90f;
+            FireInst.transform.eulerAngles = rotation;
+            FirePS.Play(true);
+
             // Waiting for the end of the motion
             yield return new WaitUntil(() => Animator.GetCurrentAnimatorStateInfo(0).normalizedTime >= 1.0f);
 
@@ -73,6 +98,8 @@ namespace sail
             Animator.CrossFade("Idle", 0.2f);
             //Animator.applyRootMotion = false;
             Animator = null;
+
+            FirePS.Stop(true);
         }
 
         public override List<ActionSelectionModel> selectionModels()

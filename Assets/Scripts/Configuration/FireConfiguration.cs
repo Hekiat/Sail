@@ -9,6 +9,8 @@ namespace sail
     {
         public int Damage = 3;
         public int Range = 3;
+
+        public GameObject FireFXPrefab = null;
     }
 }
 

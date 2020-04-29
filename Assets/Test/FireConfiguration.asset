@@ -20,3 +20,5 @@ MonoBehaviour:
   Cost: 1
   Damage: 3
   Range: 3
+  FireFXPrefab: {fileID: 5451104332604320827, guid: c461dd553d9767e47bf1a5bff914811b,
+    type: 3}

@@ -83,16 +83,6 @@ namespace sail
             Name = config.Name;
             MaxSecondaryActionSlots = config.ActionSlot;
             Cost = config.Cost;
-
-            //for (int i = 0; i < config.ActionSlot; i++)
-            //{
-            //    ActionSlots.Add(new ActionSlot());
-            //}
-
-            //for (int i = 0; i < config.SecondaryVariableSlot; i++)
-            //{
-            //    SecondaryVariableSlots.Add(new FloatVariable());
-            //}
         }
 
         public virtual int SelectionCount { get { return selectionModels().Count; } }
