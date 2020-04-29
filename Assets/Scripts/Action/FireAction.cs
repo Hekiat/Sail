@@ -77,8 +77,11 @@ namespace sail
             // Transitioning
             yield return new WaitUntil(() => Animator.GetCurrentAnimatorStateInfo(0).IsName("Fire"));
 
-            yield return new WaitUntil(() => Animator.GetCurrentAnimatorStateInfo(0).normalizedTime >= 0.25f);
-            FireInst.transform.position = character.transform.position + Vector3.up * 1f + character.transform.forward * 1f;
+            yield return new WaitUntil(() => Animator.GetCurrentAnimatorStateInfo(0).normalizedTime >= 0.35f);
+            //FireInst.transform.position = character.transform.position + Vector3.up * 1f + character.transform.forward * 1f;
+
+            FireInst.transform.position = Animator.GetBoneTransform(HumanBodyBones.RightHand).position + character.transform.forward * 0.3f;
+
             var rotation = character.transform.eulerAngles;
             rotation.x += 90f;
             FireInst.transform.eulerAngles = rotation;

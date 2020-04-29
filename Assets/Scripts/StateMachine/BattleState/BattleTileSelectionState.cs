@@ -69,14 +69,8 @@ namespace sail
                 owner.TileSelectionController.select(tile.Coord);
                 owner.ChangeToState<BattleRunActionState>();
             }
-            //else
-            //{
-            //    return;
-            //}
 
-            //var path = AStarSearch.search(owner.SelectedEnemy.Coord, tile.Coord);
-            //owner.TileSelectionController.highlight(path);
-
+            owner.TileSelectionController.disable();
         }
     }
 }

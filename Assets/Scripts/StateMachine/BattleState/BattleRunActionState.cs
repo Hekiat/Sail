@@ -25,7 +25,7 @@ namespace sail
             //BattleFSM.Instance.ActionController.setup(idleAction, new List<ActionBase>());
             //BattleFSM.Instance.ActionController.request();
 
-            owner.TileSelectionController.disable();
+            //owner.TileSelectionController.disable();
         }
 
         protected override void AddListeners()
