@@ -77,7 +77,7 @@ namespace sail
             var projectile = projectileGO.GetComponent<Projectile>();
             projectile.StartPosition = projectileStartPos;
             projectile.EndPosition = tile.transform.position + Vector3.up * (1f + 1.3f) + tile.HeightOffset;
-            projectile.Speed = 20f;
+            projectile.Speed = 10f;
             //GameObject.CreatePrimitive(PrimitiveType.Sphere).transform.position = projectile.EndPosition;
 
             // wait projectile to reach
@@ -102,7 +102,7 @@ namespace sail
         {
             var selectionModel = new AreaTileSelection();
             selectionModel.ShapeType = AreaTileSelection.AreaType.Circle;
-            selectionModel.Range = 5;
+            selectionModel.Range = 50;
             selectionModel.Filter = TileSelectionFilter.ENEMIES;
 
             var model = new ActionSelectionModel(selectionModel, null);
