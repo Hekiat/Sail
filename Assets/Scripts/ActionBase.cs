@@ -52,6 +52,8 @@ namespace sail
         RANGED_ATTACK,
         SHIELD,
         FIRE,
+        REPAIR,
+        JUMP,
         COUNT
     }
 

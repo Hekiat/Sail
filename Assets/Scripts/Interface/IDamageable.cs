@@ -9,5 +9,7 @@ namespace sail
         int Health { get; }
 
         void Damage(int damageTaken);
+
+        void Heal(int healAmount);
     }
 }

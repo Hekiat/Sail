@@ -16,7 +16,9 @@ namespace sail
             typeof(AttackAction),
             typeof(RangedAttackAction),
             typeof(ShieldAction),
-            typeof(FireAction)
+            typeof(FireAction),
+            typeof(RepairAction),
+            typeof(JumpAction)
         };
 
         // public

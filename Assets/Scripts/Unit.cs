@@ -38,6 +38,12 @@ namespace sail
         //  IDamageable
         int IDamageable.Health { get { return Health; } }
 
+        void IDamageable.Heal(int healAmount)
+        {
+            Health += healAmount;
+            Health = Mathf.Min(Health, MaxHealth);
+        }
+
         void IDamageable.Damage(int damage)
         {
             Health -= damage;
