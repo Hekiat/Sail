@@ -33,7 +33,7 @@ namespace sail
         {
             RootCanvas = transform.GetChild(0).gameObject;
 
-            ActionListWidget.ActionSelected += showAction;
+            ActionListWidget.ActionSelected += onActionSelected;
             ActionWidget.OnActionSelected += onActionSelected;
             ActionWidget.OnActionAccepted += onActionAccepted;
             ActionWidget.OnActionCanceled += onActionCancel;
@@ -63,7 +63,7 @@ namespace sail
             OnActionSetupSelected?.Invoke(null, new List<ActionBase>());
         }
 
-        void showAction(ActionBase action)
+        void onActionSelected(ActionBase action)
         {
             ActionWidget.setAction(action);
 

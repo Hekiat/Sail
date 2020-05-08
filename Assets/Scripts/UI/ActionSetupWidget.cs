@@ -91,6 +91,7 @@ namespace sail
             {
                 secondaryActions.Add(s.Action);
             }
+
             OnActionSelected(Action, secondaryActions);
         }
 

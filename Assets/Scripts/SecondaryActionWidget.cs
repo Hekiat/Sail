@@ -13,18 +13,25 @@ namespace sail
         public Text ActionNameTxt = null;
         //private Image Image = null;
 
+        RectTransform Target;
+
         private void Awake()
         {
         }
 
         void Start()
         {
+            var currentRectTrans = GetComponent<RectTransform>();
+            StartCoroutine(startTransition(currentRectTrans, Target));
         }
 
         // Update is called once per frame
         void Update()
         {
+        }
 
+        private void OnDestroy()
+        {
         }
 
         public void setAction(ActionBase action, RectTransform rectTrans)
@@ -33,8 +40,7 @@ namespace sail
 
             ActionNameTxt.text = Action.Name;
 
-            var currentRectTrans = GetComponent<RectTransform>();
-            StartCoroutine(startTransition(currentRectTrans, rectTrans));
+            Target = rectTrans;
         }
 
         IEnumerator startTransition(RectTransform self, RectTransform target)

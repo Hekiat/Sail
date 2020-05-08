@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
+using System;
 
 namespace sail
 {
@@ -10,10 +11,8 @@ namespace sail
         public GameObject ActionButtonPrefab = null;
         public GameObject ActionListContent = null; // transform.Find("Canvas/ActionList/ScrollList/Viewport/Content").gameObject;
 
-        public delegate void ActionSelectedDelegate(ActionBase action);
-
         // Declare the event.
-        public event ActionSelectedDelegate ActionSelected;
+        public event Action<ActionBase> ActionSelected = null;
 
         void Start()
         {

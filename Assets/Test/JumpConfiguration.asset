@@ -14,7 +14,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   ActionID: 8
   Name: Jump
-  ActionSlot: 0
+  ActionSlot: 1
   VariableSlot: 0
   SecondaryVariableSlot: 0
   Cost: 1
