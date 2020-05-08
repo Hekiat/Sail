@@ -76,7 +76,7 @@ namespace sail
         public int MaxSecondaryActionSlots { get; private set; }
 
         // Runtime data
-        private List<ActionBase> SecondaryActions = new List<ActionBase>();
+        protected List<ActionBase> SecondaryActions = new List<ActionBase>();
 
         public virtual void configure(ActionBaseConfiguration config)
         {
