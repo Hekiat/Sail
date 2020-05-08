@@ -28,13 +28,37 @@ namespace sail
             // Transitioning
             yield return new WaitUntil(() => Animator.GetCurrentAnimatorStateInfo(0).IsName("Jump"));
 
+            var character = BattleFSM.Instance.SelectedEnemy;
+            var tile = BattleFSM.Instance.board.getTile(Target);
+
+            // Homing
+            var remainingFrames = 60f;
+            bool homingEnded = false;
+            while (homingEnded == false)
+            {
+                var targetDir = tile.transform.position - character.transform.position;
+                targetDir.y = 0f;
+
+                var angle = Vector3.SignedAngle(character.transform.forward, targetDir, Vector3.up);
+                var deltaAngle = angle / remainingFrames;
+                character.transform.Rotate(Vector3.up, deltaAngle);
+
+                remainingFrames -= 1f;
+
+                if (remainingFrames <= 1f)
+                {
+                    homingEnded = true;
+                }
+
+                yield return null;
+            }
+
             // Jump start frames
             yield return new WaitUntil(() => Animator.GetCurrentAnimatorStateInfo(0).normalizedTime >= 0.33f);
 
             // Move root
-            Debug.Log("PRE");
             yield return ActionFunctionLibrary.moveTo(BattleFSM.Instance.SelectedEnemy.gameObject, Target);
-            Debug.Log("POST");
+
             // Waiting for the end of the motion
             yield return new WaitUntil(() => Animator.GetCurrentAnimatorStateInfo(0).normalizedTime >= 1.0f);
 
