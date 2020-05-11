@@ -27,7 +27,10 @@ namespace sail
             Action = action;
             SecondaryActions = new List<ActionBase>(secondaryActions);
 
-            Action.setup(SecondaryActions);
+            if (Action != null)
+            {
+                Action.setup(SecondaryActions);
+            }
         }
 
         public void request()
@@ -46,6 +49,11 @@ namespace sail
 
         void clear()
         {
+            if (Action != null)
+            {
+                Action.setup(new List<ActionBase>());
+            }
+
             Action = null;
             SecondaryActions.Clear();
         }
