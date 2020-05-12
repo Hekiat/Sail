@@ -8,6 +8,8 @@ namespace sail
     {
         public static new ActionID ID { get; set; } = ActionID.ATTACK;
 
+        public override ActionID id() { return ID; }
+
         public override int SelectionCount => 1;
 
         private Animator Animator = null;

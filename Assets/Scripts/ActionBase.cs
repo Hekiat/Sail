@@ -62,6 +62,8 @@ namespace sail
     {
         public static ActionID ID { get; set; } = ActionID.UNDEFINED;
 
+        public virtual ActionID id() { return ID; }
+
         public string Name { get; private set; } = "UNDEFINED";
 
         // As a Main Action

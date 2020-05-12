@@ -9,6 +9,7 @@ namespace sail
     public class MoveAction : ActionBase
     {
         public static new ActionID ID { get; set; } = ActionID.MOVE;
+        public override ActionID id() { return ID; }
 
         public override int SelectionCount => 1; //{ get { return 1; } }
 
@@ -36,7 +37,7 @@ namespace sail
 
             //owner.board.getTile(Target).GetComponent<MeshRenderer>().material.color = Color.yellow;
 
-            if (SecondaryActions[0].Name == "Shield")
+            if (SecondaryActions[0].id() == ActionID.SHIELD)
             {
                 var characterTrans = BattleFSM.Instance.SelectedEnemy.transform;
                 var HologramInst = GameObject.Instantiate(Config.HologramPrefab, characterTrans.position, characterTrans.rotation);

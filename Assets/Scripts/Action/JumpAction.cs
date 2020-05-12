@@ -7,6 +7,7 @@ namespace sail
     public class JumpAction : ActionBase
     {
         public static new ActionID ID { get; set; } = ActionID.JUMP;
+        public override ActionID id() { return ID; }
 
         public override int SelectionCount => 1;
 
@@ -33,7 +34,7 @@ namespace sail
             foreach (var action in secondaryActions)
             {
                 // Better ID management
-                if (action.Name == "Attack")
+                if (action.id() == ActionID.ATTACK)
                 {
                     StateName = "JumpAttack";
                 }
@@ -77,8 +78,7 @@ namespace sail
 
             foreach (var action in SecondaryActions)
             {
-                // TODO Better ID management
-                if (action.Name == "Attack")
+                if (action.id() == ActionID.ATTACK)
                 {
                     var m = new AreaTileSelection();
                     m.Range = 1;

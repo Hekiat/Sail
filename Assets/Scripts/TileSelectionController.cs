@@ -78,7 +78,7 @@ namespace sail
 
             // TMP
             var fsm = BattleFSM.Instance;
-            if (fsm.ActionController.Action != null && fsm.ActionController.Action.Name == "Move")
+            if (fsm.ActionController.Action != null && fsm.ActionController.Action.id() == ActionID.MOVE)
             {
                 var path = AStarSearch.search(fsm.SelectedEnemy.Coord, hoveredTile);
                 SelectionStack[CurrentStackID].set(path, TileLayerID.HIGHLIGHTED);

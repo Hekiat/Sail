@@ -7,6 +7,7 @@ namespace sail
     public class IdleAction : ActionBase
     {
         public static new ActionID ID { get; set; } = ActionID.IDLE;
+        public override ActionID id() { return ID; }
 
         public override void start()
         {

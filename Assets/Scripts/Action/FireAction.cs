@@ -7,6 +7,7 @@ namespace sail
     public class FireAction : ActionBase
     {
         public static new ActionID ID { get; set; } = ActionID.FIRE;
+        public override ActionID id() { return ID; }
 
         public override int SelectionCount => 1;
 

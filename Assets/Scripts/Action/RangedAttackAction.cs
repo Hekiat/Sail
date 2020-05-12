@@ -7,6 +7,7 @@ namespace sail
     public class RangedAttackAction : ActionBase
     {
         public static new ActionID ID { get; set; } = ActionID.RANGED_ATTACK;
+        public override ActionID id() { return ID; }
 
         public override int SelectionCount => 1;
 
