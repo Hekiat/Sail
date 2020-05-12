@@ -7,6 +7,7 @@ namespace sail
     [CreateAssetMenu(fileName = "MoveConfiguration", menuName = "Custom/MoveConfiguration", order = 1)]
     public class MoveConfiguration : ActionBaseConfiguration
     {
-         public int MoveRange = 3;
+        public int MoveRange = 3;
+        public GameObject HologramPrefab;
     }
 }

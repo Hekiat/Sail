@@ -14,8 +14,10 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   ActionID: 2
   Name: Move
-  ActionSlot: 0
+  ActionSlot: 1
   VariableSlot: 0
   SecondaryVariableSlot: 0
-  Cooldown: 1
+  Cost: 1
   MoveRange: 5
+  HologramPrefab: {fileID: 6361969610279090013, guid: 6fbe2d5dc665df84fab902fce248a4c4,
+    type: 3}

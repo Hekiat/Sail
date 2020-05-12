@@ -14,6 +14,15 @@ namespace sail
 
         private List<TileCoord> Path = null;
 
+        private MoveConfiguration Config = null;
+
+        public override void configure(ActionBaseConfiguration config)
+        {
+            base.configure(config);
+
+            Config = config as MoveConfiguration;
+        }
+
         public override void start()
         {
             base.start();
@@ -26,6 +35,12 @@ namespace sail
             Path.RemoveAt(0);
 
             //owner.board.getTile(Target).GetComponent<MeshRenderer>().material.color = Color.yellow;
+
+            if (SecondaryActions[0].Name == "Shield")
+            {
+                var characterTrans = BattleFSM.Instance.SelectedEnemy.transform;
+                var HologramInst = GameObject.Instantiate(Config.HologramPrefab, characterTrans.position, characterTrans.rotation);
+            }
         }
 
         public override IEnumerator run()
