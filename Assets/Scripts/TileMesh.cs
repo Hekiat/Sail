@@ -270,6 +270,8 @@ namespace sail
         }
     }
 
+
+    #if UNITY_EDITOR
     [CustomEditor(typeof(TileMesh))]
     public class TileMeshEditor : Editor
     {
@@ -285,4 +287,5 @@ namespace sail
             }
         }
     }
+    #endif
 }

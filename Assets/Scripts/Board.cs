@@ -285,6 +285,7 @@ namespace sail
         }
     }
 
+    #if UNITY_EDITOR
     [CustomEditor(typeof(Board))]
     public class BoardManagerEditor : Editor
     {
@@ -299,4 +300,5 @@ namespace sail
             }
         }
     }
+    #endif
 }
