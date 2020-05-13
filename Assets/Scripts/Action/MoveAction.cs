@@ -11,11 +11,14 @@ namespace sail
         public static new ActionID ID { get; set; } = ActionID.MOVE;
         public override ActionID id() { return ID; }
 
-        public override int SelectionCount => 1; //{ get { return 1; } }
+        public override int SelectionCount => 1;
 
         private List<TileCoord> Path = null;
+        private TileCoord Target;
 
         private MoveConfiguration Config = null;
+
+        private string StateName = string.Empty;
 
         public override void configure(ActionBaseConfiguration config)
         {
@@ -30,12 +33,26 @@ namespace sail
 
             var owner = BattleFSM.Instance;
             var character = owner.SelectedEnemy;
-            character.Animator.CrossFade("Walk", 0.5f);
 
-            Path = AStarSearch.search(owner.SelectedEnemy.Coord, owner.TileSelectionController.selectedTiles()[0]);
-            Path.RemoveAt(0);
+            StateName = "Walk";
 
-            //owner.board.getTile(Target).GetComponent<MeshRenderer>().material.color = Color.yellow;
+            foreach (var sa in SecondaryActions)
+            {
+                if (sa.id() == ActionID.ATTACK)
+                {
+                    StateName = "DashAttack";
+                }
+            }
+
+            character.Animator.CrossFade(StateName, 0.5f);
+
+            Target = owner.TileSelectionController.selectedTiles()[0];
+
+            if (StateName == "Walk")
+            {
+                Path = AStarSearch.search(owner.SelectedEnemy.Coord, Target);
+                Path.RemoveAt(0);
+            }
 
             if (SecondaryActions[0].id() == ActionID.SHIELD)
             {
@@ -45,6 +62,33 @@ namespace sail
         }
 
         public override IEnumerator run()
+        {
+            if (StateName == "Walk")
+            {
+                yield return walk();
+            }
+
+            if (StateName == "DashAttack")
+            {
+                yield return dashAttack();
+            }
+        }
+
+        public override List<ActionSelectionModel> selectionModels()
+        {
+            var selectionModel = new AreaTileSelection();
+            selectionModel.Range = 5;
+            selectionModel.ShapeType = AreaTileSelection.AreaType.Circle;
+
+            var model = new ActionSelectionModel(selectionModel, null);
+            var models = new List<ActionSelectionModel>();
+            models.Add(model);
+
+            return models;
+        }
+
+        // Actions
+        private IEnumerator walk()
         {
             var character = BattleFSM.Instance.SelectedEnemy;
 
@@ -76,12 +120,12 @@ namespace sail
                     var targetPos = tile.transform.position;
                     var targetDir = targetPos - character.transform.position;
                     targetDir.y = 0f;
-                
+
                     const float maxRotationAngle = 2f;
                     var angle = Vector3.SignedAngle(character.transform.forward, targetDir, Vector3.up);
                     angle = angle < 0f ? angle = Math.Max(angle, -maxRotationAngle) : angle = Math.Min(angle, maxRotationAngle);
                     character.transform.Rotate(Vector3.up, angle);
-                
+
                     yield return null;
                 }
 
@@ -90,20 +134,59 @@ namespace sail
                 ++i;
             }
 
-            character.Coord = Path[Path.Count-1];
+            character.Coord = Path[Path.Count - 1];
+
+            Path.Clear();
         }
 
-        public override List<ActionSelectionModel> selectionModels()
+        private IEnumerator dashAttack()
         {
-            var selectionModel = new AreaTileSelection();
-            selectionModel.Range = 5;
-            selectionModel.ShapeType = AreaTileSelection.AreaType.Circle;
+            var character = BattleFSM.Instance.SelectedEnemy;
 
-            var model = new ActionSelectionModel(selectionModel, null);
-            var models = new List<ActionSelectionModel>();
-            models.Add(model);
+            var dir = Target - character.Coord;
 
-            return models;
+            if (dir.Square.x < 0)
+            {
+                dir = -1 * TileCoord.AxisX;
+            }
+            else if (dir.Square.x > 0)
+            {
+                dir = TileCoord.AxisX;
+            }
+            else if (dir.Square.y < 0)
+            {
+                dir = -1 * TileCoord.AxisY;
+            }
+            else if (dir.Square.y > 0)
+            {
+                dir = TileCoord.AxisY;
+            }
+
+            var moveToCoroutine = ActionFunctionLibrary.moveTo(character.gameObject, Target - dir, EasingFunctions.EaseInSine);
+            while (moveToCoroutine.MoveNext())
+            {
+                var targetPos = BattleFSM.Instance.board.getTile(Target).transform.position;
+                var targetDir = targetPos - BattleFSM.Instance.board.getTile(Target-dir).transform.position;
+
+                const float maxRotationAngle = 2f;
+                var angle = Vector3.SignedAngle(character.transform.forward, targetDir, Vector3.up);
+                angle = angle < 0f ? angle = Math.Max(angle, -maxRotationAngle) : angle = Math.Min(angle, maxRotationAngle);
+                character.transform.Rotate(Vector3.up, angle);
+
+                yield return null;
+            }
+
+            var targetEM = BattleFSM.Instance.enemies.Find(x => x.Coord == Target);
+            if (targetEM != null)
+            {
+                var damageInterface = targetEM as IDamageable;
+                damageInterface.Damage(20);
+            }
+
+            yield return new WaitUntil(() => character.Animator.GetCurrentAnimatorStateInfo(0).normalizedTime >= 0.95f);
+
+            character.Coord = Target - dir;
+            character.Animator.CrossFade("Idle", 0.5f);
         }
     }
 }
