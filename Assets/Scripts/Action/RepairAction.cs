@@ -30,7 +30,7 @@ namespace sail
             yield return new WaitUntil(() => Animator.GetCurrentAnimatorStateInfo(0).normalizedTime >= 1.0f);
 
             var targetEM = BattleFSM.Instance.SelectedEnemy;
-            var damageInterface = targetEM as IDamageable;
+            var damageInterface = targetEM as IHealable;
             damageInterface.Heal(3);
 
             Animator.CrossFade("Idle", 0.2f);

@@ -16,6 +16,7 @@ namespace sail
 
         void Start()
         {
+            // PROTO / test instanciation
             foreach (var action in GlobalManagers.actionManager.Actions)
             {
                 GameObject prefabInst = Instantiate(ActionButtonPrefab) as GameObject;

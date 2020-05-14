@@ -29,7 +29,8 @@ namespace sail
             // Waiting for the end of the motion
             yield return new WaitUntil(() => Animator.GetCurrentAnimatorStateInfo(0).normalizedTime >= 1.0f);
 
-            BattleFSM.Instance.SelectedEnemy.Shield += 6;
+            var shieldable = BattleFSM.Instance.SelectedEnemy as IShieldable;
+            shieldable.Shield(6);
 
             Animator.CrossFade("Idle", 0.2f);
             Animator = null;

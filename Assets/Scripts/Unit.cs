@@ -4,7 +4,7 @@ using UnityEngine;
 
 namespace sail
 {
-    public class Unit : MonoBehaviour, IDamageable
+    public class Unit : MonoBehaviour, IDamageable, IHealable, IShieldable
     {
         public string UnitName;
 
@@ -13,10 +13,10 @@ namespace sail
         public Animator Animator { get; private set; } = null;
 
         public int Cooldown = 0;
-        public int Health;
-        public int Shield;
+        public int Health { get; protected set; }
+        public int Shield { get; protected set; }
 
-        public int MaxHealth;
+        public int MaxHealth { get; protected set; }
 
         protected virtual void Awake()
         {
@@ -36,9 +36,7 @@ namespace sail
         // Interface
 
         //  IDamageable
-        int IDamageable.Health { get { return Health; } }
-
-        void IDamageable.Heal(int healAmount)
+        void IHealable.Heal(int healAmount)
         {
             Health += healAmount;
             Health = Mathf.Min(Health, MaxHealth);
@@ -52,6 +50,14 @@ namespace sail
             Health = Mathf.Max(Health, 0);
 
             WorldUIController.addFloatingText(damage.ToString(), transform, Color.red);
+        }
+
+        void IShieldable.Shield(int shieldAmount)
+        {
+            Shield += shieldAmount;
+            Health = Mathf.Max(Health, 0);
+
+            WorldUIController.addFloatingText(shieldAmount.ToString(), transform, Color.cyan);
         }
     }
 }

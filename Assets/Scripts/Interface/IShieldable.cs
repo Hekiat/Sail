@@ -4,8 +4,8 @@ using UnityEngine;
 
 namespace sail
 {
-    public interface IDamageable
+    public interface IShieldable
     {
-        void Damage(int damageTaken);
+        void Shield(int shieldAmount);
     }
 }
