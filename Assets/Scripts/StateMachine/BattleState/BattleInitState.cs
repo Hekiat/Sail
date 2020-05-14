@@ -44,7 +44,7 @@ namespace sail
                 em.Coord = tileCoord;
                 enemies.Add(em);
 
-                tileCoord = new TileCoord(board.Width - 1, board.Height - 1);
+                tileCoord = new TileCoord(board.Width / 2, board.Height / 2);
                 pos = board.getTile(tileCoord).gameObject.transform.position;
                 enemyGO = Instantiate(owner.UnitsPrefab[1], pos + heightOffset, Quaternion.identity);
                 em = enemyGO.GetComponent<EnemyBase>();

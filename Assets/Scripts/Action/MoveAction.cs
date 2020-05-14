@@ -54,10 +54,13 @@ namespace sail
                 Path.RemoveAt(0);
             }
 
-            if (SecondaryActions[0].id() == ActionID.SHIELD)
+            foreach(var sa in SecondaryActions)
             {
-                var characterTrans = BattleFSM.Instance.SelectedEnemy.transform;
-                var HologramInst = GameObject.Instantiate(Config.HologramPrefab, characterTrans.position, characterTrans.rotation);
+                if (sa.id() == ActionID.SHIELD)
+                {
+                    var characterTrans = BattleFSM.Instance.SelectedEnemy.transform;
+                    var HologramInst = GameObject.Instantiate(Config.HologramPrefab, characterTrans.position, characterTrans.rotation);
+                }
             }
         }
 

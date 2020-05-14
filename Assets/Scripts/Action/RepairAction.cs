@@ -29,7 +29,9 @@ namespace sail
             // Waiting for the end of the motion
             yield return new WaitUntil(() => Animator.GetCurrentAnimatorStateInfo(0).normalizedTime >= 1.0f);
 
-            BattleFSM.Instance.SelectedEnemy.Health = 3;
+            var targetEM = BattleFSM.Instance.SelectedEnemy;
+            var damageInterface = targetEM as IDamageable;
+            damageInterface.Heal(3);
 
             Animator.CrossFade("Idle", 0.2f);
             Animator = null;

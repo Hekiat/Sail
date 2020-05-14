@@ -42,12 +42,16 @@ namespace sail
         {
             Health += healAmount;
             Health = Mathf.Min(Health, MaxHealth);
+
+            WorldUIController.addFloatingText(healAmount.ToString(), transform, Color.green);
         }
 
         void IDamageable.Damage(int damage)
         {
             Health -= damage;
             Health = Mathf.Max(Health, 0);
+
+            WorldUIController.addFloatingText(damage.ToString(), transform, Color.red);
         }
     }
 }
