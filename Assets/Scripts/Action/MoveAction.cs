@@ -60,6 +60,8 @@ namespace sail
                 {
                     var characterTrans = BattleFSM.Instance.SelectedEnemy.transform;
                     var HologramInst = GameObject.Instantiate(Config.HologramPrefab, characterTrans.position, characterTrans.rotation);
+                    var ps = HologramInst.GetComponentInChildren<ParticleSystem>();
+                    ps.Play();
                 }
             }
         }
