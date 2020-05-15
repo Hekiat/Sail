@@ -11,6 +11,7 @@ namespace sail
         public Text CharacterNameTxt = null;
         public Image HealthBarForeground = null;
         public Text HealthTxt = null;
+        public Text ShieldText = null;
 
         void Start()
         {
@@ -43,9 +44,17 @@ namespace sail
             var healthRect = HealthBarForeground.GetComponent<RectTransform>();
             healthRect.SetSizeWithCurrentAnchors(RectTransform.Axis.Horizontal, (float)health / maxHealth * 190f);
 
-            // tmp
-            var shieldText = GameObject.Find("ShieldText").GetComponent<Text>();
-            shieldText.text = $"{inst.SelectedEnemy.Shield}";
+            var shieldStatus = inst.SelectedEnemy.getStatus<ShieldStatus>();
+
+            if (shieldStatus != null)
+            {
+                ShieldText.transform.parent.gameObject.SetActive(true);
+                ShieldText.text = shieldStatus != null ? $"{shieldStatus.Value}" : "0";
+            }
+            else
+            {
+                ShieldText.transform.parent.gameObject.SetActive(false);
+            }
         }
     }
 }

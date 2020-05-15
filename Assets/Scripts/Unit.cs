@@ -14,7 +14,8 @@ namespace sail
 
         public int Cooldown = 0;
         public int Health { get; protected set; }
-        public int Shield { get; protected set; }
+
+        public List<StatusBase> Status = new List<StatusBase>();
 
         public int MaxHealth { get; protected set; }
 
@@ -54,10 +55,22 @@ namespace sail
 
         void IShieldable.Shield(int shieldAmount)
         {
-            Shield += shieldAmount;
+            var status = getStatus<ShieldStatus>();
+            if (status == null)
+            {
+                status = new ShieldStatus();
+                Status.Add(status);
+            }
+
+            status.add(shieldAmount);
             Health = Mathf.Max(Health, 0);
 
             WorldUIController.addFloatingText(shieldAmount.ToString(), transform, Color.cyan);
+        }
+
+        public T getStatus<T>() where T : StatusBase
+        {
+            return Status.Find((e) => e.GetType() == typeof(T)) as T;
         }
     }
 }
