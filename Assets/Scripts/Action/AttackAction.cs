@@ -27,19 +27,19 @@ namespace sail
             Target = BattleFSM.Instance.TileSelectionController.selectedTiles()[0];
         }
 
-        public override IEnumerator run()
+        public override void run()
         {
             if (Animator.HasState(0, Animator.StringToHash("BasicAttack")) == false)
             {
-                yield break;
+                return;
             }
 
             var character = BattleFSM.Instance.SelectedEnemy;
             var tile = BattleFSM.Instance.board.getTile(Target);
 
             // Homing
-            bool homingEnded = false;
-            while (homingEnded == false)
+            //bool homingEnded = false;
+            //while (homingEnded == false)
             {
                 var targetDir = tile.transform.position - character.transform.position;
                 targetDir.y = 0f;
@@ -51,29 +51,38 @@ namespace sail
 
                 if (Mathf.Abs(angle) < 2f)
                 {
-                    homingEnded = true;
+                    //homingEnded = true;
+                }
+                else
+                {
+                    return;
                 }
 
-                yield return null;
+                //yield return null;
+            }
+
+            if (Animator.GetCurrentAnimatorStateInfo(0).IsName("BasicAttack") 
+                && Animator.GetCurrentAnimatorStateInfo(0).normalizedTime >= 1.0f)
+            {
+                // Target
+                var targetEM = BattleFSM.Instance.enemies.Find(x => x.Coord == Target);
+                if (targetEM != null)
+                {
+                    var damageInterface = targetEM as IDamageable;
+                    damageInterface.Damage(10);
+                }
+
+                Animator.CrossFade("Idle", 0.2f);
+                //Animator.applyRootMotion = false;
+                Animator = null;
+                ActionEnded = true;
             }
 
             // Transitioning
-            yield return new WaitUntil(() => Animator.GetCurrentAnimatorStateInfo(0).IsName("BasicAttack"));
+            //yield return new WaitUntil(() => Animator.GetCurrentAnimatorStateInfo(0).IsName("BasicAttack"));
 
             // Waiting for the end of the motion
-            yield return new WaitUntil(() => Animator.GetCurrentAnimatorStateInfo(0).normalizedTime >= 1.0f);
-
-            // Target
-            var targetEM = BattleFSM.Instance.enemies.Find(x => x.Coord == Target);
-            if (targetEM != null)
-            {
-                var damageInterface = targetEM as IDamageable;
-                damageInterface.Damage(10);
-            }
-
-            Animator.CrossFade("Idle", 0.2f);
-            //Animator.applyRootMotion = false;
-            Animator = null;
+            //yield return new WaitUntil(() => Animator.GetCurrentAnimatorStateInfo(0).normalizedTime >= 1.0f);
         }
 
         public override List<ActionSelectionModel> selectionModels()

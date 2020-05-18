@@ -34,11 +34,16 @@ namespace sail
             Target = BattleFSM.Instance.TileSelectionController.selectedTiles()[0];
         }
 
-        public override IEnumerator run()
+        public override void run()
         {
-            if (Animator.HasState(0, Animator.StringToHash("RangedAttack")) == false)
+            //if (Animator.HasState(0, Animator.StringToHash("RangedAttack")) == false)
+            //{
+            //    //yield break;
+            //    return;
+            //}
+            if (Animator.GetCurrentAnimatorStateInfo(0).IsName("RangedAttack") == false)
             {
-                yield break;
+                return;
             }
 
             var character = BattleFSM.Instance.SelectedEnemy;
@@ -46,8 +51,9 @@ namespace sail
             var tile = BattleFSM.Instance.board.getTile(Target);
 
             // Homing
-            bool homingEnded = false;
-            while (homingEnded == false)
+            //bool homingEnded = false;
+            //while (homingEnded == false)
+            if(Animator.GetCurrentAnimatorStateInfo(0).normalizedTime < 0.4f)
             {
                 var targetDir = tile.transform.position - character.transform.position;
                 targetDir.y = 0f;
@@ -59,45 +65,66 @@ namespace sail
 
                 if (Mathf.Abs(angle) < 2f)
                 {
-                    homingEnded = true;
+                    //homingEnded = true;
                 }
 
-                yield return null;
+                // yield return null;
+                return;
             }
 
             // Transitioning
-            yield return new WaitUntil(() => Animator.GetCurrentAnimatorStateInfo(0).IsName("RangedAttack"));
+            //yield return new WaitUntil(() => Animator.GetCurrentAnimatorStateInfo(0).IsName("RangedAttack"));
 
             // Waiting for the end of the motion
-            yield return new WaitUntil(() => Animator.GetCurrentAnimatorStateInfo(0).normalizedTime >= 0.4f);
+            //yield return new WaitUntil(() => Animator.GetCurrentAnimatorStateInfo(0).normalizedTime >= 0.4f);
 
-            var characterPos = character.transform.position;
 
-            var projectileStartPos = characterPos + Vector3.up * 1.3f + character.transform.forward;
-            var projectileGO = GameObject.Instantiate(ProjectilePrefab, projectileStartPos, Quaternion.identity, character.transform);
-            var projectile = projectileGO.GetComponent<Projectile>();
-            projectile.StartPosition = projectileStartPos;
-            projectile.EndPosition = tile.transform.position + Vector3.up * (1f + 1.3f) + tile.HeightOffset;
-            projectile.Speed = 10f;
-            //GameObject.CreatePrimitive(PrimitiveType.Sphere).transform.position = projectile.EndPosition;
-
-            // wait projectile to reach
-            yield return new WaitUntil(() => projectile == null);
-
-            // Waiting for the end of the motion
-            yield return new WaitUntil(() => Animator.GetCurrentAnimatorStateInfo(0).normalizedTime >= 1.0f);
-
-            // Target
-            var targetEM = BattleFSM.Instance.enemies.Find(x => x.Coord == Target);
-            if (targetEM != null)
+            if (ProjectileSpawned == false)
             {
-                var damageInterface = targetEM as IDamageable;
-                damageInterface.Damage(20);
+                var characterPos = character.transform.position;
+
+                var projectileStartPos = characterPos + Vector3.up * 1.3f + character.transform.forward;
+                var projectileGO = GameObject.Instantiate(ProjectilePrefab, projectileStartPos, Quaternion.identity, character.transform);
+                ProjectileInst = projectileGO.GetComponent<Projectile>();
+                ProjectileInst.StartPosition = projectileStartPos;
+                ProjectileInst.EndPosition = tile.transform.position + Vector3.up * (1f + 1.3f) + tile.HeightOffset;
+                ProjectileInst.Speed = 10f;
+                //GameObject.CreatePrimitive(PrimitiveType.Sphere).transform.position = projectile.EndPosition;
+                ProjectileSpawned = true;
             }
 
-            Animator.CrossFade("Idle", 0.2f);
-            Animator = null;
+
+            if(ProjectileSpawned == true && ProjectileInst != null)
+            {
+                return;
+            }
+
+            // wait projectile to reach
+            //yield return new WaitUntil(() => ProjectileInst == null);
+
+            // Waiting for the end of the motion
+           // yield return new WaitUntil(() => Animator.GetCurrentAnimatorStateInfo(0).normalizedTime >= 1.0f);
+
+            if (Animator.GetCurrentAnimatorStateInfo(0).normalizedTime >= 1.0f)
+            {
+                // Target
+                var targetEM = BattleFSM.Instance.enemies.Find(x => x.Coord == Target);
+                if (targetEM != null)
+                {
+                    var damageInterface = targetEM as IDamageable;
+                    damageInterface.Damage(20);
+                }
+
+                Animator.CrossFade("Idle", 0.2f);
+                Animator = null;
+                ProjectileInst = null;
+                ProjectileSpawned = false;
+                ActionEnded = true;
+            }
         }
+
+        Projectile ProjectileInst = null;
+        bool ProjectileSpawned = false;
 
         public override List<ActionSelectionModel> selectionModels()
         {

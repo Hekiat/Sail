@@ -66,16 +66,18 @@ namespace sail
             }
         }
 
-        public override IEnumerator run()
+        public override void run()
         {
             if (StateName == "Walk")
             {
-                yield return walk();
+                //yield return walk();
+                walk();
             }
 
             if (StateName == "DashAttack")
             {
-                yield return dashAttack();
+                //yield return dashAttack();
+                dashAttack();
             }
         }
 
@@ -92,59 +94,70 @@ namespace sail
             return models;
         }
 
+        private Tweener CurrentTweener = null;
+        private bool Moving = false;
+        private int PathIndex = 0;
+
         // Actions
-        private IEnumerator walk()
+        private void walk()
         {
             var character = BattleFSM.Instance.SelectedEnemy;
 
-            int i = 0;
-            foreach (var target in Path)
+            if (PathIndex == Path.Count)
             {
-                BattleFSM.Instance.board.getTile(target).GetComponent<MeshRenderer>().material.color = Color.yellow;
-
-                Func<float, float, float, float> fun = EasingFunctions.Linear;
-
-                if (i == 0)
+                if (CurrentTweener == null)
                 {
-                    fun = EasingFunctions.EaseInSine;
+                    character.Coord = Path[Path.Count - 1];
+
+                    Path.Clear();
+                    ActionEnded = true;
+                    PathIndex = 0;
                 }
-                else if (i == Path.Count - 1)
-                {
-                    fun = EasingFunctions.EaseOutSine;
-
-                    character.Animator.CrossFade("Idle", 0.5f);
-                }
-
-                //yield return ActionFunctionLibrary.moveTo(character.gameObject, target, fun);
-
-                var moveToCoroutine = ActionFunctionLibrary.moveTo(character.gameObject, target, fun);
-
-                while (moveToCoroutine.MoveNext())
-                {
-                    var tile = BattleFSM.Instance.board.getTile(target);
-                    var targetPos = tile.transform.position;
-                    var targetDir = targetPos - character.transform.position;
-                    targetDir.y = 0f;
-
-                    const float maxRotationAngle = 2f;
-                    var angle = Vector3.SignedAngle(character.transform.forward, targetDir, Vector3.up);
-                    angle = angle < 0f ? angle = Math.Max(angle, -maxRotationAngle) : angle = Math.Min(angle, maxRotationAngle);
-                    character.transform.Rotate(Vector3.up, angle);
-
-                    yield return null;
-                }
-
-                BattleFSM.Instance.board.getTile(target).GetComponent<MeshRenderer>().material.color = Color.white;
-
-                ++i;
+                
+                return;
             }
 
-            character.Coord = Path[Path.Count - 1];
+            var target = Path[PathIndex];
 
-            Path.Clear();
+            var tile = BattleFSM.Instance.board.getTile(target);
+            var targetPos = tile.transform.position;
+            var targetDir = targetPos - character.transform.position;
+            targetDir.y = 0f;
+
+            const float maxRotationAngle = 2f;
+            var angle = Vector3.SignedAngle(character.transform.forward, targetDir, Vector3.up);
+            angle = angle < 0f ? angle = Math.Max(angle, -maxRotationAngle) : angle = Math.Min(angle, maxRotationAngle);
+            character.transform.Rotate(Vector3.up, angle);
+
+            if (CurrentTweener != null)
+            {
+                return;
+            }
+
+            BattleFSM.Instance.board.getTile(target).GetComponent<MeshRenderer>().material.color = Color.yellow;
+
+            Func<float, float, float, float> fun = EasingFunctions.Linear;
+
+            if (PathIndex == 0)
+            {
+                fun = EasingFunctions.EaseInSine;
+            }
+            else if (PathIndex == Path.Count - 1)
+            {
+                fun = EasingFunctions.EaseOutSine;
+
+                character.Animator.CrossFade("Idle", 0.5f);
+            }
+
+            //yield return ActionFunctionLibrary.moveTo(character.gameObject, target, fun);
+            CurrentTweener = ActionFunctionLibrary.moveTo(character.gameObject, target, fun);
+
+            BattleFSM.Instance.board.getTile(target).GetComponent<MeshRenderer>().material.color = Color.white;
+
+            ++PathIndex;
         }
 
-        private IEnumerator dashAttack()
+        private void dashAttack()
         {
             var character = BattleFSM.Instance.SelectedEnemy;
 
@@ -167,18 +180,23 @@ namespace sail
                 dir = TileCoord.AxisY;
             }
 
-            var moveToCoroutine = ActionFunctionLibrary.moveTo(character.gameObject, Target - dir, EasingFunctions.EaseInSine);
-            while (moveToCoroutine.MoveNext())
+            if(CurrentTweener == null && Moving == false)
+            {
+                Moving = true;
+                CurrentTweener = ActionFunctionLibrary.moveTo(character.gameObject, Target - dir, EasingFunctions.EaseInSine);
+            }
+
+            if (CurrentTweener != null)
             {
                 var targetPos = BattleFSM.Instance.board.getTile(Target).transform.position;
-                var targetDir = targetPos - BattleFSM.Instance.board.getTile(Target-dir).transform.position;
+                var targetDir = targetPos - BattleFSM.Instance.board.getTile(Target - dir).transform.position;
 
                 const float maxRotationAngle = 2f;
                 var angle = Vector3.SignedAngle(character.transform.forward, targetDir, Vector3.up);
                 angle = angle < 0f ? angle = Math.Max(angle, -maxRotationAngle) : angle = Math.Min(angle, maxRotationAngle);
                 character.transform.Rotate(Vector3.up, angle);
 
-                yield return null;
+                return;
             }
 
             var targetEM = BattleFSM.Instance.enemies.Find(x => x.Coord == Target);
@@ -188,10 +206,14 @@ namespace sail
                 damageInterface.Damage(20);
             }
 
-            yield return new WaitUntil(() => character.Animator.GetCurrentAnimatorStateInfo(0).normalizedTime >= 0.95f);
+            //yield return new WaitUntil(() => character.Animator.GetCurrentAnimatorStateInfo(0).normalizedTime >= 0.95f);
 
-            character.Coord = Target - dir;
-            character.Animator.CrossFade("Idle", 0.5f);
+            if (character.Animator.GetCurrentAnimatorStateInfo(0).normalizedTime >= 0.95f)
+            {
+                character.Coord = Target - dir;
+                character.Animator.CrossFade("Idle", 0.5f);
+                ActionEnded = true;
+            }
         }
     }
 }

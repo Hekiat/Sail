@@ -21,13 +21,23 @@ namespace sail
             Animator.CrossFade("Shield", 0.2f);
         }
 
-        public override IEnumerator run()
+        public override void run()
         {
+            if(Animator.GetCurrentAnimatorStateInfo(0).IsName("Shield") == false)
+            {
+                return;
+            }
+
+            if(Animator.GetCurrentAnimatorStateInfo(0).normalizedTime < 1.0f)
+            {
+                return;
+            }
+
             // Transitioning
-            yield return new WaitUntil(() => Animator.GetCurrentAnimatorStateInfo(0).IsName("Shield"));
+            //yield return new WaitUntil(() => Animator.GetCurrentAnimatorStateInfo(0).IsName("Shield"));
 
             // Waiting for the end of the motion
-            yield return new WaitUntil(() => Animator.GetCurrentAnimatorStateInfo(0).normalizedTime >= 1.0f);
+            //yield return new WaitUntil(() => Animator.GetCurrentAnimatorStateInfo(0).normalizedTime >= 1.0f);
 
             var targetEM = BattleFSM.Instance.SelectedEnemy;
             var damageInterface = targetEM as IHealable;
@@ -35,6 +45,7 @@ namespace sail
 
             Animator.CrossFade("Idle", 0.2f);
             Animator = null;
+            ActionEnded = true;
         }
 
         public override List<ActionSelectionModel> selectionModels()

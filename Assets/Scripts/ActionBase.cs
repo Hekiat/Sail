@@ -98,9 +98,11 @@ namespace sail
             SecondaryActions = new List<ActionBase>(secondaryActions);
         }
 
-        public virtual void start() { }
+        public virtual void start() { ActionEnded = false; }
 
-        public virtual IEnumerator run(){ yield break; }
+        public virtual bool ActionEnded { get; protected set; }
+
+        public virtual void run(){ ActionEnded = true; }
 
         public virtual List<ActionEffectBase> predictEffects(List<TileCoord> targets) { return new List<ActionEffectBase>(); }
     }

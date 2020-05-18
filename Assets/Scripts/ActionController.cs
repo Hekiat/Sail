@@ -42,7 +42,11 @@ namespace sail
         {
             Debug.Log("start action controller");
             Action.start();
-            yield return Action.run();
+            while(Action.ActionEnded != true)
+            {
+                Action.run();
+                yield return null;
+            }
             OnActionEnded(Action, EventArgs.Empty);
             clear();
         }
