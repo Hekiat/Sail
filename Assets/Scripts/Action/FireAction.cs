@@ -38,27 +38,20 @@ namespace sail
             base.start();
 
             Animator = BattleFSM.Instance.SelectedEnemy.Animator;
-
-            Animator.CrossFade("Fire", 0.2f);
-            //Animator.applyRootMotion = true;
+            BattleFSM.Instance.SelectedEnemy.MotionController.requestMotion(EmMotionStates.Fire, 0.2f);
 
             Target = BattleFSM.Instance.TileSelectionController.selectedTiles()[0];
         }
 
         public override void run()
         {
-            //if (Animator.HasState(0, Animator.StringToHash("Fire")) == false)
-            //{
-            //    return;
-            //}
-
             var character = BattleFSM.Instance.SelectedEnemy;
             var tile = BattleFSM.Instance.board.getTile(Target);
+            var mc = BattleFSM.Instance.SelectedEnemy.MotionController;
 
-            // Homing
-            //bool homingEnded = false;
-            //while (homingEnded == false)
-            if(Animator.GetCurrentAnimatorStateInfo(0).normalizedTime < 0.35f)
+            float currentTime = mc.currentStateNormalizedTime();
+
+            if (currentTime < 0.35f)
             {
                 var targetDir = tile.transform.position - character.transform.position;
                 targetDir.y = 0f;
@@ -74,15 +67,9 @@ namespace sail
                 }
 
                 return;
-                //yield return null;
             }
 
-            if (Animator.GetCurrentAnimatorStateInfo(0).IsName("Fire") == false)
-            {
-                return;
-            }
-
-            if (Animator.GetCurrentAnimatorStateInfo(0).normalizedTime >= 0.35f && FirePS.isPlaying == false)
+            if (currentTime >= 0.35f && FirePS.isPlaying == false)
             {
                 FireInst.transform.position = Animator.GetBoneTransform(HumanBodyBones.RightHand).position + character.transform.forward * 0.3f;
                 var rotation = character.transform.eulerAngles;
@@ -91,20 +78,7 @@ namespace sail
                 FirePS.Play(true);
             }
 
-            // Transitioning
-            //yield return new WaitUntil(() => Animator.GetCurrentAnimatorStateInfo(0).IsName("Fire"));
-            //
-            //yield return new WaitUntil(() => Animator.GetCurrentAnimatorStateInfo(0).normalizedTime >= 0.35f);
-            //FireInst.transform.position = character.transform.position + Vector3.up * 1f + character.transform.forward * 1f;
-
-            //FireInst.transform.position = Animator.GetBoneTransform(HumanBodyBones.RightHand).position + character.transform.forward * 0.3f;
-
-            
-
-            // Waiting for the end of the motion
-            //yield return new WaitUntil(() => Animator.GetCurrentAnimatorStateInfo(0).normalizedTime >= 1.0f);
-
-            if (Animator.GetCurrentAnimatorStateInfo(0).normalizedTime >= 1.0f)
+            if (currentTime >= 1.0f)
             {
                 // Target
                 var targetEM = BattleFSM.Instance.enemies.Find(x => x.Coord == Target);
@@ -114,10 +88,9 @@ namespace sail
                     damageInterface.Damage(10);
                 }
 
-                Animator.CrossFade("Idle", 0.2f);
-                //Animator.applyRootMotion = false;
+                mc.requestMotion(EmMotionStates.Idle, 0.2f);
+                
                 Animator = null;
-
                 FirePS.Stop(true);
                 ActionEnded = true;
             }

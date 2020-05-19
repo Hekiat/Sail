@@ -11,6 +11,7 @@ namespace sail
         public TileCoord Coord { get; set; }
 
         public Animator Animator { get; private set; } = null;
+        public MotionController MotionController { get; private set; } = null;
 
         public int Cooldown = 0;
         public int Health { get; protected set; }
@@ -22,6 +23,7 @@ namespace sail
         protected virtual void Awake()
         {
             Animator = GetComponent<Animator>();
+            MotionController = GetComponent<MotionController>();
         }
 
         void Start()

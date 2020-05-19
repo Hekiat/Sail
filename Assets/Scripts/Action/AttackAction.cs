@@ -21,16 +21,19 @@ namespace sail
 
             Animator = BattleFSM.Instance.SelectedEnemy.Animator;
 
-            Animator.CrossFade("BasicAttack", 0.2f);
-            //Animator.applyRootMotion = true;
+            BattleFSM.Instance.SelectedEnemy.MotionController.requestMotion(EmMotionStates.BasicAttack, 0.2f);
+            //Animator.CrossFade("BasicAttack", 0.2f);
 
             Target = BattleFSM.Instance.TileSelectionController.selectedTiles()[0];
         }
 
         public override void run()
         {
-            if (Animator.HasState(0, Animator.StringToHash("BasicAttack")) == false)
+            var mc = BattleFSM.Instance.SelectedEnemy.MotionController;
+
+            if (mc.CurrentState != EmMotionStates.BasicAttack)
             {
+                ActionEnded = true;
                 return;
             }
 
@@ -38,31 +41,22 @@ namespace sail
             var tile = BattleFSM.Instance.board.getTile(Target);
 
             // Homing
-            //bool homingEnded = false;
-            //while (homingEnded == false)
+            var targetDir = tile.transform.position - character.transform.position;
+            targetDir.y = 0f;
+
+            const float maxRotationAngle = 2f;
+            var angle = Vector3.SignedAngle(character.transform.forward, targetDir, Vector3.up);
+            var deltaAngle = angle < 0f ? Mathf.Max(angle, -maxRotationAngle) : Mathf.Min(angle, maxRotationAngle);
+            character.transform.Rotate(Vector3.up, deltaAngle);
+
+            if (Mathf.Abs(angle) > 2f)
             {
-                var targetDir = tile.transform.position - character.transform.position;
-                targetDir.y = 0f;
-
-                const float maxRotationAngle = 2f;
-                var angle = Vector3.SignedAngle(character.transform.forward, targetDir, Vector3.up);
-                var deltaAngle = angle < 0f ? Mathf.Max(angle, -maxRotationAngle) : Mathf.Min(angle, maxRotationAngle);
-                character.transform.Rotate(Vector3.up, deltaAngle);
-
-                if (Mathf.Abs(angle) < 2f)
-                {
-                    //homingEnded = true;
-                }
-                else
-                {
-                    return;
-                }
-
-                //yield return null;
+                return;
             }
 
-            if (Animator.GetCurrentAnimatorStateInfo(0).IsName("BasicAttack") 
-                && Animator.GetCurrentAnimatorStateInfo(0).normalizedTime >= 1.0f)
+            float currentTime = mc.currentStateNormalizedTime();
+
+            if (currentTime >= 1.0f)
             {
                 // Target
                 var targetEM = BattleFSM.Instance.enemies.Find(x => x.Coord == Target);
@@ -72,17 +66,11 @@ namespace sail
                     damageInterface.Damage(10);
                 }
 
-                Animator.CrossFade("Idle", 0.2f);
-                //Animator.applyRootMotion = false;
+                mc.requestMotion(EmMotionStates.Idle, 0.2f);
+
                 Animator = null;
                 ActionEnded = true;
             }
-
-            // Transitioning
-            //yield return new WaitUntil(() => Animator.GetCurrentAnimatorStateInfo(0).IsName("BasicAttack"));
-
-            // Waiting for the end of the motion
-            //yield return new WaitUntil(() => Animator.GetCurrentAnimatorStateInfo(0).normalizedTime >= 1.0f);
         }
 
         public override List<ActionSelectionModel> selectionModels()

@@ -131,6 +131,7 @@ GameObject:
   - component: {fileID: 4284532392476940947}
   - component: {fileID: 4284532392483943795}
   - component: {fileID: 2718457758768882153}
+  - component: {fileID: 7816017434456723713}
   m_Layer: 11
   m_Name: Adam
   m_TagString: Untagged
@@ -194,9 +195,19 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   UnitName: 
   Cooldown: 100
-  Health: 0
-  MaxHealth: 0
   Configuration: {fileID: 11400000, guid: 776f1eb98aafc4847b05ee1f6d7b58ce, type: 2}
+--- !u!114 &7816017434456723713
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4284532392476640947}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 6fb130fdf4530ce46b9ec17d88efdd90, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &4284532392476640953
 GameObject:
   m_ObjectHideFlags: 0

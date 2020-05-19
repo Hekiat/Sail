@@ -12,6 +12,8 @@ namespace sail
         public ActionBase Action { get; private set; } = null;
         private List<ActionBase> SecondaryActions { get; set; } = new List<ActionBase>();
 
+        public bool Running { get; private set; } = false;
+
         void Start()
         {
         
@@ -20,6 +22,22 @@ namespace sail
         void Update()
         {
         
+        }
+
+        void LateUpdate()
+        {
+            if (Action == null || Running == false)
+            {
+                return;
+            }
+            
+            Action.run();
+
+            if (Action.ActionEnded == true)
+            {
+                OnActionEnded(Action, EventArgs.Empty);
+                clear();
+            }
         }
 
         public void setup(ActionBase action, List<ActionBase> secondaryActions)
@@ -35,13 +53,15 @@ namespace sail
 
         public void request()
         {
-            StartCoroutine(runAction());
+            Running = true;
+            Action.start();
+            //StartCoroutine(runAction());
         }
 
         IEnumerator runAction()
         {
             Debug.Log("start action controller");
-            Action.start();
+            //Action.start();
             while(Action.ActionEnded != true)
             {
                 Action.run();
@@ -60,6 +80,7 @@ namespace sail
 
             Action = null;
             SecondaryActions.Clear();
+            Running = false;
         }
     }
 }
