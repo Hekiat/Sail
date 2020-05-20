@@ -11,8 +11,6 @@ namespace sail
 
         public override int SelectionCount => 1;
 
-        private Animator Animator = null;
-
         private TileCoord Target;
 
         private GameObject FireInst = null;
@@ -37,42 +35,34 @@ namespace sail
         {
             base.start();
 
-            Animator = BattleFSM.Instance.SelectedEnemy.Animator;
-            BattleFSM.Instance.SelectedEnemy.MotionController.requestMotion(EmMotionStates.Fire, 0.2f);
+            Unit.MotionController.requestMotion(EmMotionStates.Fire, 0.2f);
 
             Target = BattleFSM.Instance.TileSelectionController.selectedTiles()[0];
         }
 
         public override void run()
         {
-            var character = BattleFSM.Instance.SelectedEnemy;
             var tile = BattleFSM.Instance.board.getTile(Target);
-            var mc = BattleFSM.Instance.SelectedEnemy.MotionController;
 
-            float currentTime = mc.currentStateNormalizedTime();
+            float currentTime = Unit.MotionController.currentStateNormalizedTime();
 
             if (currentTime < 0.35f)
             {
-                var targetDir = tile.transform.position - character.transform.position;
+                var targetDir = tile.transform.position - Unit.transform.position;
                 targetDir.y = 0f;
 
                 const float maxRotationAngle = 2f;
-                var angle = Vector3.SignedAngle(character.transform.forward, targetDir, Vector3.up);
+                var angle = Vector3.SignedAngle(Unit.transform.forward, targetDir, Vector3.up);
                 var deltaAngle = angle < 0f ? Mathf.Max(angle, -maxRotationAngle) : Mathf.Min(angle, maxRotationAngle);
-                character.transform.Rotate(Vector3.up, deltaAngle);
-
-                if (Mathf.Abs(angle) < 2f)
-                {
-                    //homingEnded = true;
-                }
+                Unit.transform.Rotate(Vector3.up, deltaAngle);
 
                 return;
             }
 
             if (currentTime >= 0.35f && FirePS.isPlaying == false)
             {
-                FireInst.transform.position = Animator.GetBoneTransform(HumanBodyBones.RightHand).position + character.transform.forward * 0.3f;
-                var rotation = character.transform.eulerAngles;
+                FireInst.transform.position = Unit.Animator.GetBoneTransform(HumanBodyBones.RightHand).position + Unit.transform.forward * 0.3f;
+                var rotation = Unit.transform.eulerAngles;
                 rotation.x += 90f;
                 FireInst.transform.eulerAngles = rotation;
                 FirePS.Play(true);
@@ -88,9 +78,7 @@ namespace sail
                     damageInterface.Damage(10);
                 }
 
-                mc.requestMotion(EmMotionStates.Idle, 0.2f);
-                
-                Animator = null;
+                Unit.MotionController.requestMotion(EmMotionStates.Idle, 0.2f);
                 FirePS.Stop(true);
                 ActionEnded = true;
             }

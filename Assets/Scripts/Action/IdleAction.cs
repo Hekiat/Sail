@@ -12,9 +12,7 @@ namespace sail
         public override void start()
         {
             base.start();
-
-            var character = BattleFSM.Instance.SelectedEnemy;
-            character.Animator.CrossFade("Idle", 0.5f);
+            Unit.MotionController.requestMotion(EmMotionStates.Idle, 0.5f);
         }
     }
 }

@@ -66,12 +66,7 @@ namespace sail
 
         public string Name { get; private set; } = "UNDEFINED";
 
-        // As a Main Action
-        //public List<ActionSlot> ActionSlots = new List<ActionSlot>();
-        //public List<VariableBase> VariableSlots = new List<VariableBase>();
-
-        // As a Seconcary Action
-        //public List<VariableBase> SecondaryVariableSlots = new List<VariableBase>();
+        public Unit Unit { get; private set; } = null;
 
         // Configure data
         public int Cost { get; private set; }
@@ -98,7 +93,11 @@ namespace sail
             SecondaryActions = new List<ActionBase>(secondaryActions);
         }
 
-        public virtual void start() { ActionEnded = false; }
+        public virtual void start()
+        {
+            ActionEnded = false;
+            Unit = BattleFSM.Instance.SelectedEnemy;
+        }
 
         public virtual bool ActionEnded { get; protected set; }
 

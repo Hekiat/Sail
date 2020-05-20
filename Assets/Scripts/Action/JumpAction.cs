@@ -12,15 +12,13 @@ namespace sail
 
         public override int SelectionCount => 1;
 
-        private Animator Animator = null;
         private TileCoord Target;
-        private string StateName = string.Empty;
+        private MotionState StateName = null;
 
         public override void start()
         {
             base.start();
 
-            Animator = BattleFSM.Instance.SelectedEnemy.Animator;
             Target = BattleFSM.Instance.TileSelectionController.selectedTiles()[0];
 
             playMotion();
@@ -30,52 +28,39 @@ namespace sail
         {
             base.setup(secondaryActions);
 
-            StateName = "Jump";
+            StateName = EmMotionStates.Jump;
 
             foreach (var action in secondaryActions)
             {
                 // Better ID management
                 if (action.id() == ActionID.ATTACK)
                 {
-                    StateName = "JumpAttack";
+                    StateName = EmMotionStates.JumpAttack;
                 }
             }
         }
 
         private void playMotion()
         {
-            
-            Animator.CrossFade(StateName, 0.2f);
+            Unit.MotionController.requestMotion(StateName, 0.2f);
         }
 
         public override void run()
         {
-            if(Animator.GetCurrentAnimatorStateInfo(0).IsName(StateName) == false)
+            if (StateName == EmMotionStates.Jump)
             {
-                return;
-            }
-
-            // Transitioning
-            //yield return new WaitUntil(() => Animator.GetCurrentAnimatorStateInfo(0).IsName(StateName));
-
-            if (StateName == "Jump")
-            {
-                //yield return jump();
                 jump();
             }
 
-            if (StateName == "JumpAttack")
+            if (StateName == EmMotionStates.JumpAttack)
             {
-                //yield return jumpAttack();
                 jumpAttack();
             }
 
             if (ActionEnded)
             {
-                BattleFSM.Instance.SelectedEnemy.Coord = Target;
-
-                Animator.CrossFade("Idle", 0.2f);
-                Animator = null;
+                Unit.Coord = Target;
+                Unit.MotionController.requestMotion(EmMotionStates.Idle, 0.2f);
             }
         }
 
@@ -108,48 +93,32 @@ namespace sail
         // Actions
         private void jump()
         {
-            var character = BattleFSM.Instance.SelectedEnemy;
             var tile = BattleFSM.Instance.board.getTile(Target);
+            var time = Unit.MotionController.currentStateNormalizedTime();
 
             // Homing
             var remainingFrames = 60f;
-            //bool homingEnded = false;
-            //while (homingEnded == false)
-            if(Animator.GetCurrentAnimatorStateInfo(0).normalizedTime < 0.33f)
+            if(time < 0.33f)
             {
-                var targetDir = tile.transform.position - character.transform.position;
+                var targetDir = tile.transform.position - Unit.transform.position;
                 targetDir.y = 0f;
 
-                var angle = Vector3.SignedAngle(character.transform.forward, targetDir, Vector3.up);
+                var angle = Vector3.SignedAngle(Unit.transform.forward, targetDir, Vector3.up);
                 var deltaAngle = angle / remainingFrames;
-                character.transform.Rotate(Vector3.up, deltaAngle);
+                Unit.transform.Rotate(Vector3.up, deltaAngle);
 
                 remainingFrames -= 1f;
-
-                if (remainingFrames <= 1f)
-                {
-                    //homingEnded = true;
-                }
 
                 return;
             }
 
-            //// Jump start frames
-            //yield return new WaitUntil(() => Animator.GetCurrentAnimatorStateInfo(0).normalizedTime >= 0.33f);
-            //
-            //// Move root
-            //yield return ActionFunctionLibrary.moveTo(BattleFSM.Instance.SelectedEnemy.gameObject, Target);
-            //
-            //// Waiting for the end of the motion
-            //yield return new WaitUntil(() => Animator.GetCurrentAnimatorStateInfo(0).normalizedTime >= 1.0f);
-
             if (Moving == false)
             {
-                Tweener = ActionFunctionLibrary.moveTo(BattleFSM.Instance.SelectedEnemy.gameObject, Target);
+                Tweener = ActionFunctionLibrary.moveTo(Unit.gameObject, Target);
                 Moving = true;
             }
 
-            if (Animator.GetCurrentAnimatorStateInfo(0).normalizedTime >= 1.0f)
+            if (Unit.MotionController.currentStateNormalizedTime() >= 1.0f)
             {
                 ActionEnded = true;
                 Moving = false;
@@ -161,49 +130,33 @@ namespace sail
 
         private void jumpAttack()
         {
-            var character = BattleFSM.Instance.SelectedEnemy;
             var tile = BattleFSM.Instance.board.getTile(Target);
+            var time = Unit.MotionController.currentStateNormalizedTime();
 
             // Homing
             var remainingFrames = 30f;
-            //bool homingEnded = false;
-            //while (homingEnded == false)
-            if(Animator.GetCurrentAnimatorStateInfo(0).normalizedTime < 0.14f)
+
+            if(time < 0.14f)
             {
-                var targetDir = tile.transform.position - character.transform.position;
+                var targetDir = tile.transform.position - Unit.transform.position;
                 targetDir.y = 0f;
 
-                var angle = Vector3.SignedAngle(character.transform.forward, targetDir, Vector3.up);
+                var angle = Vector3.SignedAngle(Unit.transform.forward, targetDir, Vector3.up);
                 var deltaAngle = angle / remainingFrames;
-                character.transform.Rotate(Vector3.up, deltaAngle);
+                Unit.transform.Rotate(Vector3.up, deltaAngle);
 
                 remainingFrames -= 1f;
 
-                if (remainingFrames <= 1f)
-                {
-                    //homingEnded = true;
-                }
                 return;
-
-                //yield return null;
             }
-
-            // Jump start frames
-            //yield return new WaitUntil(() => Animator.GetCurrentAnimatorStateInfo(0).normalizedTime >= 0.14f);
-
-            // Move root
-            //yield return ActionFunctionLibrary.moveTo(BattleFSM.Instance.SelectedEnemy.gameObject, Target);
-
-            // Waiting for the end of the motion
-            //yield return new WaitUntil(() => Animator.GetCurrentAnimatorStateInfo(0).normalizedTime >= 1.0f);
 
             if (Moving == false)
             {
-                Tweener = ActionFunctionLibrary.moveTo(BattleFSM.Instance.SelectedEnemy.gameObject, Target);
+                Tweener = ActionFunctionLibrary.moveTo(Unit.gameObject, Target);
                 Moving = true;
             }
 
-            if (Animator.GetCurrentAnimatorStateInfo(0).normalizedTime >= 1.0f)
+            if (time >= 1.0f)
             {
                 ActionEnded = true;
                 Moving = false;

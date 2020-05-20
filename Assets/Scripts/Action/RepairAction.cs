@@ -11,40 +11,26 @@ namespace sail
 
         public override int SelectionCount => 1;
 
-        private Animator Animator = null;
-
         public override void start()
         {
             base.start();
 
-            Animator = BattleFSM.Instance.SelectedEnemy.Animator;
-            Animator.CrossFade("Shield", 0.2f);
+            Unit.MotionController.requestMotion(EmMotionStates.Shield);
         }
 
         public override void run()
         {
-            if(Animator.GetCurrentAnimatorStateInfo(0).IsName("Shield") == false)
+            if(Unit.MotionController.currentStateNormalizedTime() < 1.0f)
             {
                 return;
             }
-
-            if(Animator.GetCurrentAnimatorStateInfo(0).normalizedTime < 1.0f)
-            {
-                return;
-            }
-
-            // Transitioning
-            //yield return new WaitUntil(() => Animator.GetCurrentAnimatorStateInfo(0).IsName("Shield"));
-
-            // Waiting for the end of the motion
-            //yield return new WaitUntil(() => Animator.GetCurrentAnimatorStateInfo(0).normalizedTime >= 1.0f);
 
             var targetEM = BattleFSM.Instance.SelectedEnemy;
             var damageInterface = targetEM as IHealable;
             damageInterface.Heal(3);
 
-            Animator.CrossFade("Idle", 0.2f);
-            Animator = null;
+            Unit.MotionController.requestMotion(EmMotionStates.Idle, 0.2f);
+
             ActionEnded = true;
         }
 
