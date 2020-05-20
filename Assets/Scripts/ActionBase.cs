@@ -104,5 +104,22 @@ namespace sail
         public virtual void run(){ ActionEnded = true; }
 
         public virtual List<ActionEffectBase> predictEffects(List<TileCoord> targets) { return new List<ActionEffectBase>(); }
+
+        public void applyHoming(Vector3 targetPosition)
+        {
+            var targetDir = targetPosition - Unit.transform.position;
+            targetDir.y = 0f;
+
+            const float maxRotationAngle = 2f;
+            var angle = Vector3.SignedAngle(Unit.transform.forward, targetDir, Vector3.up);
+            var deltaAngle = angle < 0f ? Mathf.Max(angle, -maxRotationAngle) : Mathf.Min(angle, maxRotationAngle);
+            Unit.transform.Rotate(Vector3.up, deltaAngle);
+        }
+
+        public void applyHoming(TileCoord target)
+        {
+            var tile = BattleFSM.Instance.board.getTile(target);
+            applyHoming(tile.transform.position);
+        }
     }
 }

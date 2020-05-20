@@ -19,7 +19,6 @@ namespace sail
             base.start();
 
             Unit.MotionController.requestMotion(EmMotionStates.BasicAttack, 0.2f);
-            //Animator.CrossFade("BasicAttack", 0.2f);
 
             Target = BattleFSM.Instance.TileSelectionController.selectedTiles()[0];
         }
@@ -34,21 +33,7 @@ namespace sail
                 return;
             }
 
-            var tile = BattleFSM.Instance.board.getTile(Target);
-
-            // Homing
-            var targetDir = tile.transform.position - Unit.transform.position;
-            targetDir.y = 0f;
-
-            const float maxRotationAngle = 2f;
-            var angle = Vector3.SignedAngle(Unit.transform.forward, targetDir, Vector3.up);
-            var deltaAngle = angle < 0f ? Mathf.Max(angle, -maxRotationAngle) : Mathf.Min(angle, maxRotationAngle);
-            Unit.transform.Rotate(Vector3.up, deltaAngle);
-
-            if (Mathf.Abs(angle) > 2f)
-            {
-                return;
-            }
+            applyHoming(Target);
 
             if (mc.currentStateNormalizedTime() >= 1.0f)
             {

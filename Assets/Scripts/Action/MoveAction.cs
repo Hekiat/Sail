@@ -111,16 +111,7 @@ namespace sail
             }
 
             var target = Path[PathIndex];
-
-            var tile = BattleFSM.Instance.board.getTile(target);
-            var targetPos = tile.transform.position;
-            var targetDir = targetPos - Unit.transform.position;
-            targetDir.y = 0f;
-
-            const float maxRotationAngle = 2f;
-            var angle = Vector3.SignedAngle(Unit.transform.forward, targetDir, Vector3.up);
-            angle = angle < 0f ? angle = Math.Max(angle, -maxRotationAngle) : angle = Math.Min(angle, maxRotationAngle);
-            Unit.transform.Rotate(Vector3.up, angle);
+            applyHoming(target);
 
             if (CurrentTweener != null)
             {
@@ -178,14 +169,7 @@ namespace sail
 
             if (CurrentTweener != null)
             {
-                var targetPos = BattleFSM.Instance.board.getTile(Target).transform.position;
-                var targetDir = targetPos - BattleFSM.Instance.board.getTile(Target - dir).transform.position;
-
-                const float maxRotationAngle = 2f;
-                var angle = Vector3.SignedAngle(Unit.transform.forward, targetDir, Vector3.up);
-                angle = angle < 0f ? angle = Math.Max(angle, -maxRotationAngle) : angle = Math.Min(angle, maxRotationAngle);
-                Unit.transform.Rotate(Vector3.up, angle);
-
+                applyHoming(Target);
                 return;
             }
 

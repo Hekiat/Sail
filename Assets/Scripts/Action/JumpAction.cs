@@ -93,22 +93,19 @@ namespace sail
         // Actions
         private void jump()
         {
-            var tile = BattleFSM.Instance.board.getTile(Target);
             var time = Unit.MotionController.currentStateNormalizedTime();
-
-            // Homing
-            var remainingFrames = 60f;
             if(time < 0.33f)
             {
-                var targetDir = tile.transform.position - Unit.transform.position;
-                targetDir.y = 0f;
+                //var remainingFrames = 60f;
+                //var targetDir = tile.transform.position - Unit.transform.position;
+                //targetDir.y = 0f;
+                //
+                //var angle = Vector3.SignedAngle(Unit.transform.forward, targetDir, Vector3.up);
+                //var deltaAngle = angle / remainingFrames;
+                //Unit.transform.Rotate(Vector3.up, deltaAngle);
+                //remainingFrames -= 1f;
 
-                var angle = Vector3.SignedAngle(Unit.transform.forward, targetDir, Vector3.up);
-                var deltaAngle = angle / remainingFrames;
-                Unit.transform.Rotate(Vector3.up, deltaAngle);
-
-                remainingFrames -= 1f;
-
+                applyHoming(Target);
                 return;
             }
 
@@ -130,23 +127,19 @@ namespace sail
 
         private void jumpAttack()
         {
-            var tile = BattleFSM.Instance.board.getTile(Target);
             var time = Unit.MotionController.currentStateNormalizedTime();
-
-            // Homing
-            var remainingFrames = 30f;
-
             if(time < 0.14f)
             {
-                var targetDir = tile.transform.position - Unit.transform.position;
-                targetDir.y = 0f;
+                //var targetDir = tile.transform.position - Unit.transform.position;
+                //targetDir.y = 0f;
+                //
+                //var angle = Vector3.SignedAngle(Unit.transform.forward, targetDir, Vector3.up);
+                //var deltaAngle = angle / remainingFrames;
+                //Unit.transform.Rotate(Vector3.up, deltaAngle);
+                //
+                //remainingFrames -= 1f;
 
-                var angle = Vector3.SignedAngle(Unit.transform.forward, targetDir, Vector3.up);
-                var deltaAngle = angle / remainingFrames;
-                Unit.transform.Rotate(Vector3.up, deltaAngle);
-
-                remainingFrames -= 1f;
-
+                applyHoming(Target);
                 return;
             }
 

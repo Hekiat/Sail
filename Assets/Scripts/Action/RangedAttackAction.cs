@@ -34,24 +34,17 @@ namespace sail
 
         public override void run()
         {
-            var targetPos = Unit.transform.position;
-            var tile = BattleFSM.Instance.board.getTile(Target);
             var time = Unit.MotionController.currentStateNormalizedTime();
             if (time < 0.4f)
             {
-                var targetDir = tile.transform.position - Unit.transform.position;
-                targetDir.y = 0f;
-
-                const float maxRotationAngle = 2f;
-                var angle = Vector3.SignedAngle(Unit.transform.forward, targetDir, Vector3.up);
-                var deltaAngle = angle < 0f ? Mathf.Max(angle, -maxRotationAngle) : Mathf.Min(angle, maxRotationAngle);
-                Unit.transform.Rotate(Vector3.up, deltaAngle);
+                applyHoming(Target);
 
                 return;
             }
 
             if (ProjectileSpawned == false)
             {
+                var tile = BattleFSM.Instance.board.getTile(Target);
                 var characterPos = Unit.transform.position;
 
                 var projectileStartPos = characterPos + Vector3.up * 1.3f + Unit.transform.forward;

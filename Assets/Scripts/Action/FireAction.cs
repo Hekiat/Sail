@@ -42,20 +42,13 @@ namespace sail
 
         public override void run()
         {
-            var tile = BattleFSM.Instance.board.getTile(Target);
+            
 
             float currentTime = Unit.MotionController.currentStateNormalizedTime();
 
             if (currentTime < 0.35f)
             {
-                var targetDir = tile.transform.position - Unit.transform.position;
-                targetDir.y = 0f;
-
-                const float maxRotationAngle = 2f;
-                var angle = Vector3.SignedAngle(Unit.transform.forward, targetDir, Vector3.up);
-                var deltaAngle = angle < 0f ? Mathf.Max(angle, -maxRotationAngle) : Mathf.Min(angle, maxRotationAngle);
-                Unit.transform.Rotate(Vector3.up, deltaAngle);
-
+                applyHoming(Target);
                 return;
             }
 

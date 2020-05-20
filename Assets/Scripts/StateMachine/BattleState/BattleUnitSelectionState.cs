@@ -26,7 +26,7 @@ namespace sail
 
             yield return null;
 
-            yield return new WaitForSeconds(2f);
+            yield return new WaitForSeconds(1f);
 
             unit.Cooldown = Random.Range(5, 10);
             owner.hud.TimelineWidget.updateCharacters();
