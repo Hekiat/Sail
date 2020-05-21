@@ -7,20 +7,25 @@ namespace sail
 {
     public class SelectedCharacterWidget : MonoBehaviour
     {
-        // Prefab Data
+        // Input
+        public GameObject StatusWidgetPrefab;
+
+        // UI Info
         public Text CharacterNameTxt = null;
         public Image HealthBarForeground = null;
         public Text HealthTxt = null;
-        public Text ShieldText = null;
+        public GameObject StatusListWidget = null;
+
+        private List<StatusWidget> StatusList = new List<StatusWidget>();
 
         void Start()
         {
-
         }
 
         void Update()
         {
             updateUI();
+            updateStatus();
         }
 
         void updateUI()
@@ -43,17 +48,21 @@ namespace sail
 
             var healthRect = HealthBarForeground.GetComponent<RectTransform>();
             healthRect.SetSizeWithCurrentAnchors(RectTransform.Axis.Horizontal, (float)health / maxHealth * 190f);
+        }
 
-            var shieldStatus = inst.SelectedEnemy.getStatus<ShieldStatus>();
-
-            if (shieldStatus != null)
+        void updateStatus()
+        {
+            var statusList = BattleFSM.Instance.SelectedEnemy.Status;
+            foreach (var status in statusList)
             {
-                ShieldText.transform.parent.gameObject.SetActive(true);
-                ShieldText.text = shieldStatus != null ? $"{shieldStatus.Value}" : "0";
-            }
-            else
-            {
-                ShieldText.transform.parent.gameObject.SetActive(false);
+                var widget = StatusList.Find((s) => s.Status == status);
+                if (widget == null)
+                {
+                    var statusGO = Instantiate(StatusWidgetPrefab, StatusListWidget.transform);
+                    widget = statusGO.GetComponent<StatusWidget>();
+                    widget.Status = status;
+                    StatusList.Add(widget);
+                }
             }
         }
     }

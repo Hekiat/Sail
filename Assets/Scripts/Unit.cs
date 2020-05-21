@@ -16,7 +16,7 @@ namespace sail
         public int Cooldown = 0;
         public int Health { get; protected set; }
 
-        public List<StatusBase> Status = new List<StatusBase>();
+        public List<StatusBase> Status { get; protected set; } = new List<StatusBase>();
 
         public int MaxHealth { get; protected set; }
 
