@@ -74,5 +74,18 @@ namespace sail
         {
             return Status.Find((e) => e.GetType() == typeof(T)) as T;
         }
+
+        public void addStatus<T>(T status) where T : StatusBase
+        {
+            var existingStatus = getStatus<T>();
+
+            if(existingStatus != null)
+            {
+                existingStatus.add(status);
+                return;
+            }
+
+            Status.Add(status);
+        }
     }
 }

@@ -2,23 +2,31 @@
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEditor;
+using UnityEngine.UI;
 using sail.animation;
 
 namespace sail
 {
     public class TimelineWidget : MonoBehaviour
     {
+        // Prefabs
         public GameObject TimelineCharacterPrefab = null;
+
+        // Own Widget Instance
         public GameObject ActionPreviewWidget = null;
+        public GameObject ActionPreviewMask = null;
 
         public int TimeMax = 10;
         public List<TimelineCharacterWidget> characters = new List<TimelineCharacterWidget>();
 
         private RectTransform RectTrans = null;
+        private Image MaskImage = null;
 
         private void Awake()
         {
             RectTrans = GetComponent<RectTransform>();
+            MaskImage = ActionPreviewMask.GetComponent<Image>();
+
             ActionPreviewWidget.SetActive(false);
         }
 
@@ -59,11 +67,7 @@ namespace sail
             }
 
             ActionPreviewWidget.SetActive(true);
-            var cost = action.Cost;
-            var width = (float)action.Cost / TimeMax * RectTrans.rect.width;
-            var rectTransform = ActionPreviewWidget.GetComponent<RectTransform>();
-
-            rectTransform.sizeDelta = new Vector2(width, rectTransform.sizeDelta.y);
+            MaskImage.fillAmount = (float)action.Cost / TimeMax;
         }
 
         public void updateCharacters()

@@ -19,7 +19,9 @@ namespace sail
         public int Value { get; protected set; } = 0;
 
         public virtual void add(int amount) { Value += amount; }
+        public virtual void add(StatusBase status) { Value += status.Value; }
         public virtual void remove(int amount) { Value -= amount; }
+        public virtual void remove(StatusBase status) { Value -= status.Value; }
 
         public virtual void run() { }
     }
