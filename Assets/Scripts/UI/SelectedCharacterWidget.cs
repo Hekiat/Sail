@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
+using TMPro;
 
 namespace sail
 {
@@ -11,9 +12,9 @@ namespace sail
         public GameObject StatusWidgetPrefab;
 
         // UI Info
-        public Text CharacterNameTxt = null;
+        public TextMeshProUGUI CharacterNameTxt = null;
         public Image HealthBarForeground = null;
-        public Text HealthTxt = null;
+        public TextMeshProUGUI HealthTxt = null;
         public GameObject StatusListWidget = null;
 
         private List<StatusWidget> StatusList = new List<StatusWidget>();
