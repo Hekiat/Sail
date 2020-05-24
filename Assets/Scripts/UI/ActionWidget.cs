@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
+using TMPro;
 using System;
 
 namespace sail
@@ -10,10 +11,9 @@ namespace sail
     {
         public ActionBase Action { get; private set; } = null;
 
-        public Button MainButton = null;
-        public Text ActionNameText = null;
-        public Text CostText = null;
-
+        public TextMeshProUGUI ActionNameText = null;
+        public TextMeshProUGUI CostText = null;
+        
         public event Action<ActionBase> ActionSelected = null;
 
         public void setup(ActionBase action)
