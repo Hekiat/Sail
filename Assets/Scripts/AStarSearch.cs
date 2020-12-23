@@ -7,7 +7,7 @@ namespace sail
 {
     public class AStarSearch
     {
-        class PriorityQueue<T> where T : struct
+        public class PriorityQueue<T>
         {
             private List<Tuple<float, T>> elements = new List<Tuple<float, T>>();
 

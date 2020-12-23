@@ -63,6 +63,7 @@ MonoBehaviour:
   m_Material: {fileID: 0}
   m_Color: {r: 0.9411765, g: 0.9411765, b: 0.9411765, a: 1}
   m_RaycastTarget: 1
+  m_RaycastPadding: {x: 0, y: 0, z: 0, w: 0}
   m_Maskable: 1
   m_OnCullStateChanged:
     m_PersistentCalls:
@@ -90,6 +91,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   MapEventWidgetPrefab: {fileID: 2921318663566753981, guid: 87e1e0010c5ee644c8f853f1c3ddf6f8,
+    type: 3}
+  MapEventLinkWidgetPrefab: {fileID: 1418890764523693430, guid: de6a5bc4d6bef4381863e80be5ce33b2,
     type: 3}
   EventList: {fileID: 6347520093284493695}
 --- !u!1 &6347520092908733733
@@ -152,6 +155,7 @@ MonoBehaviour:
   m_Material: {fileID: 0}
   m_Color: {r: 0.19607843, g: 0.19607843, b: 0.19607843, a: 1}
   m_RaycastTarget: 1
+  m_RaycastPadding: {x: 0, y: 0, z: 0, w: 0}
   m_Maskable: 1
   m_OnCullStateChanged:
     m_PersistentCalls:
