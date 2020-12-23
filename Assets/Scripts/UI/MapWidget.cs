@@ -16,12 +16,10 @@ namespace sail
         public int Depth { get; private set; }
 
         private List<MapEventWidget> MapEventWidgets = new List<MapEventWidget>();
-        private int[] StepInstCount = null;
 
         // Start is called before the first frame update
         void Start()
         {
-            //generate(5);
             var samples = poissonSampling();
             
             var graph = new Graph<Vector2>();
@@ -31,7 +29,8 @@ namespace sail
             }
 
             var triangles = triangulate(samples);
-            spawnEdges(triangles);
+
+            spawnEdges(triangles, samples);
             spawnNodes(graph.nodes);
         }
 
@@ -98,9 +97,12 @@ namespace sail
             return samples;
         }
 
-        void spawnEdge(Edge e)
+        void spawnEdge(Edge e, List<Vector2> points)
         {
-            Vector3 differenceVector = e.p1 - e.p0;
+            var p0 = points[e.v0];
+            var p1 = points[e.v1];
+
+            Vector3 differenceVector = p1 - p0;
 
             if (differenceVector.magnitude > Radius * 3)
             {
@@ -116,12 +118,9 @@ namespace sail
             float lineWidth = 5f;
             t.sizeDelta = new Vector2(differenceVector.magnitude, lineWidth);
             t.pivot = new Vector2(0, 0.5f);
-            t.anchoredPosition = new Vector3(e.p0.x, e.p0.y, 0f);
+            t.anchoredPosition = new Vector3(p0.x, p0.y, 0f);
             float angle = Mathf.Atan2(differenceVector.y, differenceVector.x) * Mathf.Rad2Deg;
             t.localRotation = Quaternion.Euler(0, 0, angle);
-
-            Debug.Log("i " + (new Vector3(e.p0.x, e.p0.y, 0f)));
-            Debug.Log(t.position);
         }
 
 
@@ -156,7 +155,7 @@ namespace sail
             return true;
         }
 
-        Triangle superTriangle(List<Vector2> samples)
+        Vector2[] computeSuperTriangle(List<Vector2> samples)
         {
             var xmin = float.MaxValue;
             var xmax = float.MinValue;
@@ -179,7 +178,7 @@ namespace sail
             var p1 = new Vector2(xmax + hwidth, ymin);
             var p2 = new Vector2(xmin + hwidth, 3000);// height * Mathf.Tan(height / hwidth));
 
-            return new Triangle(p0, p1, p2);
+            return new Vector2[3] { p0, p1, p2 };
         }
 
         //bowyer watson
@@ -193,11 +192,23 @@ namespace sail
             }
 
             // Init Delaunay triangulation.
-            var st = superTriangle(points);
+            var stPoints = computeSuperTriangle(points);
+            var stPointStartIndex = points.Count;
+
+            // Add to points list
+            foreach(var p in stPoints)
+            {
+                points.Add(p);
+            }
+
+            var st = new Triangle(stPointStartIndex, stPointStartIndex + 1, stPointStartIndex + 2, points);
             triangles.Add(st);
 
-            foreach (var p in points)
+            //foreach (var p in points)
+            for(int pi=0; pi<points.Count; ++pi)
             {
+                var p = points[pi];
+
                 List<Edge> polygon = new List<Edge>(); // bad polygon
                 List<Triangle> badTriangles = new List<Triangle>();
 
@@ -210,11 +221,10 @@ namespace sail
                     }
                 }
 
-
-                for (int ti = 0; ti < badTriangles.Count; ti++)
+                for (int ti = 0; ti < badTriangles.Count; ++ti)
                 {
                     var t = badTriangles[ti];
-                    foreach (var e in t.e)
+                    foreach (var e in t.edges)
                     {
                         // check if the edge is inside the polygon that needs to be updated
                         bool found = false;
@@ -224,6 +234,7 @@ namespace sail
                             {
                                 continue;
                             }
+
                             var other = badTriangles[ti2];
 
                             if (e.isEqual(other.e0) || e.isEqual(other.e1) || e.isEqual(other.e2))
@@ -248,7 +259,7 @@ namespace sail
 
                 foreach (var e in polygon)
                 {
-                    triangles.Add(new Triangle(e.p0, e.p1, p));
+                    triangles.Add(new Triangle(e.v0, e.v1, pi, points));
                 }
             }
 
@@ -257,9 +268,9 @@ namespace sail
                 var t = triangles[i];
 
                 var hasPointInSuper = false;
-                foreach (var tp in t.p)
+                foreach (var tp in t.vertexIndex)
                 {
-                    foreach (var stp in st.p)
+                    foreach (var stp in st.vertexIndex)
                     {
                         if (tp == stp)
                         {
@@ -279,18 +290,24 @@ namespace sail
                     triangles.RemoveAt(i);
                 }
             }
+
+            // remove super triangle
+            points.RemoveAt(stPointStartIndex + 2);
+            points.RemoveAt(stPointStartIndex + 1);
+            points.RemoveAt(stPointStartIndex);
+
             return triangles;
         }
 
-        void spawnEdges(List<Triangle> triangles)
+        void spawnEdges(List<Triangle> triangles, List<Vector2> points)
         {
             Graph<Vector2> graph = new Graph<Vector2>();
 
             foreach (var t in triangles)
             {
-                foreach (var e in t.e)
+                foreach (var e in t.edges)
                 {
-                    spawnEdge(e);
+                    spawnEdge(e, points);
                 }
             }
         }
@@ -311,48 +328,67 @@ namespace sail
 
         class Edge
         {
-            public Vector2 p0;
-            public Vector2 p1;
+            public int v0;
+            public int v1;
 
-            public Edge(Vector2 _p0, Vector2 _p1)
+            public Edge(int _v0, int _v1)
             {
-                p0 = _p0;
-                p1 = _p1;
+                v0 = _v0;
+                v1 = _v1;
             }
 
             public bool isEqual(Edge other)
             {
-                return (other.p0 == p0 && other.p1 == p1) || (other.p0 == p1 && other.p1 == p0);
+                return (other.v0 == v0 && other.v1 == v1) || (other.v0 == v1 && other.v1 == v0);
             }
         }
 
-        class Triangle
+        struct Triangle
         {
-            public Vector2[] p = new Vector2[3];
+            public int[] vertexIndex;
+            public Edge[] edges;
 
-            public Vector2 p0 { get { return p[0]; } set { p[0] = value; } }
-            public Vector2 p1 { get { return p[1]; } set { p[1] = value; } }
-            public Vector2 p2 { get { return p[2]; } set { p[2] = value; } }
+            public int v0 { get { return vertexIndex[0]; } set { vertexIndex[0] = value; } }
+            public int v1 { get { return vertexIndex[1]; } set { vertexIndex[1] = value; } }
+            public int v2 { get { return vertexIndex[2]; } set { vertexIndex[2] = value; } }
 
-
-            public Edge[] e = new Edge[3];
-
-            public Edge e0 { get { return e[0]; } set { e[0] = value; } }
-            public Edge e1 { get { return e[1]; } set { e[1] = value; } }
-            public Edge e2 { get { return e[2]; } set { e[2] = value; } }
+            public Edge e0 { get { return edges[0]; } set { edges[0] = value; } }
+            public Edge e1 { get { return edges[1]; } set { edges[1] = value; } }
+            public Edge e2 { get { return edges[2]; } set { edges[2] = value; } }
 
             public Vector2 circlePos;
             public float circleRad;
 
-            public Triangle(Vector2 _p0, Vector2 _p1, Vector2 _p2)
+            public Triangle(int _v0, int _v1, int _v2, List<Vector2> points)
             {
-                p0 = _p0;
-                p1 = _p1;
-                p2 = _p2;
+                vertexIndex = new int[3];
+                edges = new Edge[3];
 
-                e0 = new Edge(p0, p1);
-                e1 = new Edge(p1, p2);
-                e2 = new Edge(p0, p2);
+                circlePos = Vector2.zero;
+                circleRad = 0f;
+
+                v0 = _v0;
+                v1 = _v1;
+                v2 = _v2;
+
+                e0 = new Edge(v0, v1);
+                e1 = new Edge(v1, v2);
+                e2 = new Edge(v0, v2);
+
+                updateCircumcircle(points);
+            }
+
+            public bool isContainedInCircle(Vector2 p)
+            {
+                var dist = (circlePos.x - p.x) * (circlePos.x - p.x) + (circlePos.y - p.y) * (circlePos.y - p.y);
+                return (dist - circleRad) <= float.Epsilon;
+            }
+
+            private void updateCircumcircle(List<Vector2> points)
+            {
+                var p0 = points[v0];
+                var p1 = points[v1];
+                var p2 = points[v2];
 
                 var ax = p1.x - p0.x;
                 var ay = p1.y - p0.y;
@@ -369,12 +405,6 @@ namespace sail
                 var dx = p0.x - circlePos.x;
                 var dy = p0.y - circlePos.y;
                 circleRad = dx * dx + dy * dy;
-            }
-
-            public bool isContainedInCircle(Vector2 p)
-            {
-                var dist = (circlePos.x - p.x) * (circlePos.x - p.x) + (circlePos.y - p.y) * (circlePos.y - p.y);
-                return (dist - circleRad) <= float.Epsilon;
             }
         }
 
