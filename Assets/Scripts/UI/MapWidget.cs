@@ -1,4 +1,5 @@
-﻿using System.Collections;
+﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
@@ -29,9 +30,25 @@ namespace sail
             }
 
             var triangles = triangulate(samples);
+            var edges = filterEdges(triangles, samples);
 
-            spawnEdges(triangles, samples);
+            foreach(var e in edges)
+            {
+                graph.addEdge(e);
+            }
+
+            spawnEdges(graph);
             spawnNodes(graph.nodes);
+
+            AStarSearch<Vector2> aStar = new AStarSearch<Vector2>();
+            aStar.heuristic = (Vector2 a, Vector2 b) => { return Math.Abs(a.x - b.x) + Math.Abs(a.y - b.y); };
+            aStar.run(graph, graph.nodes[1], graph.nodes[2]);
+            var path = aStar.computePath(graph.nodes[1], graph.nodes[2]);
+
+            for(int i=1; i<path.Count; ++i)
+            {
+                spawnEdge(path[i - 1].pos, path[i].pos, Color.red);
+            }
         }
 
         // Update is called once per frame
@@ -58,7 +75,7 @@ namespace sail
             List<Vector2> samples = new List<Vector2>();
             List<bool> isSampleActive = new List<bool>();
 
-            Random.InitState(System.DateTime.Now.Second);
+            UnityEngine.Random.InitState(System.DateTime.Now.Second);
 
             var rootRect = EventList.GetComponent<RectTransform>().rect;
 
@@ -97,11 +114,8 @@ namespace sail
             return samples;
         }
 
-        void spawnEdge(Edge e, List<Vector2> points)
+        void spawnEdge(Vector2 p0, Vector2 p1, Color? color = null)
         {
-            var p0 = points[e.v0];
-            var p1 = points[e.v1];
-
             Vector3 differenceVector = p1 - p0;
 
             if (differenceVector.magnitude > Radius * 3)
@@ -114,7 +128,10 @@ namespace sail
             t.anchorMin = new Vector2(0f, 0f);
             t.anchorMax = new Vector2(0f, 0f);
 
-            var canvas = t.GetComponent<UnityEngine.UI.Image>().canvas;
+            var img = t.GetComponent<UnityEngine.UI.Image>();
+            img.color = color ?? Color.black;
+
+            var canvas = img.canvas;
             float lineWidth = 5f;
             t.sizeDelta = new Vector2(differenceVector.magnitude, lineWidth);
             t.pivot = new Vector2(0, 0.5f);
@@ -130,8 +147,8 @@ namespace sail
 
         Vector2 candidate(Vector2 p)
         {
-            var angle = Random.Range(0, Mathf.PI * 2f);
-            var radius = Random.Range(Radius, SafeRadius);
+            var angle = UnityEngine.Random.Range(0, Mathf.PI * 2f);
+            var radius = UnityEngine.Random.Range(Radius, SafeRadius);
 
             return p + new Vector2(radius * Mathf.Cos(angle), radius * Mathf.Sin(angle));
         }
@@ -299,15 +316,37 @@ namespace sail
             return triangles;
         }
 
-        void spawnEdges(List<Triangle> triangles, List<Vector2> points)
+        List<Edge> filterEdges(List<Triangle> triangles, List<Vector2> points)
         {
-            Graph<Vector2> graph = new Graph<Vector2>();
-
+            List<Edge> edges = new List<Edge>();
             foreach (var t in triangles)
             {
-                foreach (var e in t.edges)
+                foreach(var e in t.edges)
                 {
-                    spawnEdge(e, points);
+                    if (edges.Exists((elem) => elem.isEqual(e)))
+                    {
+                        continue;
+                    }
+
+                    bool reverse = points[e.v0].x > points[e.v1].x;
+
+                    var v0 = reverse ? e.v1 : e.v0;
+                    var v1 = reverse ? e.v0 : e.v1;
+
+                    edges.Add(new Edge(v0, v1));
+                }
+            }
+
+            return edges;
+        }
+
+        void spawnEdges(Graph<Vector2> graph)
+        {
+            foreach (var eList in graph.edges)
+            {
+                foreach(var e in eList)
+                {
+                    spawnEdge(graph.nodes[e.v0].pos, graph.nodes[e.v1].pos);
                 }
             }
         }
@@ -326,15 +365,18 @@ namespace sail
         }
 
 
-        class Edge
+        public struct Edge
         {
             public int v0;
             public int v1;
+
+            public bool active;
 
             public Edge(int _v0, int _v1)
             {
                 v0 = _v0;
                 v1 = _v1;
+                active = true;
             }
 
             public bool isEqual(Edge other)
@@ -422,12 +464,19 @@ namespace sail
 
         public class Graph<T>
         {
-            public List<Node<T>> nodes = new List<Node<T>>();
-            public Dictionary<Node<T>, Node<T>[]> edges = new Dictionary<Node<T>, Node<T>[]>();
+            public List<Node<T>> nodes { get; private set; } = new List<Node<T>>();
+            public List<List<Edge>> edges { get; private set; } = new List<List<Edge>>();
 
-            public Node<T>[] neighbors(Node<T> id)
+            public List<Node<T>> neighbors(Node<T> node)
             {
-                return edges[id];
+                var neighbors = new List<Node<T>>();
+
+                foreach(var e in edges[node.id])
+                {
+                    neighbors.Add(nodes[e.v1]);
+                }
+
+                return neighbors;
             }
 
             public float cost(Node<T> a, Node<T> b)
@@ -439,7 +488,13 @@ namespace sail
             {
                 var n = new Node<T>(pos, nodes.Count);
                 nodes.Add(n);
+                edges.Add(new List<Edge>());
                 return n;
+            }
+
+            public void addEdge(Edge e)
+            {
+                edges[e.v0].Add(e);
             }
         }
 
@@ -447,20 +502,11 @@ namespace sail
         {
             public Dictionary<Node<T>, Node<T>> cameFrom = new Dictionary<Node<T>, Node<T>>();
             public Dictionary<Node<T>, float> costSoFar = new Dictionary<Node<T>, float>();
+            public Func<T, T, float> heuristic = null;
 
-            public System.Func<T, T, float> heuristic = null;
-
-            // Note: a generic version of A* would abstract over Location and
-            // also Heuristic
-            //static public double Heuristic(Node<T> a, Node<T> b)
-            //{
-            //    return Mathf.Abs(a.x - b.x) + Mathf.Abs(a.y - b.y);
-            //}
-
-            public AStarSearch(Graph<T> graph, Node<T> start, Node<T> goal)
+            public void run(Graph<T> graph, Node<T> start, Node<T> goal)
             {
                 var frontier = new AStarSearch.PriorityQueue<Node<T>>();
-
                 frontier.add(start, 0);
 
                 cameFrom[start] = start;
@@ -469,7 +515,7 @@ namespace sail
                 while (frontier.isEmpty() == false)
                 {
                     var current = frontier.pop();
-
+                    Console.WriteLine("current " + current.id);
                     if (current.Equals(goal))
                     {
                         break;
@@ -480,6 +526,7 @@ namespace sail
                         float newCost = costSoFar[current] + graph.cost(current, next);
                         if (!costSoFar.ContainsKey(next) || newCost < costSoFar[next])
                         {
+                            Console.WriteLine("current neighbor " + next.id + " " + newCost);
                             costSoFar[next] = newCost;
                             float priority = newCost + heuristic(next.pos, goal.pos);
                             frontier.add(next, priority);
@@ -487,6 +534,24 @@ namespace sail
                         }
                     }
                 }
+            }
+
+            public List<Node<T>> computePath(Node<T> start, Node<T> goal)
+            {
+                var path = new List<Node<T>>();
+
+                var id = goal;
+                path.Add(id);
+
+                while (id.Equals(start) == false)
+                {
+                    id = cameFrom[id];
+                    path.Add(id);
+                }
+
+                path.Reverse();
+
+                return path;
             }
         }
     }
