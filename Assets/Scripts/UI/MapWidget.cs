@@ -21,7 +21,10 @@ namespace sail
         // Start is called before the first frame update
         void Start()
         {
-            var samples = poissonSampling();
+            var rootRect = EventList.GetComponent<RectTransform>().rect;
+            var min = Vector2.zero;
+            var max = new Vector2(rootRect.width, rootRect.height);
+            var samples = new PoissonSampling(Radius, min, max, 30, isPositionConstraintOK).get();
             
             var graph = new Graph<Vector2>();
             foreach(var s in samples)
@@ -57,6 +60,8 @@ namespace sail
 
         }
 
+        float Radius = 150f;
+
         // adjust later
         bool isPositionConstraintOK(Vector2 pos)
         {
@@ -70,49 +75,7 @@ namespace sail
             return true;
         }
 
-        List<Vector2> poissonSampling()
-        {
-            List<Vector2> samples = new List<Vector2>();
-            List<bool> isSampleActive = new List<bool>();
-
-            UnityEngine.Random.InitState(System.DateTime.Now.Second);
-
-            var rootRect = EventList.GetComponent<RectTransform>().rect;
-
-            samples.Add(new Vector2(rootRect.width / 2, rootRect.height / 2));
-            // Entry / Exit node
-            samples.Add(new Vector2(0, rootRect.height / 2));
-            samples.Add(new Vector2(rootRect.width, rootRect.height / 2));
-
-            isSampleActive.Add(true);
-            isSampleActive.Add(true);
-            isSampleActive.Add(true);
-
-            int activeSampleIndex = -1;
-            while ((activeSampleIndex = isSampleActive.FindIndex(e => e == true)) != -1)
-            {
-                var activeSample = samples[activeSampleIndex];
-
-                for (int i = 0; i < CandidateMaxSample; i++)
-                {
-                    var c = candidate(activeSample);
-
-                    if (isCandidateValid(c, samples))
-                    {
-                        samples.Add(c);
-                        isSampleActive.Add(true);
-                        break;
-                    }
-
-                    if (i == CandidateMaxSample - 1)
-                    {
-                        isSampleActive[activeSampleIndex] = false;
-                    }
-                }
-            }
-
-            return samples;
-        }
+        
 
         void spawnEdge(Vector2 p0, Vector2 p1, Color? color = null)
         {
@@ -138,38 +101,6 @@ namespace sail
             t.anchoredPosition = new Vector3(p0.x, p0.y, 0f);
             float angle = Mathf.Atan2(differenceVector.y, differenceVector.x) * Mathf.Rad2Deg;
             t.localRotation = Quaternion.Euler(0, 0, angle);
-        }
-
-
-        readonly float Radius = 150f;
-        readonly float SafeRadius = 300f;
-        readonly int CandidateMaxSample = 30;
-
-        Vector2 candidate(Vector2 p)
-        {
-            var angle = UnityEngine.Random.Range(0, Mathf.PI * 2f);
-            var radius = UnityEngine.Random.Range(Radius, SafeRadius);
-
-            return p + new Vector2(radius * Mathf.Cos(angle), radius * Mathf.Sin(angle));
-        }
-
-        bool isCandidateValid(Vector2 candidate, List<Vector2> samples)
-        {
-            // in screen
-            if (isPositionConstraintOK(candidate) == false)
-            {
-                return false;
-            }
-
-            foreach (var s in samples)
-            {
-                if ((s - candidate).magnitude < Radius)
-                {
-                    return false;
-                }
-            }
-
-            return true;
         }
 
         Vector2[] computeSuperTriangle(List<Vector2> samples)
