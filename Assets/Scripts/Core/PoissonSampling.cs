@@ -85,7 +85,13 @@ namespace sail
 
         private bool isCandidateValid(Vector2 candidate, List<Vector2> samples)
         {
-            // in screen
+            if(   candidate.x < RangeBottomLeft.x || candidate.x > RangeTopRight.x
+               || candidate.y < RangeBottomLeft.y || candidate.y > RangeTopRight.y)
+            {
+                return false;
+            }
+
+            // custom constraint
             if (ConstraintDelegate != null && ConstraintDelegate(candidate) == false)
             {
                 return false;

@@ -5,6 +5,74 @@ using UnityEngine;
 
 namespace sail
 {
+    public class Graph<T>
+    {
+        public List<Node<T>> nodes { get; private set; } = new List<Node<T>>();
+        public List<List<Edge>> edges { get; private set; } = new List<List<Edge>>();
+
+        public List<Node<T>> neighbors(Node<T> node)
+        {
+            var neighbors = new List<Node<T>>();
+
+            foreach (var e in edges[node.id])
+            {
+                neighbors.Add(nodes[e.v1]);
+            }
+
+            return neighbors;
+        }
+
+        public float cost(Node<T> a, Node<T> b)
+        {
+            return 1f;
+        }
+
+        public Node<T> addNode(T pos)
+        {
+            var n = new Node<T>(pos, nodes.Count);
+            nodes.Add(n);
+            edges.Add(new List<Edge>());
+            return n;
+        }
+
+        public void addEdge(Edge e)
+        {
+            edges[e.v0].Add(e);
+        }
+    }
+
+    public struct Node<T>
+    {
+        public int id;
+        public T pos;
+
+        public Node(T _pos, int _id)
+        {
+            pos = _pos;
+            id = _id;
+        }
+    }
+
+    public struct Edge
+    {
+        public int v0;
+        public int v1;
+
+        public bool active;
+
+        public Edge(int _v0, int _v1)
+        {
+            v0 = _v0;
+            v1 = _v1;
+            active = true;
+        }
+
+        public bool isEqual(Edge other)
+        {
+            return (other.v0 == v0 && other.v1 == v1) || (other.v0 == v1 && other.v1 == v0);
+        }
+    }
+
     public class MapWidget : MonoBehaviour
     {
         // Prefabs
@@ -18,35 +86,21 @@ namespace sail
 
         private List<MapEventWidget> MapEventWidgets = new List<MapEventWidget>();
 
+        Graph<Vector2> Graph = new Graph<Vector2>();
+
         // Start is called before the first frame update
         void Start()
         {
-            var rootRect = EventList.GetComponent<RectTransform>().rect;
-            var min = Vector2.zero;
-            var max = new Vector2(rootRect.width, rootRect.height);
-            var samples = new PoissonSampling(Radius, min, max, 30, isPositionConstraintOK).get();
-            
-            var graph = new Graph<Vector2>();
-            foreach(var s in samples)
-            {
-                graph.addNode(s);
-            }
+            createNodes();
+            createEdges();
 
-            var triangles = triangulate(samples);
-            var edges = filterEdges(triangles, samples);
-
-            foreach(var e in edges)
-            {
-                graph.addEdge(e);
-            }
-
-            spawnEdges(graph);
-            spawnNodes(graph.nodes);
+            spawnEdges();
+            spawnNodes();
 
             AStarSearch<Vector2> aStar = new AStarSearch<Vector2>();
             aStar.heuristic = (Vector2 a, Vector2 b) => { return Math.Abs(a.x - b.x) + Math.Abs(a.y - b.y); };
-            aStar.run(graph, graph.nodes[1], graph.nodes[2]);
-            var path = aStar.computePath(graph.nodes[1], graph.nodes[2]);
+            aStar.run(Graph, Graph.nodes[1], Graph.nodes[2]);
+            var path = aStar.computePath(Graph.nodes[1], Graph.nodes[2]);
 
             for(int i=1; i<path.Count; ++i)
             {
@@ -60,47 +114,32 @@ namespace sail
 
         }
 
-        float Radius = 150f;
+        void createNodes()
+        {
+            var min = -Vector2.one;
+            var max = Vector2.one;
+            var positions = new PoissonSampling(Radius, min, max, 30, isPositionConstraintOK).get();
+            var rootRect = EventList.GetComponent<RectTransform>().rect;
+            var screenSize = new Vector2(rootRect.width, rootRect.height);
 
-        // adjust later
+            for (var i = 0; i < positions.Count; ++i)
+            {
+                positions[i] = positions[i] * screenSize / 2f + screenSize / 2f;
+                Graph.addNode(positions[i]);
+            }
+        }
+
+        float Radius = 0.3f;
+
         bool isPositionConstraintOK(Vector2 pos)
         {
-            var rootRect = EventList.GetComponent<RectTransform>().rect;
-            if (pos.x < Radius || pos.x > rootRect.width - Radius
-                || pos.y < Radius || pos.y > rootRect.height - Radius)
+            // fit a circle
+            if(pos.magnitude > 1f)
             {
                 return false;
             }
 
             return true;
-        }
-
-        
-
-        void spawnEdge(Vector2 p0, Vector2 p1, Color? color = null)
-        {
-            Vector3 differenceVector = p1 - p0;
-
-            if (differenceVector.magnitude > Radius * 3)
-            {
-                return;
-            }
-
-            var eventLinkWidget = Instantiate(MapEventLinkWidgetPrefab, EventList.transform);
-            var t = eventLinkWidget.GetComponent<RectTransform>();
-            t.anchorMin = new Vector2(0f, 0f);
-            t.anchorMax = new Vector2(0f, 0f);
-
-            var img = t.GetComponent<UnityEngine.UI.Image>();
-            img.color = color ?? Color.black;
-
-            var canvas = img.canvas;
-            float lineWidth = 5f;
-            t.sizeDelta = new Vector2(differenceVector.magnitude, lineWidth);
-            t.pivot = new Vector2(0, 0.5f);
-            t.anchoredPosition = new Vector3(p0.x, p0.y, 0f);
-            float angle = Mathf.Atan2(differenceVector.y, differenceVector.x) * Mathf.Rad2Deg;
-            t.localRotation = Quaternion.Euler(0, 0, angle);
         }
 
         Vector2[] computeSuperTriangle(List<Vector2> samples)
@@ -247,8 +286,17 @@ namespace sail
             return triangles;
         }
 
-        List<Edge> filterEdges(List<Triangle> triangles, List<Vector2> points)
+        void createEdges()
         {
+            // prepare data
+            List<Vector2> positions = new List<Vector2>();
+            foreach(var n in Graph.nodes)
+            {
+                positions.Add(n.pos);
+            }
+
+            List<Triangle> triangles = triangulate(positions);
+            
             List<Edge> edges = new List<Edge>();
             foreach (var t in triangles)
             {
@@ -259,60 +307,71 @@ namespace sail
                         continue;
                     }
 
-                    bool reverse = points[e.v0].x > points[e.v1].x;
+                    bool reverse = positions[e.v0].x > positions[e.v1].x;
 
                     var v0 = reverse ? e.v1 : e.v0;
                     var v1 = reverse ? e.v0 : e.v1;
 
-                    edges.Add(new Edge(v0, v1));
+                    var newEdge = new Edge(v0, v1);
+
+                    edges.Add(newEdge);
+                    Graph.addEdge(newEdge);
                 }
             }
-
-            return edges;
         }
 
-        void spawnEdges(Graph<Vector2> graph)
+        void spawnEdge(Vector2 p0, Vector2 p1, Color? color = null)
         {
-            foreach (var eList in graph.edges)
+            Vector3 differenceVector = p1 - p0;
+
+            //if (differenceVector.magnitude > Radius * 3)
+            //{
+            //    return;
+            //}
+
+            var eventLinkWidget = Instantiate(MapEventLinkWidgetPrefab, EventList.transform);
+            var t = eventLinkWidget.GetComponent<RectTransform>();
+            t.anchorMin = new Vector2(0f, 0f);
+            t.anchorMax = new Vector2(0f, 0f);
+
+            var img = t.GetComponent<UnityEngine.UI.Image>();
+            img.color = color ?? Color.black;
+
+            var canvas = img.canvas;
+            float lineWidth = 5f;
+            t.sizeDelta = new Vector2(differenceVector.magnitude, lineWidth);
+            t.pivot = new Vector2(0, 0.5f);
+            t.anchoredPosition = new Vector3(p0.x, p0.y, 0f);
+            float angle = Mathf.Atan2(differenceVector.y, differenceVector.x) * Mathf.Rad2Deg;
+            t.localRotation = Quaternion.Euler(0, 0, angle);
+        }
+
+        void spawnEdges()
+        {
+            foreach (var eList in Graph.edges)
             {
                 foreach(var e in eList)
                 {
-                    spawnEdge(graph.nodes[e.v0].pos, graph.nodes[e.v1].pos);
+                    spawnEdge(Graph.nodes[e.v0].pos, Graph.nodes[e.v1].pos);
                 }
             }
         }
 
-        void spawnNodes(List<Node<Vector2>> nodes)
+        void spawnNode(Vector2 pos)
         {
-            // generate game objects
-            foreach (var n in nodes)
-            {
-                var eventWidget = Instantiate(MapEventWidgetPrefab, EventList.transform);
-                var t = eventWidget.GetComponent<RectTransform>();
-                t.anchorMin = new Vector2(0f, 0f);
-                t.anchorMax = new Vector2(0f, 0f);
-                t.anchoredPosition = n.pos;
-            }
+            var eventWidget = Instantiate(MapEventWidgetPrefab, EventList.transform);
+            var t = eventWidget.GetComponent<RectTransform>();
+            t.anchorMin = new Vector2(0f, 0f);
+            t.anchorMax = new Vector2(0f, 0f);
+            t.anchoredPosition = pos;
         }
 
-
-        public struct Edge
+        void spawnNodes()
         {
-            public int v0;
-            public int v1;
-
-            public bool active;
-
-            public Edge(int _v0, int _v1)
+            // generate game objects
+            foreach (var n in Graph.nodes)
             {
-                v0 = _v0;
-                v1 = _v1;
-                active = true;
-            }
-
-            public bool isEqual(Edge other)
-            {
-                return (other.v0 == v0 && other.v1 == v1) || (other.v0 == v1 && other.v1 == v0);
+                spawnNode(n.pos);
             }
         }
 
@@ -380,55 +439,6 @@ namespace sail
                 circleRad = dx * dx + dy * dy;
             }
         }
-
-        public struct Node<T>
-        {
-            public int id;
-            public T pos;
-
-            public Node(T _pos, int _id)
-            {
-                pos = _pos;
-                id = _id;
-            }
-        }
-
-        public class Graph<T>
-        {
-            public List<Node<T>> nodes { get; private set; } = new List<Node<T>>();
-            public List<List<Edge>> edges { get; private set; } = new List<List<Edge>>();
-
-            public List<Node<T>> neighbors(Node<T> node)
-            {
-                var neighbors = new List<Node<T>>();
-
-                foreach(var e in edges[node.id])
-                {
-                    neighbors.Add(nodes[e.v1]);
-                }
-
-                return neighbors;
-            }
-
-            public float cost(Node<T> a, Node<T> b)
-            {
-                return 1f;
-            }
-
-            public Node<T> addNode(T pos)
-            {
-                var n = new Node<T>(pos, nodes.Count);
-                nodes.Add(n);
-                edges.Add(new List<Edge>());
-                return n;
-            }
-
-            public void addEdge(Edge e)
-            {
-                edges[e.v0].Add(e);
-            }
-        }
-
         public class AStarSearch<T>
         {
             public Dictionary<Node<T>, Node<T>> cameFrom = new Dictionary<Node<T>, Node<T>>();
