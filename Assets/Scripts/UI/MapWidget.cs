@@ -99,8 +99,8 @@ namespace sail
 
             AStarSearch<Vector2> aStar = new AStarSearch<Vector2>();
             aStar.heuristic = (Vector2 a, Vector2 b) => { return Math.Abs(a.x - b.x) + Math.Abs(a.y - b.y); };
-            aStar.run(Graph, Graph.nodes[1], Graph.nodes[2]);
-            var path = aStar.computePath(Graph.nodes[1], Graph.nodes[2]);
+            aStar.run(Graph, Graph.nodes[Graph.nodes.Count-2], Graph.nodes[Graph.nodes.Count - 1]);
+            var path = aStar.computePath(Graph.nodes[Graph.nodes.Count - 2], Graph.nodes[Graph.nodes.Count - 1]);
 
             for(int i=1; i<path.Count; ++i)
             {
@@ -116,20 +116,44 @@ namespace sail
 
         void createNodes()
         {
+            var rootRect = EventList.GetComponent<RectTransform>().rect;
+
+            #if false // keep ratio
+            var screenMin = Mathf.Min(rootRect.width, rootRect.height);
+            var screenSize = new Vector2(screenMin, screenMin);
+            var screenHorizontalSafeRatio = 0.1f;
+            #else
+            var screenSize = new Vector2(rootRect.width, rootRect.height);
+            var screenHorizontalSafeRatio = 0.1f;
+            #endif
+
+            var viewportSize = screenSize * new Vector2(1f - screenHorizontalSafeRatio * 2f, 1f);
+
+            // Generate Random Nodes
             var min = -Vector2.one;
             var max = Vector2.one;
+            float Radius = 0.20f;
             var positions = new PoissonSampling(Radius, min, max, 30, isPositionConstraintOK).get();
-            var rootRect = EventList.GetComponent<RectTransform>().rect;
-            var screenSize = new Vector2(rootRect.width, rootRect.height);
 
             for (var i = 0; i < positions.Count; ++i)
             {
-                positions[i] = positions[i] * screenSize / 2f + screenSize / 2f;
+                // rescale for [-1 ~ 1] to [0 ~ viewport size]
+                positions[i] *= viewportSize / 2f;
+                positions[i] += viewportSize / 2f;
+
+                // offset safe zone
+                positions[i] += screenSize * screenHorizontalSafeRatio;
+
                 Graph.addNode(positions[i]);
             }
-        }
 
-        float Radius = 0.3f;
+            // Add Start / Exit Nodes;
+            var startPos = new Vector2(screenSize.x * screenHorizontalSafeRatio / 2f, screenSize.y / 2f);
+            Graph.addNode(startPos);
+
+            var exitPos = new Vector2(screenSize.x - screenSize.x * screenHorizontalSafeRatio / 2f, screenSize.y / 2f);
+            Graph.addNode(exitPos);
+        }
 
         bool isPositionConstraintOK(Vector2 pos)
         {
