@@ -16,16 +16,23 @@ namespace sail
 
             foreach (var e in edges[node.id])
             {
+                if(e.active == false)
+                {
+                    continue;
+                }
+
                 neighbors.Add(nodes[e.v1]);
             }
 
             return neighbors;
         }
 
-        public float cost(Node<T> a, Node<T> b)
-        {
-            return 1f;
-        }
+        public Func<T, T, float> cost = null;
+
+        //public float cost(Node<T> a, Node<T> b)
+        //{
+        //    return 1f;
+        //}
 
         public Node<T> addNode(T pos)
         {
@@ -38,6 +45,14 @@ namespace sail
         public void addEdge(Edge e)
         {
             edges[e.v0].Add(e);
+        }
+
+        public void setEdgeActive(Edge e, bool active)
+        {
+            var index = edges[e.v0].IndexOf(e);
+            var newEdge = edges[e.v0][index];
+            newEdge.active = active;
+            edges[e.v0][index] = newEdge;
         }
     }
 
@@ -97,21 +112,48 @@ namespace sail
             spawnEdges();
             spawnNodes();
 
-            AStarSearch<Vector2> aStar = new AStarSearch<Vector2>();
-            aStar.heuristic = (Vector2 a, Vector2 b) => { return Math.Abs(a.x - b.x) + Math.Abs(a.y - b.y); };
-            aStar.run(Graph, Graph.nodes[Graph.nodes.Count-2], Graph.nodes[Graph.nodes.Count - 1]);
-            var path = aStar.computePath(Graph.nodes[Graph.nodes.Count - 2], Graph.nodes[Graph.nodes.Count - 1]);
+            Graph.cost = (Vector2 a, Vector2 b) => { return (a - b).magnitude; };
 
-            for(int i=1; i<path.Count; ++i)
-            {
-                spawnEdge(path[i - 1].pos, path[i].pos, Color.red);
-            }
+            createPaths();
         }
 
         // Update is called once per frame
         void Update()
         {
 
+        }
+
+        void createPaths()
+        {
+            var path = getShortestPath();
+            debugDisplayPath(path, Color.red);
+
+            var bypassedIndex = (int) UnityEngine.Random.Range(path.Count * 0.25f, path.Count * 0.75f);
+            var from = path[bypassedIndex].id;
+            var to = path[bypassedIndex + 1].id;
+
+            Graph.setEdgeActive(new Edge(from, to), false);
+            spawnEdge(Graph.nodes[from].pos, Graph.nodes[to].pos, Color.magenta);
+
+            path = getShortestPath();
+            debugDisplayPath(path, Color.red);
+        }
+
+        List<Node<Vector2>> getShortestPath()
+        {
+            AStarSearch<Vector2> aStar = new AStarSearch<Vector2>();
+            aStar.heuristic = (Vector2 a, Vector2 b) => { return Math.Abs(a.x - b.x) + Math.Abs(a.y - b.y); };
+
+            aStar.run(Graph, Graph.nodes[Graph.nodes.Count - 2], Graph.nodes[Graph.nodes.Count - 1]);
+            return aStar.computePath(Graph.nodes[Graph.nodes.Count - 2], Graph.nodes[Graph.nodes.Count - 1]);
+        }
+
+        void debugDisplayPath(List<Node<Vector2>> path, Color color)
+        {
+            for (int i = 1; i < path.Count; ++i)
+            {
+                spawnEdge(path[i - 1].pos, path[i].pos, color);
+            }
         }
 
         void createNodes()
@@ -480,7 +522,7 @@ namespace sail
                 while (frontier.isEmpty() == false)
                 {
                     var current = frontier.pop();
-                    Console.WriteLine("current " + current.id);
+
                     if (current.Equals(goal))
                     {
                         break;
@@ -488,10 +530,10 @@ namespace sail
 
                     foreach (var next in graph.neighbors(current))
                     {
-                        float newCost = costSoFar[current] + graph.cost(current, next);
+                        var costToNext = graph.cost == null ? 1f : graph.cost(current.pos, next.pos);
+                        float newCost = costSoFar[current] + costToNext;
                         if (!costSoFar.ContainsKey(next) || newCost < costSoFar[next])
                         {
-                            Console.WriteLine("current neighbor " + next.id + " " + newCost);
                             costSoFar[next] = newCost;
                             float priority = newCost + heuristic(next.pos, goal.pos);
                             frontier.add(next, priority);
