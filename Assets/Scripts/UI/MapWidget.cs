@@ -16,7 +16,7 @@ namespace sail
 
             foreach (var e in edges[node.id])
             {
-                if(e.active == false)
+                if(nodes[e.v1].active == false)
                 {
                     continue;
                 }
@@ -49,10 +49,21 @@ namespace sail
 
         public void setEdgeActive(Edge e, bool active)
         {
-            var index = edges[e.v0].IndexOf(e);
-            var newEdge = edges[e.v0][index];
-            newEdge.active = active;
-            edges[e.v0][index] = newEdge;
+            e.active = active;
+            var index = edges[e.v0].FindIndex((item) => item.isEqual(e));
+
+            if(index == -1)
+            {
+                return;
+            }
+
+            edges[e.v0][index] = e;
+        }
+
+        public void setNodeActive(Node<T> n, bool active)
+        {
+            n.active = active;
+            nodes[n.id] = n;
         }
     }
 
@@ -60,11 +71,13 @@ namespace sail
     {
         public int id;
         public T pos;
+        public bool active;
 
         public Node(T _pos, int _id)
         {
             pos = _pos;
             id = _id;
+            active = true;
         }
     }
 
@@ -72,7 +85,6 @@ namespace sail
     {
         public int v0;
         public int v1;
-
         public bool active;
 
         public Edge(int _v0, int _v1)
@@ -109,12 +121,17 @@ namespace sail
             createNodes();
             createEdges();
 
+            Graph.cost = (Vector2 a, Vector2 b) => {
+                var delta = a - b;
+                //delta.y = 0;
+                delta.y /= 4f;
+                return delta.magnitude;
+            };
+
+            computePaths();
+
             spawnEdges();
             spawnNodes();
-
-            Graph.cost = (Vector2 a, Vector2 b) => { return (a - b).magnitude; };
-
-            createPaths();
         }
 
         // Update is called once per frame
@@ -123,20 +140,51 @@ namespace sail
 
         }
 
-        void createPaths()
+        void computePaths()
         {
-            var path = getShortestPath();
-            debugDisplayPath(path, Color.red);
+            var acceptedNodes = new List<Node<Vector2>>();
+            var acceptedEdges = new List<Edge>();
 
-            var bypassedIndex = (int) UnityEngine.Random.Range(path.Count * 0.25f, path.Count * 0.75f);
-            var from = path[bypassedIndex].id;
-            var to = path[bypassedIndex + 1].id;
+            for (int i=0; i<10; ++i)
+            {
+                var path = getShortestPath();
+                var bypassedIndex = (int)UnityEngine.Random.Range(1, path.Count - 2);
+                var bypassedNode = path[bypassedIndex];
 
-            Graph.setEdgeActive(new Edge(from, to), false);
-            spawnEdge(Graph.nodes[from].pos, Graph.nodes[to].pos, Color.magenta);
+                bypassedNode.active = false;
+                Graph.nodes[bypassedNode.id] = bypassedNode;
 
-            path = getShortestPath();
-            debugDisplayPath(path, Color.red);
+                acceptedNodes.AddRange(path);
+
+                for(int j=0; j<path.Count-1; ++j)
+                {
+                    acceptedEdges.Add(new Edge(path[j].id, path[j+1].id));
+                }
+            }
+
+            // Update active status to the good value
+            for (int i = 0; i < Graph.nodes.Count; ++i)
+            {
+                Graph.setNodeActive(Graph.nodes[i], false);
+            }
+
+            for (int i = 0; i < acceptedNodes.Count; ++i)
+            {
+                Graph.setNodeActive(acceptedNodes[i], true);
+            }
+
+            foreach(var el in Graph.edges)
+            {
+                for(int i=0; i<el.Count; ++i)
+                {
+                    Graph.setEdgeActive(el[i], false);
+                }
+            }
+
+            for(int i=0; i<acceptedEdges.Count; ++i)
+            {
+                Graph.setEdgeActive(acceptedEdges[i], true);
+            }
         }
 
         List<Node<Vector2>> getShortestPath()
@@ -414,10 +462,17 @@ namespace sail
 
         void spawnEdges()
         {
-            foreach (var eList in Graph.edges)
+            foreach(var eList in Graph.edges)
             {
                 foreach(var e in eList)
                 {
+                    if(    e.active == false
+                        || Graph.nodes[e.v0].active == false
+                        || Graph.nodes[e.v1].active == false)
+                    {
+                        continue;
+                    }
+
                     spawnEdge(Graph.nodes[e.v0].pos, Graph.nodes[e.v1].pos);
                 }
             }
@@ -434,10 +489,12 @@ namespace sail
 
         void spawnNodes()
         {
-            // generate game objects
             foreach (var n in Graph.nodes)
             {
-                spawnNode(n.pos);
+                if(n.active)
+                {
+                    spawnNode(n.pos);
+                }
             }
         }
 
@@ -507,8 +564,8 @@ namespace sail
         }
         public class AStarSearch<T>
         {
-            public Dictionary<Node<T>, Node<T>> cameFrom = new Dictionary<Node<T>, Node<T>>();
-            public Dictionary<Node<T>, float> costSoFar = new Dictionary<Node<T>, float>();
+            public Dictionary<int, Node<T>> cameFrom = new Dictionary<int, Node<T>>();
+            public Dictionary<int, float> costSoFar = new Dictionary<int, float>();
             public Func<T, T, float> heuristic = null;
 
             public void run(Graph<T> graph, Node<T> start, Node<T> goal)
@@ -516,8 +573,8 @@ namespace sail
                 var frontier = new AStarSearch.PriorityQueue<Node<T>>();
                 frontier.add(start, 0);
 
-                cameFrom[start] = start;
-                costSoFar[start] = 0;
+                cameFrom[start.id] = start;
+                costSoFar[start.id] = 0;
 
                 while (frontier.isEmpty() == false)
                 {
@@ -531,13 +588,13 @@ namespace sail
                     foreach (var next in graph.neighbors(current))
                     {
                         var costToNext = graph.cost == null ? 1f : graph.cost(current.pos, next.pos);
-                        float newCost = costSoFar[current] + costToNext;
-                        if (!costSoFar.ContainsKey(next) || newCost < costSoFar[next])
+                        float newCost = costSoFar[current.id] + costToNext;
+                        if (!costSoFar.ContainsKey(next.id) || newCost < costSoFar[next.id])
                         {
-                            costSoFar[next] = newCost;
+                            costSoFar[next.id] = newCost;
                             float priority = newCost + heuristic(next.pos, goal.pos);
                             frontier.add(next, priority);
-                            cameFrom[next] = current;
+                            cameFrom[next.id] = current;
                         }
                     }
                 }
@@ -552,7 +609,7 @@ namespace sail
 
                 while (id.Equals(start) == false)
                 {
-                    id = cameFrom[id];
+                    id = cameFrom[id.id];
                     path.Add(id);
                 }
 
