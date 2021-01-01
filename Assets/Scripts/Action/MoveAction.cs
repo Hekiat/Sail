@@ -47,7 +47,8 @@ namespace sail
 
             if (State == EmMotionStates.Walk)
             {
-                Path = AStarSearch.search(Unit.Coord, Target);
+                //Path = AStarSearch.search(Unit.Coord, Target);
+                Path = BattleFSM.Instance.board.getPath(Unit.Coord, Target);
                 Path.RemoveAt(0);
             }
 

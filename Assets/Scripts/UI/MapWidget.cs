@@ -5,14 +5,39 @@ using UnityEngine;
 
 namespace sail
 {
-    public class Graph<T>
+    public abstract class GraphBase<T>
     {
         public List<Node<T>> nodes { get; private set; } = new List<Node<T>>();
+        public abstract List<Node<T>> neighbors(Node<T> node);
+
+        public virtual Node<T> addNode(T pos)
+        {
+            var n = new Node<T>(pos, nodes.Count);
+            nodes.Add(n);
+            return n;
+        }
+
+        public virtual void setNodeActive(Node<T> n, bool active)
+        {
+            n.active = active;
+            nodes[n.id] = n;
+        }
+
+        public virtual void clear()
+        {
+            nodes.Clear();
+        }
+
+        public Func<T, T, float> cost = null;
+    }
+
+    public class MapGraph : GraphBase<Vector2>
+    {
         public List<List<Edge>> edges { get; private set; } = new List<List<Edge>>();
 
-        public List<Node<T>> neighbors(Node<T> node)
+        public override List<Node<Vector2>> neighbors(Node<Vector2> node)
         {
-            var neighbors = new List<Node<T>>();
+            var neighbors = new List<Node<Vector2>>();
 
             foreach (var e in edges[node.id])
             {
@@ -27,16 +52,14 @@ namespace sail
             return neighbors;
         }
 
-        public Func<T, T, float> cost = null;
-
         //public float cost(Node<T> a, Node<T> b)
         //{
         //    return 1f;
         //}
 
-        public Node<T> addNode(T pos)
+        public override Node<Vector2> addNode(Vector2 pos)
         {
-            var n = new Node<T>(pos, nodes.Count);
+            var n = new Node<Vector2>(pos, nodes.Count);
             nodes.Add(n);
             edges.Add(new List<Edge>());
             return n;
@@ -58,12 +81,6 @@ namespace sail
             }
 
             edges[e.v0][index] = e;
-        }
-
-        public void setNodeActive(Node<T> n, bool active)
-        {
-            n.active = active;
-            nodes[n.id] = n;
         }
     }
 
@@ -113,7 +130,7 @@ namespace sail
 
         private List<MapEventWidget> MapEventWidgets = new List<MapEventWidget>();
 
-        Graph<Vector2> Graph = new Graph<Vector2>();
+        MapGraph Graph = new MapGraph();
 
         // Start is called before the first frame update
         void Start()
@@ -189,11 +206,10 @@ namespace sail
 
         List<Node<Vector2>> getShortestPath()
         {
-            AStarSearch<Vector2> aStar = new AStarSearch<Vector2>();
-            aStar.heuristic = (Vector2 a, Vector2 b) => { return Math.Abs(a.x - b.x) + Math.Abs(a.y - b.y); };
+            AStarSearch<Vector2> aStar = new AStarSearch<Vector2>(Graph);
+            aStar.heuristic = (Vector2 start, Vector2 current, Vector2 goal) => { return Math.Abs(start.x - goal.x) + Math.Abs(start.y - goal.y); };
 
-            aStar.run(Graph, Graph.nodes[Graph.nodes.Count - 2], Graph.nodes[Graph.nodes.Count - 1]);
-            return aStar.computePath(Graph.nodes[Graph.nodes.Count - 2], Graph.nodes[Graph.nodes.Count - 1]);
+            return aStar.getPathNodes(Graph.nodes[Graph.nodes.Count - 2], Graph.nodes[Graph.nodes.Count - 1]);
         }
 
         void debugDisplayPath(List<Node<Vector2>> path, Color color)
@@ -562,14 +578,89 @@ namespace sail
                 circleRad = dx * dx + dy * dy;
             }
         }
-        public class AStarSearch<T>
+        public class AStarSearch<T> where T : struct
         {
             public Dictionary<int, Node<T>> cameFrom = new Dictionary<int, Node<T>>();
             public Dictionary<int, float> costSoFar = new Dictionary<int, float>();
-            public Func<T, T, float> heuristic = null;
+            public Func<T, T, T, float> heuristic = null;
 
-            public void run(Graph<T> graph, Node<T> start, Node<T> goal)
+            public GraphBase<T> Graph { get; private set; } = null;
+            public Node<T>? StartNode { get; private set; } = null;
+            public Node<T>? GoalNode { get; private set; } = null;
+
+            public AStarSearch(GraphBase<T> graph)
             {
+                Graph = graph;
+            }
+
+            void clear()
+            {
+                cameFrom.Clear();
+                costSoFar.Clear();
+            }
+
+            public List<T> getPath(T start, T goal)
+            {
+                updateStartGoalNodes(start, goal);
+
+                if(Graph == null || StartNode == null || GoalNode == null)
+                {
+                    return new List<T>();
+                }
+
+                run(StartNode.Value, GoalNode.Value);
+
+                return extractValue(StartNode.Value, GoalNode.Value);
+            }
+
+            public List<T> getPath(Node<T> start, Node<T> goal)
+            {
+                StartNode = start;
+                GoalNode = goal;
+
+                if (Graph == null || StartNode == null || GoalNode == null)
+                {
+                    return new List<T>();
+                }
+
+                run(StartNode.Value, GoalNode.Value);
+
+                return extractValue(StartNode.Value, GoalNode.Value);
+            }
+
+            public List<Node<T>> getPathNodes(T start, T goal)
+            {
+                updateStartGoalNodes(start, goal);
+
+                if(Graph == null || StartNode == null || GoalNode == null)
+                {
+                    return new List<Node<T>>();
+                }
+
+                run(StartNode.Value, GoalNode.Value);
+
+                return extractNodes(StartNode.Value, GoalNode.Value);
+            }
+
+            public List<Node<T>> getPathNodes(Node<T> start, Node<T> goal)
+            {
+                StartNode = start;
+                GoalNode = goal;
+
+                if (Graph == null || StartNode == null || GoalNode == null)
+                {
+                    return new List<Node<T>>();
+                }
+
+                run(StartNode.Value, GoalNode.Value);
+
+                return extractNodes(StartNode.Value, GoalNode.Value);
+            }
+
+            private void run(Node<T> start, Node<T> goal)
+            {
+                clear();
+
                 var frontier = new AStarSearch.PriorityQueue<Node<T>>();
                 frontier.add(start, 0);
 
@@ -585,14 +676,14 @@ namespace sail
                         break;
                     }
 
-                    foreach (var next in graph.neighbors(current))
+                    foreach (var next in Graph.neighbors(current))
                     {
-                        var costToNext = graph.cost == null ? 1f : graph.cost(current.pos, next.pos);
+                        var costToNext = Graph.cost == null ? 1f : Graph.cost(current.pos, next.pos);
                         float newCost = costSoFar[current.id] + costToNext;
                         if (!costSoFar.ContainsKey(next.id) || newCost < costSoFar[next.id])
                         {
                             costSoFar[next.id] = newCost;
-                            float priority = newCost + heuristic(next.pos, goal.pos);
+                            float priority = newCost + heuristic(start.pos, next.pos, goal.pos);
                             frontier.add(next, priority);
                             cameFrom[next.id] = current;
                         }
@@ -600,10 +691,9 @@ namespace sail
                 }
             }
 
-            public List<Node<T>> computePath(Node<T> start, Node<T> goal)
+            private List<Node<T>> extractNodes(Node<T> start, Node<T> goal)
             {
                 var path = new List<Node<T>>();
-
                 var id = goal;
                 path.Add(id);
 
@@ -616,6 +706,40 @@ namespace sail
                 path.Reverse();
 
                 return path;
+            }
+
+            private List<T> extractValue(Node<T> start, Node<T> goal)
+            {
+                var path = new List<T>();
+                var id = goal;
+                path.Add(id.pos);
+
+                while (id.Equals(start) == false)
+                {
+                    id = cameFrom[id.id];
+                    path.Add(id.pos);
+                }
+
+                path.Reverse();
+
+                return path;
+            }
+
+            void updateStartGoalNodes(T start, T goal)
+            {
+                var startIndex = Graph.nodes.FindIndex((item) => item.pos.Equals(start));
+                var goalIndex = Graph.nodes.FindIndex((item) => item.pos.Equals(goal));
+
+                if (startIndex == -1 || goalIndex == -1)
+                {
+                    Debug.Log("AStar run with unfound value node.");
+                    StartNode = null;
+                    GoalNode = null;
+                    return;
+                }
+
+                StartNode = Graph.nodes[startIndex];
+                GoalNode = Graph.nodes[goalIndex];
             }
         }
     }
