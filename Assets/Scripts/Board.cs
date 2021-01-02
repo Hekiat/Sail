@@ -12,12 +12,12 @@ namespace sail
 
         public override List<Node<TileCoord>> neighbors(Node<TileCoord> node)
         {
-            var neighbors = board.neighbors(node.pos);
+            var neighbors = board.neighbors(node.value);
             List<Node<TileCoord>> tilesNodes = new List<Node<TileCoord>>();
 
             foreach(var n in neighbors)
             {
-                var tileNode = nodes.Find((item) => item.pos == n);
+                var tileNode = nodes.Find((item) => item.value == n);
                 tilesNodes.Add(tileNode);
             }
 
@@ -42,7 +42,7 @@ namespace sail
 
         private List<Tile> Tiles = new List<Tile>();
         private BoardGraph Graph = new BoardGraph();
-        private MapWidget.AStarSearch<TileCoord> AStar = null;
+        private AStarSearch<TileCoord> AStar = null;
 
         // Start is called before the first frame update
         void Start()
@@ -92,7 +92,7 @@ namespace sail
             }
 
             // Update AStar
-            AStar = new MapWidget.AStarSearch<TileCoord>(BattleFSM.Instance.board.Graph);
+            AStar = new AStarSearch<TileCoord>(BattleFSM.Instance.board.Graph);
             AStar.heuristic = (TileCoord start, TileCoord current, TileCoord goal) =>
             {
                 var h = Mathf.Abs(current.Square.x - goal.Square.x) + Mathf.Abs(current.Square.y - goal.Square.y);
