@@ -6,6 +6,25 @@ using sail.animation;
 
 namespace sail
 {
+    public class BoardGraph : GraphBase<TileCoord>
+    {
+        public Board board = null;
+
+        public override List<Node<TileCoord>> neighbors(Node<TileCoord> node)
+        {
+            var neighbors = board.neighbors(node.value);
+            List<Node<TileCoord>> tilesNodes = new List<Node<TileCoord>>();
+
+            foreach(var n in neighbors)
+            {
+                var tileNode = nodes.Find((item) => item.value == n);
+                tilesNodes.Add(tileNode);
+            }
+
+            return tilesNodes;
+        }
+    }
+
     public class Board : MonoBehaviour
     {
         public GameObject TilePrefab = null;
@@ -22,6 +41,8 @@ namespace sail
         public AreaTileSelection.AreaType SelectionType = AreaTileSelection.AreaType.Circle;
 
         private List<Tile> Tiles = new List<Tile>();
+        private BoardGraph Graph = new BoardGraph();
+        private AStarSearch<TileCoord> AStar = null;
 
         // Start is called before the first frame update
         void Start()
@@ -54,6 +75,39 @@ namespace sail
             }
 
             updateBoardCenterPosition();
+
+            updateNavigation();
+        }
+
+        void updateNavigation()
+        {
+            Graph.board = this;
+
+            // Update Graph
+            Graph.clear();
+
+            foreach(var tile in Tiles)
+            {
+                Graph.addNode(tile.Coord);
+            }
+
+            // Update AStar
+            AStar = new AStarSearch<TileCoord>(BattleFSM.Instance.board.Graph);
+            AStar.heuristic = (TileCoord start, TileCoord current, TileCoord goal) =>
+            {
+                var h = Mathf.Abs(current.Square.x - goal.Square.x) + Mathf.Abs(current.Square.y - goal.Square.y);
+                var dx1 = current.Square.x - goal.Square.x;
+                var dy1 = current.Square.y - goal.Square.y;
+                var dx2 = start.Square.x - goal.Square.x;
+                var dy2 = start.Square.y - goal.Square.y;
+                var cross = Mathf.Abs(dx1 * dy2 - dx2 * dy1);
+                return h + cross * 0.001f;
+            };
+        }
+
+        public List<TileCoord> getPath(TileCoord from, TileCoord to)
+        {
+            return AStar.getPath(from, to);
         }
 
         void updateBoardCenterPosition()

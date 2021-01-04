@@ -80,7 +80,9 @@ namespace sail
             var fsm = BattleFSM.Instance;
             if (fsm.ActionController.Action != null && fsm.ActionController.Action.id() == ActionID.MOVE)
             {
-                var path = AStarSearch.search(fsm.SelectedEnemy.Coord, hoveredTile);
+                //var path = AStarSearch.search(fsm.SelectedEnemy.Coord, hoveredTile);
+                var path = fsm.board.getPath(fsm.SelectedEnemy.Coord, hoveredTile);
+
                 SelectionStack[CurrentStackID].set(path, TileLayerID.HIGHLIGHTED);
             }
         }

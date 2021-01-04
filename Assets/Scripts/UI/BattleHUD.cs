@@ -19,8 +19,9 @@ namespace sail
         public ActionSetupWidget ActionWidget = null;
         public Toggle ShowHideActionTgl = null;
         public TimelineWidget TimelineWidget = null;
+        public GameObject MapWidgetGO = null;
+        public Button ToggleMapBtn = null;
 
-        
         public event Action<ActionBase, List<ActionBase>> OnActionSetupSelected;
         public event Action<ActionBase, List<ActionBase>> OnActionSetupAccepted;
 
@@ -39,6 +40,9 @@ namespace sail
             ActionWidget.OnActionCanceled += onActionCancel;
 
             showActionSetupWidgets(false);
+            MapWidgetGO.SetActive(false);
+
+            ToggleMapBtn.onClick.AddListener(() => MapWidgetGO.SetActive(!MapWidgetGO.activeSelf));
 
             GlobalManagers.hud = this;
         }
