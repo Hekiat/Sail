@@ -13,7 +13,6 @@ namespace sail
 
         void Start()
         {
-            LocalizationSystem.Init();
         }
 
 

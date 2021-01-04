@@ -15,7 +15,7 @@ namespace sail
 
         public static string[] LanguageSuffix = new string[] { "en", "fr", "jp" };
 
-        public static Language language = Language.French;
+        public static Language language = Language.English;
 
         private static Dictionary<int, string> localizedText = null;
 
