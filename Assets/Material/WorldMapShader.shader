@@ -51,11 +51,12 @@ Shader "Custom/WorldMapShader"
             height = height / 2;
             height = floor(height + 0.5);
 
-            float3 color = float3(0.0, 0.0, 1.0);
+            float3 color = float3(0.2, 0.6, 0.9);
 
             if (height > 0.1f)
             {
-                color = float3(0.2, 1, 0.0);
+                //color = float3(0.35, 0.8, 0.35);
+                color = float3(0.15, 0.6, 0.15);
             }
 
             o.Albedo = color;

@@ -20,7 +20,9 @@ namespace sail
         public Toggle ShowHideActionTgl = null;
         public TimelineWidget TimelineWidget = null;
         public GameObject MapWidgetGO = null;
+        public GameObject WorldMapWidgetGO = null;
         public Button ToggleMapBtn = null;
+        public Button ToggleWorldMapBtn = null;
 
         public event Action<ActionBase, List<ActionBase>> OnActionSetupSelected;
         public event Action<ActionBase, List<ActionBase>> OnActionSetupAccepted;
@@ -41,8 +43,10 @@ namespace sail
 
             showActionSetupWidgets(false);
             MapWidgetGO.SetActive(false);
+            WorldMapWidgetGO.SetActive(false);
 
             ToggleMapBtn.onClick.AddListener(() => MapWidgetGO.SetActive(!MapWidgetGO.activeSelf));
+            ToggleWorldMapBtn.onClick.AddListener(() => WorldMapWidgetGO.SetActive(!WorldMapWidgetGO.activeSelf));
 
             GlobalManagers.hud = this;
         }
