@@ -21,6 +21,7 @@ namespace sail
         public TimelineWidget TimelineWidget = null;
         public GameObject MapWidgetGO = null;
         public GameObject WorldMapWidgetGO = null;
+        public GameObject MapBackgroundGO = null;
         public Button ToggleMapBtn = null;
         public Button ToggleWorldMapBtn = null;
 
@@ -44,6 +45,7 @@ namespace sail
             showActionSetupWidgets(false);
             MapWidgetGO.SetActive(false);
             WorldMapWidgetGO.SetActive(false);
+            MapBackgroundGO.SetActive(false);
 
             ToggleMapBtn.onClick.AddListener(() => MapWidgetGO.SetActive(!MapWidgetGO.activeSelf));
             ToggleWorldMapBtn.onClick.AddListener(() => WorldMapWidgetGO.SetActive(!WorldMapWidgetGO.activeSelf));
@@ -53,6 +55,7 @@ namespace sail
 
         void Update()
         {
+            MapBackgroundGO.SetActive(MapWidgetGO.activeSelf | WorldMapWidgetGO.activeSelf);
         }
 
         void onActionSelected(ActionBase action, List<ActionBase> secondaryActions)
