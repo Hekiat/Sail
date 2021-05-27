@@ -62,8 +62,16 @@ public class WorldMap : MonoBehaviour
 
     public GameObject Camera = null;
 
+    public float CameraOffset = 3f;
+
+    public GameObject Flag = null;
+
     private List<Cloud> _Clouds = new List<Cloud>();
-    
+
+    private List<WorldMapItem> Items = new List<WorldMapItem>();
+
+    private int _ItemIndex = 0;
+
     void Start()
     {
         // GetComponent< Renderer>().bounds.center
@@ -81,17 +89,38 @@ public class WorldMap : MonoBehaviour
 
             addCloud(Vector3.one * scale, normal, speed, height);
         }
+
+        Items = new List<WorldMapItem>(GetComponentsInChildren<WorldMapItem>());
     }
 
     // Update is called once per frame
     void Update()
     {
-        transform.Rotate(Vector3.up, 0.1f);
+        //transform.Rotate(Vector3.up, 0.1f);
 
         foreach (var c in _Clouds)
         {
             c.updateTransform();
         }
+
+        Flag.transform.position = Items[_ItemIndex].Position;
+
+        Flag.transform.up = (Flag.transform.position - transform.position).normalized;
+
+        var camPos = Camera.transform.position;
+        var camRot = Camera.transform.rotation;
+
+        Camera.transform.position = Flag.transform.position + CameraOffset * Flag.transform.up;
+        Camera.transform.LookAt(Flag.transform);
+
+        var localPos = Camera.transform.worldToLocalMatrix.MultiplyPoint(transform.position);
+        var localRot = Quaternion.Inverse(Camera.transform.rotation) * transform.rotation;
+
+        Camera.transform.position = camPos;
+        Camera.transform.rotation = camRot;
+
+        //transform.position = Vector3.Lerp(transform.position, Camera.transform.localToWorldMatrix.MultiplyPoint(localPos), 0.01f);
+        transform.rotation = Quaternion.Lerp(transform.rotation, Camera.transform.rotation * localRot, 0.01f);
     }
 
     void addCloud(Vector3 scale, Vector3 movementNormal, float speed, float height)
@@ -108,5 +137,15 @@ public class WorldMap : MonoBehaviour
         cloud.Height = height;
 
         _Clouds.Add(cloud);
+    }
+
+    public void next()
+    {
+        Items[_ItemIndex].GetComponent<MeshRenderer>().material.SetInt("Highlight", 0);
+
+        _ItemIndex = (_ItemIndex + 1) % Items.Count;
+
+        Items[_ItemIndex].GetComponent<MeshRenderer>().material.SetInt("Highlight", 1);
+        //Flag.transform.position = Items[_ItemIndex].Position;
     }
 }

@@ -263,7 +263,7 @@ Light:
   m_BounceIntensity: 1
   m_ColorTemperature: 6570
   m_UseColorTemperature: 0
-  m_BoundingSphereOverride: {x: 2.034e-41, y: 6e-44, z: 4.5904e-41, w: 3e-45}
+  m_BoundingSphereOverride: {x: 3.4584105e+12, y: 801.4898, z: 869782660, w: 50691200}
   m_UseBoundingSphereOverride: 0
   m_UseViewFrustumForShadowCasterCull: 1
   m_ShadowRadius: 0
@@ -344,7 +344,17 @@ PrefabInstance:
         type: 3}
       propertyPath: m_Materials.Array.data[0]
       value: 
-      objectReference: {fileID: 2100000, guid: 8ea464ad2da9c084da2294a60ab09e2b, type: 2}
+      objectReference: {fileID: 2100000, guid: 31321ba15b8f8eb4c954353edc038b1d, type: 2}
+    - target: {fileID: 6419348297477302947, guid: c3c81a8aa8d0f644db0f140349403c70,
+        type: 3}
+      propertyPath: m_Materials.Array.size
+      value: 2
+      objectReference: {fileID: 0}
+    - target: {fileID: 6419348297477302947, guid: c3c81a8aa8d0f644db0f140349403c70,
+        type: 3}
+      propertyPath: m_Materials.Array.data[1]
+      value: 
+      objectReference: {fileID: 2100000, guid: 8e27124e4b899024783d02e6e34d3d2c, type: 2}
     - target: {fileID: 8575633300572098225, guid: c3c81a8aa8d0f644db0f140349403c70,
         type: 3}
       propertyPath: m_RootOrder
