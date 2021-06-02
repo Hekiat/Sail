@@ -544,6 +544,7 @@ GameObject:
   - component: {fileID: 1294431744}
   - component: {fileID: 1294431745}
   - component: {fileID: 1294431746}
+  - component: {fileID: 1294431747}
   m_Layer: 0
   m_Name: Game
   m_TagString: Untagged
@@ -688,6 +689,18 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   FloatingTextPrefab: {fileID: 3220650070880583479, guid: 4cf089f7d56caae41925d1d3be5679e3,
     type: 3}
+--- !u!114 &1294431747
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1294431736}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 5ebabc3824c4d8947adce809abf65a36, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!850595691 &1600013213
 LightingSettings:
   m_ObjectHideFlags: 0

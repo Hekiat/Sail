@@ -30,7 +30,7 @@ namespace sail
 
         private void Awake()
         {
-
+            GlobalManagers.hud = this;
         }
 
         void Start()
@@ -49,8 +49,6 @@ namespace sail
 
             ToggleMapBtn.onClick.AddListener(() => MapWidgetGO.SetActive(!MapWidgetGO.activeSelf));
             ToggleWorldMapBtn.onClick.AddListener(() => WorldMapWidgetGO.SetActive(!WorldMapWidgetGO.activeSelf));
-
-            GlobalManagers.hud = this;
         }
 
         void Update()

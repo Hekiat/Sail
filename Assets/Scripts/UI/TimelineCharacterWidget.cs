@@ -2,13 +2,14 @@
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
+using TMPro;
 
 namespace sail
 {
     public class TimelineCharacterWidget : MonoBehaviour
     {
         // From inspector
-        public Text Text = null;
+        public TextMeshProUGUI Text = null;
 
         // From script
         private Unit _Unit = null;

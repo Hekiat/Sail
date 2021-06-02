@@ -44,10 +44,13 @@ namespace sail
         private BoardGraph Graph = new BoardGraph();
         private AStarSearch<TileCoord> AStar = null;
 
-        // Start is called before the first frame update
-        void Start()
+        private void Awake()
         {
             GlobalManagers.board = this;
+        }
+
+        void Start()
+        {
         }
 
         void OnDestroy()

@@ -28,6 +28,11 @@ namespace sail
         //private
         public List<ActionBase> Actions { get; } = new List<ActionBase>();
 
+        private void Awake()
+        {
+            GlobalManagers.actionManager = this;
+        }
+
         void Start()
         {
             Assert.IsNotNull(ActionConfigurationList, "@ActionManager: Action List is null, please set the Scriptable Object parameter. ");
@@ -59,8 +64,6 @@ namespace sail
 
                 Debug.Log($"@ActionManager: Added action {instance.Name}");
             }
-
-            GlobalManagers.actionManager = this;
         }
 
         void OnDestroy()
