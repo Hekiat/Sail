@@ -131,7 +131,7 @@ namespace sail
             var cloud = new Cloud();
 
             cloud.Instance = Instantiate(CloudPrefab, transform);
-            cloud.Instance.layer = LayerMask.UI;
+            cloud.Instance.layer = Layer.UI;
 
             cloud.Cycle = Random.value * Mathf.PI * 2f;
             cloud.Instance.transform.localScale = scale;
