@@ -44,6 +44,7 @@ namespace sail
         public override void OnInspectorGUI()
         {
             DialogueManager myScript = (DialogueManager)target;
+
             if (GUILayout.Button("Test"))
             {
                 var text = new List<string>();

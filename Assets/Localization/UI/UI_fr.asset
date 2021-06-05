@@ -22,5 +22,9 @@ MonoBehaviour:
     m_Localized: Bonjour
     m_Metadata:
       m_Items: []
+  - m_Id: 68467363672064
+    m_Localized: Oui
+    m_Metadata:
+      m_Items: []
   references:
     version: 1

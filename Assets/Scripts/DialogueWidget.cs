@@ -3,6 +3,9 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 using TMPro;
+using UnityEngine.Localization;
+using UnityEngine.Localization.Components;
+using UnityEngine.Assertions;
 
 namespace sail
 {
@@ -18,16 +21,30 @@ namespace sail
 
         public CanvasGroup _MainPanel = null;
 
-        public TextMeshProUGUI _Text = null;
-
+        private TextMeshProUGUI _Text = null;
+        private LocalizeStringEvent _LocalizedAsset = null;
+        
         private DialogueData _Data = null;
 
         private bool _InstantRoll = false;
 
         private bool _Rolling = false;
 
+        public void setLocalizedString(LocalizedString str)
+        {
+            //var str = new UnityEngine.Localization.LocalizedString() { TableReference = "UI", TableEntryReference = "Test2" };
+            //myScript._Widget.setLocalizedString(str);
+            _LocalizedAsset.StringReference = str;
+        }
+
         void Start()
         {
+            _Text = GetComponentInChildren<TextMeshProUGUI>();
+            _LocalizedAsset = GetComponentInChildren<LocalizeStringEvent>();
+
+            Assert.IsNotNull(_Text, "Component not found.");
+            Assert.IsNotNull(_LocalizedAsset, "Component not found.");
+
             GlobalManagers.dialogueManager.registerWidget(this);
             gameObject.SetActive(false);
             hide();

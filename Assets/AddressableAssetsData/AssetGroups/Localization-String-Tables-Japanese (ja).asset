@@ -22,6 +22,11 @@ MonoBehaviour:
     m_ReadOnly: 1
     m_SerializedLabels:
     - Locale-ja
+  - m_GUID: 54305153e6f4ca543acd842096760c6a
+    m_Address: Dialogues_ja
+    m_ReadOnly: 1
+    m_SerializedLabels:
+    - Locale-ja
   m_ReadOnly: 1
   m_Settings: {fileID: 11400000, guid: aefda41565368914da53b940c559b9b9, type: 2}
   m_SchemaSet:
