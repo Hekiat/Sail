@@ -5,6 +5,7 @@ namespace sail.localization
 	public static class Dialogues
 	{
 		public static LocalizedString ID_0 = new LocalizedString() { TableReference = "Dialogues", TableEntryReference = "ID_0"};
+		public static LocalizedString CH_000_NAME = new LocalizedString() { TableReference = "Dialogues", TableEntryReference = "CH_000_NAME"};
 	}
 	public static class UI
 	{

@@ -11,8 +11,14 @@ namespace sail
 {
     public class DialogueData
     {
-        public string CharacterName { get; set; } = string.Empty;
-        public Queue<string> Dialogues { get; set; } = new Queue<string>();
+        public DialogueData(LocalizedString characterName, List<LocalizedString> dialogues)
+        {
+            CharacterName = characterName;
+            Dialogues = new Queue<LocalizedString>(dialogues);
+        }
+
+        public LocalizedString CharacterName { get; set; } = null;
+        public Queue<LocalizedString> Dialogues { get; set; } = new Queue<LocalizedString>();
     }
 
     public class DialogueWidget : MonoBehaviour
@@ -32,8 +38,6 @@ namespace sail
 
         public void setLocalizedString(LocalizedString str)
         {
-            //var str = new UnityEngine.Localization.LocalizedString() { TableReference = "UI", TableEntryReference = "Test2" };
-            //myScript._Widget.setLocalizedString(str);
             _LocalizedAsset.StringReference = str;
         }
 
@@ -76,10 +80,11 @@ namespace sail
             }
         }
 
-        public void request(DialogueData data)
+        public void request(LocalizedString characterName, List<LocalizedString> dialogues)
         {
+            _Data = new DialogueData(characterName, dialogues);
+
             show();
-            _Data = data;
 
             next();
         }
@@ -113,12 +118,14 @@ namespace sail
             LeanTween.alpha(_Portrait.rectTransform, 0f, 0.4f);
         }
 
-        IEnumerator displayText(string text)
+        IEnumerator displayText(LocalizedString text)
         {
+            var localizedText = text.GetLocalizedString();
+
             _Rolling = true;
 
             _Text.text = "";
-            foreach (var letter in text)
+            foreach (var letter in localizedText)
             {
                 if (_InstantRoll == false)
                 {
@@ -127,7 +134,7 @@ namespace sail
                 }
                 else
                 {
-                    _Text.text = text;
+                    _Text.text = localizedText;
                     _InstantRoll = false;
                     _Rolling = false;
                     break;

@@ -1,7 +1,9 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.Localization;
 using UnityEditor;
+
 
 namespace sail
 {
@@ -29,12 +31,9 @@ namespace sail
             _Widget = widget;
         }
 
-        public void request(string name, List<string> text)
+        public void request(LocalizedString name, List<LocalizedString> text)
         {
-            var data = new DialogueData();
-            data.CharacterName = name;
-            data.Dialogues = new Queue<string>(text);
-            _Widget.request(data);
+            _Widget.request(name, text);
         }
     }
 
@@ -49,8 +48,8 @@ namespace sail
             {
                 var text = new List<string>();
                 text.Add("Test");
-                text.Add("Sed ut perspiciatis unde omnis iste natus error sit voluptatem accusantium doloremque laudantium, totam rem aperiam, eaque ipsa quae ab illo inventore veritatis et quasi architecto beatae vitae dicta sunt explicabo.");
-                myScript.request("Name", text);
+                text.Add("");
+                myScript.request(localization.Dialogues.CH_000_NAME, new List<LocalizedString>() { localization.Dialogues.ID_0 });
             }
         }
     }
