@@ -19,7 +19,13 @@ MonoBehaviour:
     m_Items: []
   m_TableData:
   - m_Id: 64011628544
-    m_Localized: c
+    m_Localized: Sed ut perspiciatis unde omnis iste natus error sit voluptatem accusantium
+      doloremque laudantium, totam rem aperiam, eaque ipsa quae ab illo inventore
+      veritatis et quasi architecto beatae vitae dicta sunt explicabo.
+    m_Metadata:
+      m_Items: []
+  - m_Id: 2597537860018176
+    m_Localized: CH_000_NAME_JP
     m_Metadata:
       m_Items: []
   references:
