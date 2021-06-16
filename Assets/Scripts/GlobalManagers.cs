@@ -11,6 +11,8 @@ namespace sail
         public static Board board = null;
         public static ActionManager actionManager = null;
         public static DialogueManager dialogueManager = null;
+        public static EventManager eventManager = null;
+        public static CharacterInfoManager characterInfoManager = null;
 
         // UI
         public static BattleHUD hud = null;

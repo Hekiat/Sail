@@ -31,7 +31,7 @@ namespace sail
             _Widget = widget;
         }
 
-        public void request(LocalizedString name, List<LocalizedString> text)
+        public void request(CharacterID name, List<LocalizedString> text)
         {
             _Widget.request(name, text);
         }
@@ -49,7 +49,8 @@ namespace sail
                 var text = new List<string>();
                 text.Add("Test");
                 text.Add("");
-                myScript.request(localization.Dialogues.CH_000_NAME, new List<LocalizedString>() { localization.Dialogues.ID_0 });
+                //localization.Dialogues.CH_000_NAME
+                myScript.request(CharacterID.ch000, new List<LocalizedString>() { localization.Dialogues.ID_0 });
             }
         }
     }

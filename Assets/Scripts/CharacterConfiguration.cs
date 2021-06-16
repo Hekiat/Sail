@@ -5,8 +5,6 @@ using UnityEngine.Localization;
 
 namespace sail
 {
-    using UnityEngine;
-
     [CreateAssetMenu(fileName = "CharacterConfiguration", menuName = "Custom/CharacterConfiguration", order = 1)]
     public class CharacterConfiguration : ScriptableObject
     {

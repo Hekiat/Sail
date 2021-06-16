@@ -27,9 +27,11 @@ namespace sail
 
         public CanvasGroup _MainPanel = null;
 
-        private TextMeshProUGUI _Text = null;
-        private LocalizeStringEvent _LocalizedAsset = null;
-        
+        public TextMeshProUGUI _MainText = null;
+        public LocalizeStringEvent _MainLocalizedAsset = null;
+
+        public LocalizeStringEvent _CharacterLocalizedAsset = null;
+
         private DialogueData _Data = null;
 
         private bool _InstantRoll = false;
@@ -38,16 +40,16 @@ namespace sail
 
         public void setLocalizedString(LocalizedString str)
         {
-            _LocalizedAsset.StringReference = str;
+            _MainLocalizedAsset.StringReference = str;
         }
 
         void Start()
         {
-            _Text = GetComponentInChildren<TextMeshProUGUI>();
-            _LocalizedAsset = GetComponentInChildren<LocalizeStringEvent>();
+            //_MainText = GetComponentInChildren<TextMeshProUGUI>();
+            //_MainLocalizedAsset = GetComponentInChildren<LocalizeStringEvent>();
 
-            Assert.IsNotNull(_Text, "Component not found.");
-            Assert.IsNotNull(_LocalizedAsset, "Component not found.");
+            Assert.IsNotNull(_MainText, "Component not found.");
+            Assert.IsNotNull(_MainLocalizedAsset, "Component not found.");
 
             GlobalManagers.dialogueManager.registerWidget(this);
             gameObject.SetActive(false);
@@ -80,10 +82,10 @@ namespace sail
             }
         }
 
-        public void request(LocalizedString characterName, List<LocalizedString> dialogues)
+        public void request(CharacterID character, List<LocalizedString> dialogues)
         {
-            _Data = new DialogueData(characterName, dialogues);
-
+            _Data = new DialogueData(GlobalManagers.characterInfoManager.name(character), dialogues);
+            
             show();
 
             next();
@@ -98,6 +100,8 @@ namespace sail
         void show()
         {
             gameObject.SetActive(true);
+
+            _CharacterLocalizedAsset.StringReference = _Data.CharacterName;
 
             var rectTransform = _MainPanel.transform as RectTransform;
 
@@ -124,17 +128,17 @@ namespace sail
 
             _Rolling = true;
 
-            _Text.text = "";
+            _MainText.text = "";
             foreach (var letter in localizedText)
             {
                 if (_InstantRoll == false)
                 {
-                    _Text.text += letter;
+                    _MainText.text += letter;
                     yield return null;
                 }
                 else
                 {
-                    _Text.text = localizedText;
+                    _MainText.text = localizedText;
                     _InstantRoll = false;
                     _Rolling = false;
                     break;
