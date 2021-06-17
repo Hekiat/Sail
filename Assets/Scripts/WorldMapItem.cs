@@ -14,7 +14,6 @@ namespace sail
         void Start()
         {
             _Renderer = GetComponent<Renderer>();
-            Debug.Log("" + _Renderer);
         }
 
         // Update is called once per frame

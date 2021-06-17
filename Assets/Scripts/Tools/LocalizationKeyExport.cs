@@ -10,11 +10,10 @@ namespace sail.tools
     {
         public static string ExportNamespace = projectName().ToLower() + ".localization";
 
-        [MenuItem("Sail/Localization/Export Keys")]
+        [MenuItem("Tools/Localization/Export Keys")]
         public static void exportLocalizationKeys()
         {
             var path = Application.dataPath + Path.Combine("/Scripts/Generated/Localization/LocalizationKeys.cs");
-            
 
             FileInfo fi = new FileInfo(path);
             if (!fi.Directory.Exists)
@@ -39,7 +38,6 @@ namespace sail.tools
                     foreach (var entry in table.SharedData.Entries)
                     {
                         outputFile.WriteLine($"\t\tpublic static LocalizedString {entry.Key} = new LocalizedString() {{ TableReference = \"{table.name}\", TableEntryReference = \"{entry.Key}\"}};");
-                        //outputFile.WriteLine("\t\t" + entry.Key + ",");
                     }
 
                     outputFile.WriteLine("\t}");

@@ -38,11 +38,6 @@ namespace sail
 
         private bool _Rolling = false;
 
-        public void setLocalizedString(LocalizedString str)
-        {
-            _MainLocalizedAsset.StringReference = str;
-        }
-
         void Start()
         {
             //_MainText = GetComponentInChildren<TextMeshProUGUI>();
