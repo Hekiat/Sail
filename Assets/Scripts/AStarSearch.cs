@@ -185,6 +185,12 @@ namespace sail
 
             while (current.Equals(start) == false)
             {
+                if(cameFrom.ContainsKey(current.id) == false)
+                {
+                    Debug.LogError($"Key {current.id} not found, start: {start.id} goal: {goal.id} count: {cameFrom.Count}");
+                    return null;
+                }
+
                 current = cameFrom[current.id];
                 path.Add(current);
             }

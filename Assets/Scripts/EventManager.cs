@@ -8,8 +8,6 @@ namespace sail
     {
         public EventData Data = null;
 
-        public bool Test = false;
-
         int CurrentEventActionIndex = -1;
 
         void Awake()
@@ -19,12 +17,6 @@ namespace sail
 
         void Update()
         {
-            if(Test)
-            {
-                startEvent(Data);
-                Test = false;
-            }
-
             if(Data == null || CurrentEventActionIndex == -1)
             {
                 return;
@@ -58,6 +50,12 @@ namespace sail
         {
             Data.Actions[CurrentEventActionIndex].ActionEnd -= onActionEnded;
             startNextAction();
+        }
+
+        [NaughtyAttributes.Button]
+        void test()
+        {
+            startEvent(Data);
         }
     }
 }

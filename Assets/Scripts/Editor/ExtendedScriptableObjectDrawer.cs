@@ -1,4 +1,4 @@
-// Developed by Tom Kail at Inkle
+/*// Developed by Tom Kail at Inkle
 // Released under the MIT Licence as held at https://opensource.org/licenses/MIT
 
 // Must be placed within a folder named "Editor"
@@ -331,4 +331,4 @@ public class ExtendedScriptableObjectDrawer : PropertyDrawer
 		}
 		return false;
 	}
-}
+}*/

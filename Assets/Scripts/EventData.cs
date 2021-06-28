@@ -36,7 +36,9 @@ namespace sail
 
             string[] names = ActionTypes.Select(o => o.Name).ToArray();
 
-            SelectedIndex = EditorGUILayout.Popup("Add Action Type:", SelectedIndex, names);
+            GUILayout.BeginVertical("Add Action:", "window");
+
+            SelectedIndex = EditorGUILayout.Popup("Action Type:", SelectedIndex, names);
 
             if(GUILayout.Button("Add Action"))
             {
@@ -44,6 +46,9 @@ namespace sail
                 var inst = target as EventData;
                 inst.Actions.Add(eventAction);
             }
+
+            
+            GUILayout.EndVertical();
         }
     }
 }

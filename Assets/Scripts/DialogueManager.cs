@@ -35,23 +35,15 @@ namespace sail
         {
             _Widget.request(name, text);
         }
-    }
 
-    [CustomEditor(typeof(DialogueManager))]
-    public class DialogueManagerEditor : Editor
-    {
-        public override void OnInspectorGUI()
+        [NaughtyAttributes.Button]
+        public void test()
         {
-            DialogueManager myScript = (DialogueManager)target;
-
-            if (GUILayout.Button("Test"))
-            {
-                var text = new List<string>();
-                text.Add("Test");
-                text.Add("");
-                //localization.Dialogues.CH_000_NAME
-                myScript.request(CharacterID.ch000, new List<LocalizedString>() { localization.Dialogues.ID_0 });
-            }
+            var text = new List<string>();
+            text.Add("Test");
+            text.Add("");
+            //localization.Dialogues.CH_000_NAME
+            request(CharacterID.ch000, new List<LocalizedString>() { localization.Dialogues.ID_0 });
         }
     }
 }
